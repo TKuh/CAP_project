@@ -11,7 +11,7 @@ SetPackageInfo( rec(
 PackageName := "MonoidalCategories",
 Subtitle := "Monoidal and monoidal (co)closed categories",
 Version := Maximum( [
-  "2019.01.18", ## Mohamed's version
+  "2019.01.19", ## Mohamed's version
   ## this line prevents merge conflicts
   "2019.01.15", ## Sebas' version
   ## this line prevents merge conflicts
@@ -109,7 +109,7 @@ PackageDoc := rec(
 ),
 
 Dependencies := rec(
-  GAP := ">= 4.9.2",
+  GAP := ">= 4.9.1",
   NeededOtherPackages := [
                    [ "GAPDoc", ">= 1.5" ],
                    [ "ToolsForHomalg", ">= 2018.05.22" ],
