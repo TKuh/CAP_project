@@ -22,7 +22,8 @@ Version := Maximum( [
   "2020.10-01", ## Fabian's version
   ## this line prevents merge conflicts
   "2020.01-10", ## Kamal's version
-
+  ## this line prevents merge conflicts
+  "2019.03-14", ## Tom's version
 ] ),
 
 Date := Concatenation( "01/", ~.Version{[ 6, 7 ]}, "/", ~.Version{[ 1 .. 4 ]} ),
@@ -106,7 +107,7 @@ Dependencies := rec(
                            [ "MatricesForHomalg", ">= 2020.05.12" ],
                            [ "GaussForHomalg", ">= 2019.09.02" ],
                            [ "CAP", ">= 2020.05.16" ],
-                           [ "MonoidalCategories", ">= 2019.01.16" ],
+                           [ "MonoidalCategories", ">= 2019.03.14" ],
                            ],
   SuggestedOtherPackages := [ ],
   ExternalConditions := [ ],
