@@ -4,6 +4,26 @@
 # Implementations
 #
 
+##
+AddDerivationToCAP( IsomorphismFromInternalHomToObject,
+
+  function( cat, object )
+    
+    return IsomorphismFromInternalHomToObjectWithGivenInternalHom( cat, object, object );
+    
+end : CategoryFilter := IsSkeletalCategory,
+      Description := "calling the WithGiven operation in a skeletal setting" );
+
+##
+AddDerivationToCAP( IsomorphismFromObjectToInternalHom,
+
+  function( cat, object )
+    
+    return IsomorphismFromObjectToInternalHomWithGivenInternalHom( cat, object, object );
+    
+end : CategoryFilter := IsSkeletalCategory,
+      Description := "calling the WithGiven operation in a skeletal setting" );
+
 ####################################
 ## Final derived methods
 ####################################
