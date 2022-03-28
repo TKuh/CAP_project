@@ -4,6 +4,61 @@
 # Implementations
 #
 
+KroneckerDelta := function ( i, j, value_if_equal, value_if_not_equal )
+    
+    if i = j then
+        
+        return value_if_equal;
+        
+    else
+        
+        return value_if_not_equal;
+        
+    fi;
+    
+end;
+
+CapJitAddTypeSignature( "KroneckerDelta", [ IsInt, IsInt, IsObject, IsObject ], function ( input_types )
+    
+    Assert( 0, input_types[3] = input_types[4] );
+    
+    return input_types[3];
+    
+end );
+
+CapJitAddTypeSignature( "IsCongruentForMorphisms", [ IsCapCategory, IsCapCategoryMorphism, IsCapCategoryMorphism ], IsBool );
+CapJitAddTypeSignature( "IsZeroForMorphisms", [ IsCapCategory, IsCapCategoryMorphism ], IsBool );
+
+CapJitAddTypeSignature( "PreCompose", [ IsCapCategory, IsCapCategoryMorphism, IsCapCategoryMorphism ], function ( input_types )
+    
+    return input_types[2];
+    
+end );
+
+CapJitAddTypeSignature( "AdditionForMorphisms", [ IsCapCategory, IsCapCategoryMorphism, IsCapCategoryMorphism ], function ( input_types )
+    
+    return input_types[2];
+    
+end );
+
+CapJitAddTypeSignature( "IdentityMorphism", [ IsCapCategory, IsCapCategoryObject ], function ( input_types )
+    
+    return CapJitDataTypeOfMorphismOfCategory( input_types[1].category );
+    
+end );
+
+CapJitAddTypeSignature( "ZeroMorphism", [ IsCapCategory, IsCapCategoryObject, IsCapCategoryObject ], function ( input_types )
+    
+    return CapJitDataTypeOfMorphismOfCategory( input_types[1].category );
+    
+end );
+
+CapJitAddTypeSignature( "AdditiveInverseForMorphisms", [ IsCapCategory, IsCapCategoryMorphism ], function ( input_types )
+    
+    return input_types[2];
+    
+end );
+
 ####################################
 ##
 ## Helper functions
@@ -604,14 +659,15 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
         
         range_list := ObjectList( Range( morphism ) );
         
-        if IsMatrixObj( MorphismMatrix( morphism ) ) and not ( nr_rows = NrRows( MorphismMatrix( morphism ) ) and nr_cols = NrCols( MorphismMatrix( morphism ) ) ) then
-            
-            return false;
-            
-        elif not ForAll( [ 1 .. nr_rows ], i ->
+        #if IsMatrixObj( MorphismMatrix( morphism ) ) and not ( nr_rows = NrRows( MorphismMatrix( morphism ) ) and nr_cols = NrCols( MorphismMatrix( morphism ) ) ) then
+        #    
+        #    return false;
+        #    
+        if not ForAll( [ 1 .. nr_rows ], i ->
                  ForAll( [ 1 .. nr_cols ], j ->
                    # is a well-defined CAP category morphism in the underlying category
-                   IsCapCategoryMorphism( morphism[i, j] ) and IsIdenticalObj( UnderlyingCategory( cat ), CapCategory( morphism[i, j] ) ) and IsWellDefinedForMorphisms( UnderlyingCategory( cat ), morphism[i, j] )
+                   #IsCapCategoryMorphism( morphism[i, j] ) and IsIdenticalObj( UnderlyingCategory( cat ), CapCategory( morphism[i, j] ) ) and IsWellDefinedForMorphisms( UnderlyingCategory( cat ), morphism[i, j] )
+                   IsWellDefinedForMorphisms( UnderlyingCategory( cat ), morphism[i, j] )
                  ) 
                ) then
             
@@ -715,19 +771,9 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
         size := Length( object_list );
         
         listlist := List( [ 1 .. size ], i ->
-                        List( [ 1 .. size ], function( j )
-                            
-                            if i = j then
-                                
-                                return IdentityMorphism( UnderlyingCategory( cat ), object_list[i] );
-                                
-                            else
-                                
-                                return ZeroMorphism( UnderlyingCategory( cat ), object_list[i], object_list[j] );
-                                
-                            fi;
-                            
-                        end )
+                        List( [ 1 .. size ], j ->
+                            KroneckerDelta( i, j, IdentityMorphism( UnderlyingCategory( cat ), object_list[i] ), ZeroMorphism( UnderlyingCategory( cat ), object_list[i], object_list[j] ) )
+                        )
                     );
         
         return AdditiveClosureMorphism( cat, object, listlist, object );
