@@ -1110,3 +1110,53 @@ CapJitAddLogicFunction( function ( tree )
     return CapJitIterateOverTree( tree, pre_func, CapJitResultFuncCombineChildren, ReturnTrue, true );
     
 end );
+
+# Source and Range of CAP operations (in proof assistant mode)
+CapJitAddLogicFunction( function ( tree )
+  local pre_func;
+    
+    if not CAP_JIT_PROOF_ASSISTANT_MODE_ENABLED then
+        
+        return tree;
+        
+    fi;
+    
+    Info( InfoCapJit, 1, "####" );
+    Info( InfoCapJit, 1, "Apply logic for Source and Range of CAP operations." );
+    
+    pre_func := function ( tree, additional_arguments )
+      local operation_name, getter;
+        
+        if CapJitIsCallToGlobalFunction( tree, gvar -> gvar = "Source" or gvar = "Range" ) and tree.args.length = 1 and CapJitIsCallToGlobalFunction( tree.args.1, gvar -> gvar in RecNames( CAP_INTERNAL_METHOD_NAME_RECORD ) ) then
+            
+            operation_name := tree.args.1.funcref.gvar;
+            
+            if tree.funcref.gvar = "Source" and IsBound( CAP_INTERNAL_METHOD_NAME_RECORD.(operation_name).output_source_getter ) then
+                
+                getter := CAP_INTERNAL_METHOD_NAME_RECORD.(operation_name).output_source_getter;
+                
+            elif tree.funcref.gvar = "Range" and IsBound( CAP_INTERNAL_METHOD_NAME_RECORD.(operation_name).output_range_getter ) then
+                
+                getter := CAP_INTERNAL_METHOD_NAME_RECORD.(operation_name).output_range_getter;
+                
+            else
+                
+                return tree;
+                
+            fi;
+            
+            return rec(
+                type := "EXPR_FUNCCALL",
+                funcref := ENHANCED_SYNTAX_TREE( getter ),
+                args := tree.args.1.args,
+            );
+            
+        fi;
+        
+        return tree;
+        
+    end;
+    
+    return CapJitIterateOverTree( tree, pre_func, CapJitResultFuncCombineChildren, ReturnTrue, true );
+    
+end );
