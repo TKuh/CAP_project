@@ -26,6 +26,7 @@ InternalHomOnMorphisms := rec(
   return_type := "morphism",
   dual_operation := "InternalCoHomOnMorphisms",
   dual_arguments_reversed := true,
+  compatible_with_congruence_of_morphisms := true,
   # Test in ClosedMonoidalCategoriesTest
 ),
 
@@ -39,6 +40,7 @@ InternalHomOnMorphismsWithGivenInternalHoms := rec(
   return_type := "morphism",
   dual_operation := "InternalCoHomOnMorphismsWithGivenInternalCoHoms",
   dual_arguments_reversed := true,
+  compatible_with_congruence_of_morphisms := true,
 ),
 
 EvaluationMorphism := rec(
@@ -104,6 +106,7 @@ TensorProductToInternalHomAdjunctionMap := rec(
   return_type := "morphism",
   dual_operation := "TensorProductToInternalCoHomAdjunctionMap",
   dual_arguments_reversed := false,
+  compatible_with_congruence_of_morphisms := true,
   # Test in ClosedMonoidalCategoriesTest
 ),
 
@@ -128,6 +131,7 @@ InternalHomToTensorProductAdjunctionMap := rec(
   dual_operation := "InternalCoHomToTensorProductAdjunctionMap",
   dual_preprocessor_func := { cat, a, b, g } -> NTuple( 4, Opposite( cat ), Opposite( b ), Opposite( a ), Opposite( g ) ),
   dual_arguments_reversed := false,
+  compatible_with_congruence_of_morphisms := true,
   # Test in ClosedMonoidalCategoriesTest
 ),
 
@@ -214,6 +218,7 @@ DualOnMorphisms := rec(
   with_given_object_position := "both",
   return_type := "morphism",
   dual_operation := "CoDualOnMorphisms",
+  compatible_with_congruence_of_morphisms := true,
   # Test in ClosedMonoidalCategoriesTest
 ),
 
@@ -227,6 +232,7 @@ DualOnMorphismsWithGivenDuals := rec(
   return_type := "morphism",
   dual_operation := "CoDualOnMorphismsWithGivenCoDuals",
   dual_arguments_reversed := true,
+  compatible_with_congruence_of_morphisms := true,
 ),
 
 EvaluationForDual := rec(
