@@ -27,6 +27,16 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_REPLACED_FVARS_FUNC_ID, function ( tree,
             
         od;
         
+        if tree.type = "EXPR_DECLARATIVE_FUNC" then
+            
+            if Length( tree.local_replacements ) > 0 then
+                Error("TODO");
+            fi;
+            
+            tree.local_replacements := List( tree.local_replacements, x -> CapJitIterateOverTree( x, ReturnFirst, result_func, ReturnTrue, true ) );
+            
+        fi;
+        
         if tree.type = "EXPR_DECLARATIVE_FUNC" and tree.id = old_func_id then
             
             Assert( 0, tree.nams = old_nams );

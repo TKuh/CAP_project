@@ -906,3 +906,9 @@ InstallGlobalFunction( EvalStringStrict, function ( string )
     return EvalString( string );
     
 end );
+
+CapJitAddLocalReplacement := function ( src, dst )
+    
+    Error( "TODO" );
+    
+end;
