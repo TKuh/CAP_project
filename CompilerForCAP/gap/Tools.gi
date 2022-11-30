@@ -1311,6 +1311,13 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                     string := "0",
                 );
                 
+            elif tree.funcref.gvar = "RangeCategoryOfHomomorphismStructure" then
+                
+                math_record := rec(
+                    type := "category",
+                    string := "D",
+                );
+                
             elif tree.funcref.gvar = "TensorUnit" then
                 
                 math_record := rec(
@@ -1439,11 +1446,25 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                     string := Concatenation( "hom(", result.args.2.string, ",", result.args.3.string, ")" ),
                 );
                 
+            elif tree.funcref.gvar = "HomomorphismStructureOnObjects" then
+                
+                math_record := rec(
+                    type := "object",
+                    string := Concatenation( "H(", result.args.2.string, ",", result.args.3.string, ")" ),
+                );
+                
             elif tree.funcref.gvar = "InternalHomOnMorphisms" then
                 
                 math_record := rec(
                     type := "morphism",
                     string := Concatenation( "hom(", result.args.2.string, ",", result.args.3.string, ")" ),
+                );
+                
+            elif tree.funcref.gvar = "HomomorphismStructureOnMorphisms" then
+                
+                math_record := rec(
+                    type := "morphism",
+                    string := Concatenation( "H(", result.args.2.string, ",", result.args.3.string, ")" ),
                 );
                 
             elif tree.funcref.gvar = "PreCompose" then
