@@ -331,6 +331,7 @@ InstallGlobalFunction( CapJitCompiledFunctionAsEnhancedSyntaxTree, function ( fu
         CapJitInferredDataTypes,
         CapJitAppliedLogic,
         CapJitDroppedHandledEdgeCases,
+        CapJitResolvedGlobalVariables,
         CapJitInlinedArguments,
         CapJitInlinedSimpleFunctionCalls,
         CapJitInlinedFunctionCalls,
