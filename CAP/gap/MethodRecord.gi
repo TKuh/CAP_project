@@ -2584,7 +2584,9 @@ IsWellDefinedForMorphisms := rec(
     
   end,
   
-  return_type := "bool" ),
+  return_type := "bool",
+  compatible_with_congruence_of_morphisms := true, # TODO
+),
 
 IsWellDefinedForObjects := rec(
   filter_list := [ "category", "object" ],
@@ -3379,7 +3381,9 @@ ComponentOfMorphismIntoDirectSum := rec(
   output_range_getter_string := "S[i]",
   output_range_getter_preconditions := [ ],
   return_type := "morphism",
-  dual_operation := "ComponentOfMorphismFromDirectSum" ),
+  dual_operation := "ComponentOfMorphismFromDirectSum",
+  compatible_with_congruence_of_morphisms := true, # TODO
+),
 
 ComponentOfMorphismFromDirectSum := rec(
   filter_list := [ "category", "morphism", "list_of_objects", "integer" ],
@@ -3492,6 +3496,7 @@ HomomorphismStructureOnMorphisms := rec(
     return Triple( OppositeCategory( cat ), Opposite( beta ), Opposite( alpha ) );
   end,
   dual_postprocessor_func := IdFunc,
+  compatible_with_congruence_of_morphisms := true, # TODO
 ),
 
 HomomorphismStructureOnMorphismsWithGivenObjects := rec(
@@ -3505,6 +3510,7 @@ HomomorphismStructureOnMorphismsWithGivenObjects := rec(
     return NTuple( 5, OppositeCategory( cat ), source, Opposite( beta ), Opposite( alpha ), range );
   end,
   dual_postprocessor_func := IdFunc,
+  compatible_with_congruence_of_morphisms := true, # TODO
 ),
 
 DistinguishedObjectOfHomomorphismStructure := rec(
@@ -3523,7 +3529,8 @@ InterpretMorphismAsMorphismFromDistinguishedObjectToHomomorphismStructure := rec
   with_given_object_position := "both",
   return_type := "morphism_in_range_category_of_homomorphism_structure",
   dual_operation := "InterpretMorphismAsMorphismFromDistinguishedObjectToHomomorphismStructure",
-  dual_postprocessor_func := IdFunc
+  dual_postprocessor_func := IdFunc,
+  compatible_with_congruence_of_morphisms := true, # TODO
 ),
 
 InterpretMorphismAsMorphismFromDistinguishedObjectToHomomorphismStructureWithGivenObjects := rec(
@@ -3536,7 +3543,8 @@ InterpretMorphismAsMorphismFromDistinguishedObjectToHomomorphismStructureWithGiv
   dual_preprocessor_func := function( cat, distinguished_object, alpha, hom_source_range )
     return NTuple( 4, OppositeCategory( cat ), distinguished_object, Opposite( alpha ), hom_source_range );
   end,
-  dual_postprocessor_func := IdFunc
+  dual_postprocessor_func := IdFunc,
+  compatible_with_congruence_of_morphisms := true, # TODO
 ),
 
 InterpretMorphismFromDistinguishedObjectToHomomorphismStructureAsMorphism := rec(
@@ -3548,7 +3556,8 @@ InterpretMorphismFromDistinguishedObjectToHomomorphismStructureAsMorphism := rec
   dual_operation := "InterpretMorphismFromDistinguishedObjectToHomomorphismStructureAsMorphism",
   dual_preprocessor_func := function( cat, A, B, morphism )
     return NTuple( 4, OppositeCategory( cat ), Opposite( B ), Opposite( A ), morphism );
-  end
+  end,
+  compatible_with_congruence_of_morphisms := true, # TODO
 ),
 
 SolveLinearSystemInAbCategory := rec(
@@ -3628,7 +3637,8 @@ CoefficientsOfMorphism := rec(
   filter_list := [ "category", "morphism" ],
   return_type := "list_of_elements_of_commutative_ring_of_linear_structure",
   dual_operation := "CoefficientsOfMorphism",
-  dual_postprocessor_func := IdFunc
+  dual_postprocessor_func := IdFunc,
+  compatible_with_congruence_of_morphisms := true, # TODO
 ),
 
 RandomObjectByInteger := rec(

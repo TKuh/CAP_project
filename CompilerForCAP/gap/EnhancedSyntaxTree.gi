@@ -1210,6 +1210,13 @@ InstallGlobalFunction( ENHANCED_SYNTAX_TREE_CODE, function ( tree )
                 
                 tree.nloc := Length( tree.nams ) - tree.narg;
                 
+                if not IsBound( tree.local_replacements ) then
+                    
+                    Display( "#############################" );
+                    tree.local_replacements := [ ];
+                    
+                fi;
+                
                 tree.stats.statements := ConcatenationForSyntaxTreeLists(
                     AsSyntaxTreeList(
                         List( tree.local_replacements, r -> rec(

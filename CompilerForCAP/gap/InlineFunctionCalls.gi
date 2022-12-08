@@ -29,6 +29,13 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_REPLACED_FVARS_FUNC_ID, function ( tree,
         
         if tree.type = "EXPR_DECLARATIVE_FUNC" then
             
+            if not IsBound( tree.local_replacements ) then
+                
+                Display( "#############################" );
+                tree.local_replacements := [ ];
+                
+            fi;
+            
             if Length( tree.local_replacements ) > 0 then
                 Error("TODO");
             fi;
