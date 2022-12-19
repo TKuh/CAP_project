@@ -946,6 +946,7 @@ CapJitAddTypeSignature( "Target", [ IsCapCategoryMorphism ], function ( input_ty
 end );
 
 # GAP operations
+CapJitAddTypeSignature( "=", [ IsObject, IsObject ], IsBool );
 CapJitAddTypeSignature( "RETURN_TRUE", [ IsObject, IsObject ], IsBool );
 CapJitAddTypeSignature( "Length", [ IsList ], IsInt );
 CapJitAddTypeSignature( "IsEmpty", [ IsList ], IsBool );
