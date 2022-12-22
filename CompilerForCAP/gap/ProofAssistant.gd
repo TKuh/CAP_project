@@ -8,6 +8,8 @@
 
 #! @Section Proof assistant mode
 
+DeclareGlobalName( "CAP_JIT_PROOF_ASSISTANT_MODE_ENABLED" );
+
 #! @BeginGroup
 #! @Description
 #!   (experimental) Enables or disables the (experimental) proof assistant mode.

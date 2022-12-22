@@ -320,6 +320,23 @@ end );
 
 InstallGlobalFunction( CapJitIsEqualForEnhancedSyntaxTrees, function ( tree1, tree2 )
     
+    # TODO
+    if IsBound( tree1.local_replacements ) then
+        
+        tree1 := ShallowCopy( tree1 );
+        
+        tree1.local_replacements  := [ ];
+        
+    fi;
+    
+    if IsBound( tree2.local_replacements ) then
+        
+        tree2 := ShallowCopy( tree2 );
+        
+        tree2.local_replacements  := [ ];
+        
+    fi;
+    
     return CAP_JIT_INTERNAL_TREE_MATCHES_TEMPLATE_TREE( tree1, tree2, [ ], [ ], [ ], rec( ), false );
     
 end );
@@ -2117,14 +2134,18 @@ BindGlobal( "CapJitCompiledFunctionAsMathStringAssert", function ( func, cat, in
     
     tree := CapJitCompiledFunctionAsEnhancedSyntaxTree( func, "with_post_processing", cat, input_filters, "bool" );
     
-    if not (tree.bindings.names = [ "RETURN_VALUE" ] and tree.bindings.BINDING_RETURN_VALUE.type = "EXPR_TRUE" ) then
+    if tree.bindings.names = [ "RETURN_VALUE" ] and tree.bindings.BINDING_RETURN_VALUE.type = "EXPR_TRUE" then
+        
+        return "\\qedhere";
+        
+    else
         
         Display( ENHANCED_SYNTAX_TREE_CODE( tree ) );
         
         Error( "function is not true" );
         
+        return FunctionAsMathString( ENHANCED_SYNTAX_TREE_CODE( tree ), cat, input_filters );
+        
     fi;
-    
-    return FunctionAsMathString( ENHANCED_SYNTAX_TREE_CODE( tree ), cat, input_filters );
     
 end );

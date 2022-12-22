@@ -37,7 +37,7 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_REPLACED_FVARS_FUNC_ID, function ( tree,
             fi;
             
             if Length( tree.local_replacements ) > 0 then
-                Error("TODO");
+                Display("TODO");
             fi;
             
             tree.local_replacements := List( tree.local_replacements, x -> CapJitIterateOverTree( x, ReturnFirst, result_func, ReturnTrue, true ) );
