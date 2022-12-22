@@ -1000,7 +1000,7 @@ prepare_for_tensoring := function ( string, tree )
 end;
 
 BindGlobal( "LaTeXName", function ( name )
-  local GREEK_LETTERS, letter_name;
+  local GREEK_LETTERS, pos, letter_name;
     
     GREEK_LETTERS := rec(
         alpha := "α",
@@ -1012,8 +1012,24 @@ BindGlobal( "LaTeXName", function ( name )
         eta := "η",
         theta := "θ",
         iota := "ι",
+        kappa := "κ",
+        lambda := "λ",
+        mu := "μ",
+        nu := "ν",
+        xi := "ξ",
+        # omikron
+        pi := "π",
+        rho := "ρ",
+        sigma := "σ",
+        tau := "τ",
+        # ypsilon
+        phi := "φ",
+        chi := "χ",
+        psi := "ψ",
+        omega := "ω",
     );
     
+    # replace names of greek letters by unicode characters
     for letter_name in RecNames( GREEK_LETTERS ) do
         
         if StartsWith( name, letter_name ) then
@@ -1024,6 +1040,15 @@ BindGlobal( "LaTeXName", function ( name )
         fi;
         
     od;
+    
+    # turn trailing numbers into indices
+    pos := Length( name ) - SafePositionProperty( Reversed( name ), c -> not IsDigitChar( c ) ) + 1;
+    
+    if pos < Length( name ) then
+        
+        name := Concatenation( name{[ 1 .. pos ]}, "_{", name{[ pos + 1 .. Length( name ) ]}, "}" );
+        
+    fi;
     
     return name;
             
@@ -1104,6 +1129,14 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
             return rec(
                 type := "bool",
                 string := "\\qed",
+            );
+            
+        # TODO: this should be a function!!!
+        elif tree.type = "EXPR_EQ" then
+            
+            return rec(
+                type := "bool",
+                string := Concatenation( result.left.string, " = ", result.right.string ),
             );
             
         elif tree.type = "EXPR_INT" then
@@ -1546,42 +1579,42 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 
                 math_record := rec(
                     type := "integer",
-                    string := Concatenation( "Length(", result.args.1.string, ")" ),
+                    string := Concatenation( "\\mathrm{Length}(", result.args.1.string, ")" ),
                 );
                 
             elif tree.funcref.gvar = "UnderlyingCategory" then
                 
                 math_record := rec(
                     type := "category",
-                    string := Concatenation( "UnderlyingCategory(", result.args.1.string, ")" ),
+                    string := Concatenation( "\\mathrm{UnderlyingCategory}(", result.args.1.string, ")" ),
                 );
                 
             elif tree.funcref.gvar = "RankOfObject" then
                 
                 math_record := rec(
                     type := "integer",
-                    string := Concatenation( "RankOfObject(", result.args.1.string, ")" ),
+                    string := Concatenation( "\\mathrm{RankOfObject}(", result.args.1.string, ")" ),
                 );
                 
             elif tree.funcref.gvar = "Dimension" then
                 
                 math_record := rec(
                     type := "integer",
-                    string := Concatenation( "Dimension(", result.args.1.string, ")" ),
+                    string := Concatenation( "\\mathrm{Dimension}(", result.args.1.string, ")" ),
                 );
                 
             elif tree.funcref.gvar = "UnderlyingMatrix" then
                 
                 math_record := rec(
                     type := "homalg_matrix",
-                    string := Concatenation( "UnderlyingMatrix(", result.args.1.string, ")" ),
+                    string := Concatenation( "\\mathrm{UnderlyingMatrix}(", result.args.1.string, ")" ),
                 );
                 
             elif tree.funcref.gvar = "ObjectList" then
                 
                 math_record := rec(
                     type := "list_of_objects",
-                    string := Concatenation( "ObjectList(", result.args.1.string, ")" ),
+                    string := Concatenation( "\\mathrm{ObjectList}(", result.args.1.string, ")" ),
                 );
                 
             elif tree.funcref.gvar = "IdentityMorphism" then
