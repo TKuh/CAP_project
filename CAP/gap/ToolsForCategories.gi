@@ -51,6 +51,10 @@ InstallGlobalFunction( "CAP_INTERNAL_GET_DATA_TYPE_FROM_STRING", function ( stri
         
         return rec( filter := IsCyclotomic );
         
+    elif string = "homalg_matrix" then
+        
+        return rec( filter := IsHomalgMatrix );
+        
     elif string = "category" then
         
         return CapJitDataTypeOfCategory( category );
