@@ -1096,6 +1096,7 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
     
     if Length( func_tree.bindings.names ) > 1 then
         
+        Display( func );
         Error( "only functions without proper bindings can be displayed as math" );
         
     fi;
@@ -1446,6 +1447,15 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 return rec(
                     type := "homalg_matrix",
                     string := Concatenation( "\\mathrm{UniqueRightDivide}(", result.args.1.string, ", ", result.args.2.string, ")" ),
+                );
+                
+            fi;
+            
+            if tree.funcref.gvar = "IsZero" and result.args.1.type = "homalg_matrix" then
+                
+                return rec(
+                    type := "homalg_matrix",
+                    string := Concatenation( "\\mathrm{IsZero}(", result.args.1.string, ")" ),
                 );
                 
             fi;
