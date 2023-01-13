@@ -1055,7 +1055,7 @@ BindGlobal( "LaTeXName", function ( name )
 end );
 
 FunctionAsMathString := function ( func, cat, input_filters, args... )
-  local suffix, arguments_data_types, type_signature, func_tree, return_value, result_func, additional_arguments_func, left_list, right, latex_string, max_length, mor, i;
+  local suffix, arguments_data_types, type_signature, func_tree, old_stop_compilation, return_value, result_func, additional_arguments_func, left_list, right, latex_string, max_length, mor, i;
     
     if IsEmpty( args ) then
         
@@ -1093,6 +1093,17 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
     
     # TODO: populate CAP_JIT_INTERNAL_COMPILED_FUNCTIONS_STACK
     func_tree := CapJitInferredDataTypes( func_tree );
+    # TODO
+    if IsBound( cat!.stop_compilation ) then
+        old_stop_compilation := cat!.stop_compilation;
+    else
+        old_stop_compilation := false;
+    fi;
+    cat!.stop_compilation := true;
+    func_tree := CapJitResolvedOperations( func_tree );
+    cat!.stop_compilation := old_stop_compilation;
+    func_tree := CapJitReplacedGlobalVariablesByCategoryAttributes( func_tree, cat );
+    func_tree := CapJitInlinedBindingsFully( func_tree );
     
     if Length( func_tree.bindings.names ) > 1 then
         
@@ -1174,6 +1185,9 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
             func := SafeUniqueEntry( func_stack, f -> f.id = tree.func_id );
             
             pos := SafeUniquePosition( func.nams, tree.name );
+            
+            # we currently only handle functions without proper bindings
+            Assert( 0, pos <= func.narg );
             
             if tree.func_id = func_tree.id then
                 
@@ -1914,7 +1928,7 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                     
                 fi;
                 
-                if info.return_type in [ "morphism", "morphism_in_range_category_of_homomorphism_structure" ] then
+                if info.return_type in [ "morphism", "morphism_in_range_category_of_homomorphism_structure" ] and tree.args.length = Length( info.filter_list ) then
                     
                     math_record.source := source_string;
                     math_record.range := range_string;
