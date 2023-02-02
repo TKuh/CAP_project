@@ -430,3 +430,251 @@ BindGlobal( "PrintLemma", function ( )
     return PrintTheorem( "lemma" );
     
 end );
+
+BindGlobal( "CheckDerivationSourceAndRange", function ( )
+  local cat, info, derivations, func1, template_func, compiled_tree1, template_tree, tree, func2, compiled_tree2, name, derivation;
+    
+    CapJitAddLogicFunction( function ( tree )
+      local pre_func;
+        
+        #if not CAP_JIT_PROOF_ASSISTANT_MODE_ENABLED then
+        #    
+        #    return tree;
+        #    
+        #fi;
+        
+        Info( InfoCapJit, 1, "####" );
+        Info( InfoCapJit, 1, "Apply logic for Source and Range of CAP operations." );
+        
+        pre_func := function ( tree, additional_arguments )
+          local info, getter;
+            
+            if CapJitIsCallToGlobalFunction( tree, gvar -> gvar = "Source" or gvar = "Range" ) and tree.args.length = 1 and CapJitIsCallToGlobalFunction( tree.args.1, gvar -> gvar in RecNames( CAP_INTERNAL_METHOD_NAME_RECORD ) ) then
+                
+                info := CAP_INTERNAL_METHOD_NAME_RECORD.(tree.args.1.funcref.gvar);
+                
+                if Length( info.filter_list ) = tree.args.1.args.length then
+                
+                    if tree.funcref.gvar = "Source" and IsBound( info.output_source_getter ) then
+                        
+                        getter := info.output_source_getter;
+                        
+                    elif tree.funcref.gvar = "Range" and IsBound( info.output_range_getter ) then
+                        
+                        getter := info.output_range_getter;
+                        
+                    else
+                        
+                        return tree;
+                        
+                    fi;
+                    
+                    return rec(
+                        type := "EXPR_FUNCCALL",
+                        funcref := ENHANCED_SYNTAX_TREE( getter ),
+                        args := tree.args.1.args,
+                    );
+                    
+                fi;
+                
+            fi;
+            
+            return tree;
+            
+        end;
+        
+        return CapJitIterateOverTree( tree, pre_func, CapJitResultFuncCombineChildren, ReturnTrue, true );
+        
+    end );
+    
+    cat := DummyCategory( rec( list_of_operations_to_install := RecNames( CAP_INTERNAL_METHOD_NAME_RECORD ) ) );
+    SetRangeCategoryOfHomomorphismStructure( cat, cat );
+    StopCompilationAtCategory( cat );
+    
+    for name in SortedList( RecNames( CAP_INTERNAL_METHOD_NAME_RECORD ) ) do
+        
+        #if name <= "PushoutComplement" then
+        #    
+        #    continue;
+        #    
+        #fi;
+        #
+        #if name < "SingletonMorphism" then
+        #    
+        #    continue;
+        #    
+        #fi;
+        
+        name := "CocartesianCoevaluationMorphismWithGivenSource";
+        
+        info := CAP_INTERNAL_METHOD_NAME_RECORD.(name);
+        
+        if not info.return_type in [ "morphism", "morphism_in_range_category_of_homomorphism_structure", "other_morphism" ] then
+            
+            continue;
+            
+        fi;
+        
+        if false and IsBound( info.output_source_getter_string ) then
+            
+            Print( "#### ", name, "\n" );
+            
+            derivations := CAP_INTERNAL_DERIVATION_GRAPH!.derivations_by_target.(name);
+            
+            func1 := info.output_source_getter;
+            
+            template_func := EvalString( ReplacedStringViaRecord( """function ( arguments... )
+                
+                return Source( ReturnFirst( arguments... ) );
+                
+            end""", rec(
+                arguments := info.input_arguments_names,
+            ) ) );
+            
+            compiled_tree1 := ENHANCED_SYNTAX_TREE( CapJitCompiledFunction( func1, cat ) );
+            
+            template_tree := ENHANCED_SYNTAX_TREE( template_func );
+            
+            for derivation in derivations do
+                
+                if PositionSublist( DerivationName( derivation ), "with the WithGiven argument(s) dropped" ) <> fail then
+                    
+                    continue;
+                    
+                fi;
+                
+                if IsFilter( CategoryFilter( derivation ) ) then
+                    
+                    if IsSpecializationOfFilter( IsSkeletalCategory, CategoryFilter( derivation ) ) then
+                        
+                        continue;
+                        
+                    elif IsSpecializationOfFilter( IsStrictMonoidalCategory, CategoryFilter( derivation ) ) then
+                        
+                        continue;
+                        
+                    elif IsSpecializationOfFilter( IsStrictCartesianCategory, CategoryFilter( derivation ) ) then
+                        
+                        continue;
+                        
+                    elif IsSpecializationOfFilter( IsStrictCocartesianCategory, CategoryFilter( derivation ) ) then
+                        
+                        continue;
+                        
+                    fi;
+                        
+                fi;
+                
+                Print( DerivationName( derivation ), "\n" );
+                Print( LocationFunc( DerivationFunction( derivation ) ), "\n" );
+                
+                tree := CapJitCopyWithNewFunctionIDs( template_tree );
+                
+                tree.bindings.BINDING_RETURN_VALUE.args.1.funcref := ENHANCED_SYNTAX_TREE( DerivationFunction( derivation ) );
+                
+                func2 := ENHANCED_SYNTAX_TREE_CODE( tree );
+                
+                compiled_tree2 := ENHANCED_SYNTAX_TREE( CapJitCompiledFunction( func2, cat ) );
+                
+                if not CapJitIsEqualForEnhancedSyntaxTrees( compiled_tree1, compiled_tree2 ) then
+                    
+                    Display( func1 );
+                    Display( func2 );
+                    
+                    Display( ENHANCED_SYNTAX_TREE_CODE( compiled_tree1 ) );
+                    Display( ENHANCED_SYNTAX_TREE_CODE( compiled_tree2 ) );
+                    
+                    Error("asd");
+                    
+                fi;
+                
+            od;
+            
+            Print( "\n" );
+            
+        fi;
+        
+        if IsBound( info.output_range_getter_string ) then
+            
+            Print( "#### ", name, "\n" );
+            
+            derivations := CAP_INTERNAL_DERIVATION_GRAPH!.derivations_by_target.(name);
+            
+            func1 := info.output_range_getter;
+            
+            template_func := EvalString( ReplacedStringViaRecord( """function ( arguments... )
+                
+                return Range( ReturnFirst( arguments... ) );
+                
+            end""", rec(
+                arguments := info.input_arguments_names,
+            ) ) );
+            
+            compiled_tree1 := ENHANCED_SYNTAX_TREE( CapJitCompiledFunction( func1, cat ) );
+            
+            template_tree := ENHANCED_SYNTAX_TREE( template_func );
+            
+            for derivation in derivations do
+                
+                if PositionSublist( DerivationName( derivation ), "with the WithGiven argument(s) dropped" ) <> fail then
+                    
+                    continue;
+                    
+                fi;
+                
+                if IsFilter( CategoryFilter( derivation ) ) then
+                    
+                    if IsSpecializationOfFilter( IsSkeletalCategory, CategoryFilter( derivation ) ) then
+                        
+                        continue;
+                        
+                    elif IsSpecializationOfFilter( IsStrictMonoidalCategory, CategoryFilter( derivation ) ) then
+                        
+                        continue;
+                        
+                    elif IsSpecializationOfFilter( IsStrictCartesianCategory, CategoryFilter( derivation ) ) then
+                        
+                        continue;
+                        
+                    elif IsSpecializationOfFilter( IsStrictCocartesianCategory, CategoryFilter( derivation ) ) then
+                        
+                        continue;
+                        
+                    fi;
+                        
+                fi;
+                
+                Print( DerivationName( derivation ), "\n" );
+                Print( LocationFunc( DerivationFunction( derivation ) ), "\n" );
+                
+                tree := CapJitCopyWithNewFunctionIDs( template_tree );
+                
+                tree.bindings.BINDING_RETURN_VALUE.args.1.funcref := ENHANCED_SYNTAX_TREE( DerivationFunction( derivation ) );
+                
+                func2 := ENHANCED_SYNTAX_TREE_CODE( tree );
+                
+                compiled_tree2 := ENHANCED_SYNTAX_TREE( CapJitCompiledFunction( func2, cat ) );
+                
+                if not CapJitIsEqualForEnhancedSyntaxTrees( compiled_tree1, compiled_tree2 ) then
+                    
+                    Display( func1 );
+                    Display( func2 );
+                    
+                    Display( ENHANCED_SYNTAX_TREE_CODE( compiled_tree1 ) );
+                    Display( ENHANCED_SYNTAX_TREE_CODE( compiled_tree2 ) );
+                    
+                    Error("asd");
+                    
+                fi;
+                
+            od;
+            
+            Print( "\n" );
+            
+        fi;
+        
+    od;
+    
+    #CAP_INTERNAL_DERIVATION_GRAPH
+    
+end );

@@ -133,15 +133,6 @@ InstallGlobalFunction( CapJitResolvedOperations, function ( tree )
                 if category <> fail then
                     
                     Assert( 0, IsCapCategory( category ) );
-                    
-                    if not IsFinalized( category ) then
-                        
-                        # COVERAGE_IGNORE_NEXT_LINE
-                        Print( "WARNING: You are compiling operations of an unfinalized category with name ", Name( category ), ". This may have unexpected side-effects like missing operations.\n" );
-                        
-                    fi;
-                    
-                    Assert( 0, CanCompute( category, operation_name ) );
                     Assert( 0, tree.args.length = Length( info.filter_list ) );
                     
                     if CAP_JIT_PROOF_ASSISTANT_MODE_ENABLED then
@@ -170,6 +161,8 @@ InstallGlobalFunction( CapJitResolvedOperations, function ( tree )
                         return tree;
                         
                     fi;
+                    
+                    Assert( 0, CanCompute( category, operation_name ) );
                     
                     Info( InfoCapJit, 1, "####" );
                     Info( InfoCapJit, 1, Concatenation( "Resolve CAP operation ", operation_name, ", recurse compilation." ) );
