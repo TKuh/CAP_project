@@ -144,7 +144,7 @@ InstallGlobalFunction( CapJitResolvedOperations, function ( tree )
                             
                         elif info.compatible_with_congruence_of_morphisms <> true then
                             
-                            Print( "WARNING: the CAP operation ", operation_name, " is not compatible with the congruence of morphisms. Keep this in mind when writing logic templates.\n" );
+                            #Print( "WARNING: the CAP operation ", operation_name, " is not compatible with the congruence of morphisms. Keep this in mind when writing logic templates.\n" );
                             
                         fi;
                         
