@@ -362,6 +362,27 @@ InstallGlobalFunction( CreateCapCategoryMorphismWithAttributes,
     
 end );
 
+DeclareAttribute( "AsValue", IsCapCategoryMorphism );
+CapJitAddTypeSignature( "AsValue", [ IsCapCategoryMorphism ], function ( input_types )
+    
+    return MorphismDatumType( input_types[1].category );
+    
+end );
+
+##
+BindGlobal( "AsCapCategoryMorphism",
+  
+  function( category, source, morphism_datum, range )
+    local mor;
+    
+    mor := ObjectifyWithAttributes( rec( ), category!.morphism_type, CapCategory, category, Source, source, Range, range, AsValue, morphism_datum );
+    
+    Assert( 0, IsIdenticalObj( AsValue( mor ), morphism_datum ) );
+    
+    return mor;
+    
+end );
+
 
 ##
 InstallMethod( Simplify,

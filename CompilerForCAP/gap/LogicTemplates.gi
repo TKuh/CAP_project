@@ -779,6 +779,42 @@ CapJitAddLogicTemplate(
     )
 );
 
+# AsValue( AsCapCategoryObject( cat, object_datum ) ) => object_datum
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "cat", "object_datum" ],
+        src_template := "AsValue( AsCapCategoryObject( cat, object_datum ) )",
+        dst_template := "object_datum",
+    )
+);
+
+# Source( AsCapCategoryMorphism( cat, source, morphism_datum, range ) ) => source
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "cat", "source", "morphism_datum", "range" ],
+        src_template := "Source( AsCapCategoryMorphism( cat, source, morphism_datum, range ) )",
+        dst_template := "source",
+    )
+);
+
+# Range( AsCapCategoryMorphism( cat, source, morphism_datum, range ) ) => range
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "cat", "source", "morphism_datum", "range" ],
+        src_template := "Range( AsCapCategoryMorphism( cat, source, morphism_datum, range ) )",
+        dst_template := "range",
+    )
+);
+
+# AsValue( AsCapCategoryMorphism( cat, source, morphism_datum, range ) ) => morphism_datum
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "cat", "source", "morphism_datum", "range" ],
+        src_template := "AsValue( AsCapCategoryMorphism( cat, source, morphism_datum, range ) )",
+        dst_template := "morphism_datum",
+    )
+);
+
 InstallGlobalFunction( CAP_JIT_INTERNAL_TREE_MATCHES_TEMPLATE_TREE, function ( tree, template_tree, variables, variable_filters, sublist_variables, func_id_replacements, debug )
   local i, pre_func, result_func, additional_arguments_func;
     

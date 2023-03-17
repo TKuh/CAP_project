@@ -322,6 +322,27 @@ InstallGlobalFunction( CreateCapCategoryObjectWithAttributes,
     
 end );
 
+DeclareAttribute( "AsValue", IsCapCategoryObject );
+CapJitAddTypeSignature( "AsValue", [ IsCapCategoryObject ], function ( input_types )
+    
+    return ObjectDatumType( input_types[1].category );
+    
+end );
+
+##
+BindGlobal( "AsCapCategoryObject",
+  
+  function( category, object_datum )
+    local obj;
+    
+    obj := ObjectifyWithAttributes( rec( ), category!.object_type, CapCategory, category, AsValue, object_datum );
+    
+    Assert( 0, IsIdenticalObj( AsValue( obj ), object_datum ) );
+    
+    return obj;
+    
+end );
+
 ##
 InstallMethod( Simplify,
                [ IsCapCategoryObject ],
