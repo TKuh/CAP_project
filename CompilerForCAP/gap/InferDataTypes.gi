@@ -1596,6 +1596,7 @@ CapJitAddTypeSignatureDeferred( "MatricesForHomalg", "HomalgColumnVector", [ "Is
     return rec( filter := IsHomalgMatrix );
     
 end""" );
+CapJitAddTypeSignatureDeferred( "MatricesForHomalg", "HomalgRing", [ "IsHomalgMatrix" ], "IsHomalgRing" );
 CapJitAddTypeSignatureDeferred( "MatricesForHomalg", "HomalgIdentityMatrix", [ "IsInt", "IsHomalgRing" ], "IsHomalgMatrix" );
 CapJitAddTypeSignatureDeferred( "MatricesForHomalg", "HomalgZeroMatrix", [ "IsInt", "IsInt", "IsHomalgRing" ], "IsHomalgMatrix" );
 CapJitAddTypeSignatureDeferred( "MatricesForHomalg", "RandomMatrix", [ "IsInt", "IsInt", "IsHomalgRing" ], "IsHomalgMatrix" );

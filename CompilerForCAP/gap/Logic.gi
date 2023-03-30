@@ -1160,3 +1160,40 @@ CapJitAddLogicFunction( function ( tree )
     return CapJitIterateOverTree( tree, pre_func, CapJitResultFuncCombineChildren, ReturnTrue, true );
     
 end );
+
+# IsSomething( value )
+CapJitAddLogicFunction( function ( tree )
+  local pre_func;
+    
+    Info( InfoCapJit, 1, "####" );
+    Info( InfoCapJit, 1, "Apply logic for filters." );
+    
+    pre_func := function ( tree, additional_arguments )
+      local value;
+        
+        # properties like IsZeroForMorphisms can be applied to applied to two arguments, a category and a morphism
+        if CapJitIsCallToGlobalFunction( tree, x -> IsFilter( ValueGlobal( x ) ) ) and tree.args.length = 1 then
+            
+            value := tree.args.1;
+            
+            if IsBound( value.data_type ) then
+                
+                if IsSpecializationOfFilter( ValueGlobal( tree.funcref.gvar ), value.data_type.filter ) then
+                    
+                    return rec( type := "EXPR_TRUE" );
+                    
+                fi;
+                
+                # We do not want to return `false` in the `else` case, for example because `IsList( Pair( 1, 2 ) )` is `true` but `IsNTuple` does not imply `IsList`.
+                
+            fi;
+            
+        fi;
+        
+        return tree;
+        
+    end;
+    
+    return CapJitIterateOverTree( tree, pre_func, CapJitResultFuncCombineChildren, ReturnTrue, true );
+    
+end );

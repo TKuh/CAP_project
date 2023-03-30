@@ -343,6 +343,21 @@ BindGlobal( "AsCapCategoryObject",
     
 end );
 
+CapJitAddTypeSignature( "AsCapCategoryObject", [ IsCapCategory, IsObject ], function ( input_types )
+  local cat;
+    
+    cat := input_types[1].category;
+    
+    if ObjectDatumType( cat ) <> fail then
+        
+        Assert( 0, input_types[2] = ObjectDatumType( cat ) );
+        
+    fi;
+    
+    return CapJitDataTypeOfObjectOfCategory( cat );
+    
+end );
+
 ##
 InstallMethod( Simplify,
                [ IsCapCategoryObject ],

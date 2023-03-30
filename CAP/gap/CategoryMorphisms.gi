@@ -383,6 +383,24 @@ BindGlobal( "AsCapCategoryMorphism",
     
 end );
 
+CapJitAddTypeSignature( "AsCapCategoryMorphism", [ IsCapCategory, IsCapCategoryObject, IsObject,IsCapCategoryObject ], function ( input_types )
+  local cat;
+    
+    cat := input_types[1].category;
+    
+    Assert( 0, input_types[2] = CapJitDataTypeOfObjectOfCategory( cat ) );
+    Assert( 0, input_types[4] = CapJitDataTypeOfObjectOfCategory( cat ) );
+    
+    if MorphismDatumType( cat ) <> fail then
+        
+        Assert( 0, input_types[3] = MorphismDatumType( cat ) );
+        
+    fi;
+    
+    return CapJitDataTypeOfMorphismOfCategory( cat );
+    
+end );
+
 
 ##
 InstallMethod( Simplify,

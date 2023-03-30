@@ -815,6 +815,71 @@ CapJitAddLogicTemplate(
     )
 );
 
+# booleans together with `and` and `or`
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "value" ],
+        src_template := "true and value",
+        dst_template := "value",
+    )
+);
+
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "value" ],
+        src_template := "value and true",
+        dst_template := "value",
+    )
+);
+
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "value" ],
+        src_template := "false and value",
+        dst_template := "false",
+    )
+);
+
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "value" ],
+        src_template := "value and false",
+        dst_template := "false",
+    )
+);
+
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "value" ],
+        src_template := "true or value",
+        dst_template := "true",
+    )
+);
+
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "value" ],
+        src_template := "value or true",
+        dst_template := "true",
+    )
+);
+
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "value" ],
+        src_template := "false or value",
+        dst_template := "value",
+    )
+);
+
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "value" ],
+        src_template := "value or false",
+        dst_template := "value",
+    )
+);
+
 InstallGlobalFunction( CAP_JIT_INTERNAL_TREE_MATCHES_TEMPLATE_TREE, function ( tree, template_tree, variables, variable_filters, sublist_variables, func_id_replacements, debug )
   local i, pre_func, result_func, additional_arguments_func;
     
