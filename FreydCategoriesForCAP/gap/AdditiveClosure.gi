@@ -664,15 +664,16 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
             
             range_list := ObjectList( Range( morphism ) );
             
-            #if IsMatrixObj( MorphismMatrix( morphism ) ) and not ( nr_rows = NrRows( MorphismMatrix( morphism ) ) and nr_cols = NrCols( MorphismMatrix( morphism ) ) ) then
-            #    
-            #    return false;
-            #    
-            if not ForAll( [ 1 .. nr_rows ], i ->
+            # 
+            if not (IsList( MorphismMatrix( morphism ) ) and ForAll( MorphismMatrix( morphism ), row -> IsList( row ) ) and Length( MorphismMatrix( morphism ) ) = nr_rows and ForAll( MorphismMatrix( morphism ), row -> Length( row ) = nr_cols ) ) then
+                
+                return false;
+                
+            elif not ForAll( [ 1 .. nr_rows ], i ->
                      ForAll( [ 1 .. nr_cols ], j ->
                        # is a well-defined CAP category morphism in the underlying category
                        #IsCapCategoryMorphism( morphism[i, j] ) and IsIdenticalObj( UnderlyingCategory( cat ), CapCategory( morphism[i, j] ) ) and IsWellDefinedForMorphisms( UnderlyingCategory( cat ), morphism[i, j] )
-                       IsWellDefinedForMorphisms( UnderlyingCategory( cat ), morphism[i, j] )
+                       IsCapCategoryMorphism( morphism[i, j] ) and IsWellDefinedForMorphisms( UnderlyingCategory( cat ), morphism[i, j] )
                      ) 
                    ) then
                 
@@ -777,7 +778,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
         end );
         
     fi;
-        
+    
     if CanCompute( underlying_category, "IdentityMorphism" ) and CanCompute( underlying_category, "ZeroMorphism" ) then
     
         ##
