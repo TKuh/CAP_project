@@ -63,7 +63,7 @@ PackageDoc := rec(
   HTMLStart := "doc/chap0.html",
   PDFFile   := "doc/manual.pdf",
   SixFile   := "doc/manual.six",
-  LongTitle := "Speed up computations in CAP categories",
+  LongTitle := "Speed up and verify categorical algorithms",
 ),
 
 Dependencies := rec(
