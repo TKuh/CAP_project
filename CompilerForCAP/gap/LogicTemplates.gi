@@ -53,9 +53,18 @@ CapJitAddLogicTemplateAndReturnLaTeXString := function ( template, cat, input_fi
     dst_func := EvalString( Concatenation( "{ ", JoinStringsWithSeparator( template.variable_names, ", " ), " } -> ", dst_template ) );
     
     src_string := FunctionAsMathString( src_func, cat, input_filters : raw );
-    dst_string := FunctionAsMathString( dst_func, cat, input_filters : raw );
     
-    latex_string := Concatenation( src_string, " \\quad ", connecting_symbol, " \\quad ", dst_string );
+    if dst_template = "true" then
+        
+        latex_string := src_string;
+        
+    else
+        
+        dst_string := FunctionAsMathString( dst_func, cat, input_filters : raw );
+        
+        latex_string := Concatenation( src_string, " \\quad ", connecting_symbol, " \\quad ", dst_string );
+        
+    fi;
     
     latex_string := ReplacedString( latex_string, "⁻¹", """^{-1}""" );
     latex_string := ReplacedString( latex_string, "ᵛ", """^{\vee}""" );
@@ -877,6 +886,61 @@ CapJitAddLogicTemplate(
         variable_names := [ "value" ],
         src_template := "value or false",
         dst_template := "value",
+    )
+);
+
+# expr <> expr => false
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "expr" ],
+        src_template := "expr <> expr",
+        dst_template := "false",
+    )
+);
+
+# ForAll( list, l -> true ) => true
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "list" ],
+        src_template := "ForAll( list, l -> true )",
+        dst_template := "true",
+    )
+);
+
+# ForAll( List( list, func1 ), func2 )
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "list", "func1", "func2" ],
+        src_template := "ForAll( List( list, func1 ), func2 )",
+        dst_template := "ForAll( list, x -> func2( func1( x ) ) )",
+        new_funcs := [ [ "x" ] ],
+    )
+);
+
+# IsEqualForObjects( expr, expr ) => true
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "cat", "expr" ],
+        src_template := "IsEqualForObjects( cat, expr, expr )",
+        dst_template := "true",
+    )
+);
+
+# IsCongruentForMorphisms( expr, expr ) => true
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "cat", "mor" ],
+        src_template := "IsCongruentForMorphisms( cat, mor, mor )",
+        dst_template := "true",
+    )
+);
+
+# Length( [ 1 .. length ] )
+CapJitAddLogicTemplate(
+    rec(
+        variable_names := [ "length" ],
+        src_template := "Length( [ 1 .. length ] )",
+        dst_template := "length",
     )
 );
 

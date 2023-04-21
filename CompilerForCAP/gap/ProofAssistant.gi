@@ -75,7 +75,7 @@ BindGlobal( "STATE_THEOREM", function ( type, func, args... )
     
     if CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM <> fail then
         
-        Display( "WARNING: overwriting existing active theorem" );
+        Error( "WARNING: overwriting existing active theorem" );
         
     fi;
     
@@ -111,6 +111,7 @@ BindGlobal( "STATE_THEOREM", function ( type, func, args... )
         func := func,
         cat := cat,
         input_filters := input_filters,
+        ever_compiled := false,
     );
     
     if Length( input_filters ) = 0 then
@@ -305,6 +306,15 @@ BindGlobal( "ApplyLogicTemplate", function ( logic_template )
     cat := CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.cat;
     input_filters := CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.input_filters;
     
+    if not CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.ever_compiled then
+        
+        func := CapJitCompiledFunction( func, cat, input_filters, "bool" );
+        
+        CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.func := func;
+        CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.ever_compiled := true;
+        
+    fi;
+    
     old_logic_templates := StructuralCopy( CAP_JIT_LOGIC_TEMPLATES );
     
     CapJitAddLogicTemplate( logic_template );
@@ -330,6 +340,7 @@ BindGlobal( "ApplyLogicTemplate", function ( logic_template )
     MakeReadOnlyGlobal( "CAP_JIT_LOGIC_TEMPLATES" );
     
     CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.func := func;
+    CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.ever_compiled := true;
     
 end );
 
@@ -341,6 +352,15 @@ BindGlobal( "ApplyLogicTemplateAndReturnLaTeXString", function ( logic_template,
     func := CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.func;
     cat := CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.cat;
     input_filters := CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.input_filters;
+    
+    if not CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.ever_compiled then
+        
+        func := CapJitCompiledFunction( func, cat, input_filters, "bool" );
+        
+        CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.func := func;
+        CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.ever_compiled := true;
+        
+    fi;
     
     old_logic_templates := StructuralCopy( CAP_JIT_LOGIC_TEMPLATES );
     
@@ -367,31 +387,16 @@ BindGlobal( "ApplyLogicTemplateAndReturnLaTeXString", function ( logic_template,
     MakeReadOnlyGlobal( "CAP_JIT_LOGIC_TEMPLATES" );
     
     CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.func := func;
+    CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.ever_compiled := true;
     
     return latex_string;
     
 end );
 
-BindGlobal( "AssertTheorem", function ( args... )
-  local type, func, cat, input_filters, tree;
+BindGlobal( "ASSERT_THEOREM", function ( )
+  local func, cat, input_filters, tree;
     
     Assert( 0, CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM <> fail );
-    
-    if Length( args ) = 0 then
-        
-        type := "theorem";
-        
-    elif Length( args ) = 1 then
-        
-        type := args[1];
-        
-    else
-        
-        Error( "AssertTheorem must be called with at most one argument" );
-        
-    fi;
-    
-    Assert( 0, type = CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.type );
     
     func := CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.func;
     cat := CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.cat;
@@ -419,30 +424,14 @@ end );
 
 BindGlobal( "AssertLemma", function ( )
     
-    return AssertTheorem( "lemma" );
+    return ASSERT_THEOREM( );
     
 end );
 
-BindGlobal( "PrintTheorem", function ( args... )
-  local type, func, cat, input_filters, tree;
+BindGlobal( "PRINT_THEOREM", function ( )
+  local func, cat, input_filters, tree;
     
     Assert( 0, CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM <> fail );
-    
-    if Length( args ) = 0 then
-        
-        type := "theorem";
-        
-    elif Length( args ) = 1 then
-        
-        type := args[1];
-        
-    else
-        
-        Error( "PrintTheorem must be called with at most one argument" );
-        
-    fi;
-    
-    Assert( 0, type = CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.type );
     
     func := CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.func;
     cat := CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.cat;
@@ -451,6 +440,7 @@ BindGlobal( "PrintTheorem", function ( args... )
     func := CapJitCompiledFunction( func, cat, input_filters, "bool" );
     
     CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.func := func;
+    CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.ever_compiled := true;
     
     return FunctionAsMathString( func, cat, input_filters );
     
@@ -458,7 +448,7 @@ end );
 
 BindGlobal( "PrintLemma", function ( )
     
-    return PrintTheorem( "lemma" );
+    return PRINT_THEOREM( );
     
 end );
 

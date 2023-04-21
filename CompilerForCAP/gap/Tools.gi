@@ -1563,7 +1563,7 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 
                 return rec(
                     type := "integer",
-                    string := Concatenation( "NumberRows(", result.args.1.string, ")" ),
+                    string := Concatenation( "\\mathrm{NrRows}(", result.args.1.string, ")" ),
                 );
                 
             fi;
@@ -1572,7 +1572,7 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 
                 return rec(
                     type := "integer",
-                    string := Concatenation( "NumberColumns(", result.args.1.string, ")" ),
+                    string := Concatenation( "\\mathrm{NrCols}(", result.args.1.string, ")" ),
                 );
                 
             fi;
@@ -1613,6 +1613,15 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 
             fi;
             
+            if tree.funcref.gvar = "SafeRightDivide" and result.args.1.type = "homalg_matrix" and result.args.2.type = "homalg_matrix" then
+                
+                return rec(
+                    type := "homalg_matrix",
+                    string := Concatenation( "\\mathrm{SafeRightDivide}(", result.args.1.string, ", ", result.args.2.string, ")" ),
+                );
+                
+            fi;
+            
             if tree.funcref.gvar = "IsZero" and result.args.1.type = "homalg_matrix" then
                 
                 return rec(
@@ -1627,6 +1636,24 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 return rec(
                     type := "homalg_ring",
                     string := Concatenation( "\\mathrm{HomalgRing}(", result.args.1.string, ")" ),
+                );
+                
+            fi;
+            
+            if tree.funcref.gvar = "IsInt" then
+                
+                return rec(
+                    type := "bool",
+                    string := Concatenation( "\\mathrm{IsInt}(", result.args.1.string, ")" ),
+                );
+                
+            fi;
+            
+            if tree.funcref.gvar = "IsHomalgMatrix" then
+                
+                return rec(
+                    type := "bool",
+                    string := Concatenation( "\\mathrm{IsHomalgMatrix}(", result.args.1.string, ")" ),
                 );
                 
             fi;
