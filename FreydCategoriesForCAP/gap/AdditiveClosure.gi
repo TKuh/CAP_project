@@ -26,39 +26,6 @@ CapJitAddTypeSignature( "KroneckerDelta", [ IsInt, IsInt, IsObject, IsObject ], 
     
 end );
 
-CapJitAddTypeSignature( "IsCongruentForMorphisms", [ IsCapCategory, IsCapCategoryMorphism, IsCapCategoryMorphism ], IsBool );
-CapJitAddTypeSignature( "IsZeroForMorphisms", [ IsCapCategory, IsCapCategoryMorphism ], IsBool );
-
-CapJitAddTypeSignature( "PreCompose", [ IsCapCategory, IsCapCategoryMorphism, IsCapCategoryMorphism ], function ( input_types )
-    
-    return input_types[2];
-    
-end );
-
-CapJitAddTypeSignature( "AdditionForMorphisms", [ IsCapCategory, IsCapCategoryMorphism, IsCapCategoryMorphism ], function ( input_types )
-    
-    return input_types[2];
-    
-end );
-
-CapJitAddTypeSignature( "IdentityMorphism", [ IsCapCategory, IsCapCategoryObject ], function ( input_types )
-    
-    return CapJitDataTypeOfMorphismOfCategory( input_types[1].category );
-    
-end );
-
-CapJitAddTypeSignature( "ZeroMorphism", [ IsCapCategory, IsCapCategoryObject, IsCapCategoryObject ], function ( input_types )
-    
-    return CapJitDataTypeOfMorphismOfCategory( input_types[1].category );
-    
-end );
-
-CapJitAddTypeSignature( "AdditiveInverseForMorphisms", [ IsCapCategory, IsCapCategoryMorphism ], function ( input_types )
-    
-    return input_types[2];
-    
-end );
-
 ####################################
 ##
 ## Helper functions
@@ -849,6 +816,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
             
             listlist := List( [ 1 .. nr_rows_1 ], i ->
                             List( [ 1 .. nr_cols_2 ], j ->
+                                #IdentityMorphism( ModelingCategory( cat ), ZeroObject( ModelingCategory( cat ) ) )
                                 SumOfMorphisms( UnderlyingCategory( cat ),
                                     Source( morphism_1 )[i],
                                     List( [ 1 .. nr_cols_1 ], k -> PreCompose( UnderlyingCategory( cat ), morphism_1[i, k], morphism_2[k, j] ) ),

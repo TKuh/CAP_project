@@ -73,6 +73,12 @@ InstallGlobalFunction( CapJitResolvedOperations, function ( tree )
                 
             fi;
             
+            if CAP_JIT_PROOF_ASSISTANT_MODE_ENABLED and not IsBound( tree.data_type ) then
+                
+                return tree;
+                
+            fi;
+            
             resolved_tree := fail;
             
             # resolve CAP operations
@@ -147,18 +153,6 @@ InstallGlobalFunction( CapJitResolvedOperations, function ( tree )
                             #Print( "WARNING: the CAP operation ", operation_name, " is not compatible with the congruence of morphisms. Keep this in mind when writing logic templates.\n" );
                             
                         fi;
-                        
-                        if not IsBound( tree.data_type ) then
-                            
-                            return tree;
-                            
-                        fi;
-                        
-                        #if IsBound( tree.data_type ) then
-                        #    
-                        #    Display( "asd" );
-                        #    
-                        #fi;
                         
                     fi;
                     
