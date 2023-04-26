@@ -148,6 +148,18 @@ InstallGlobalFunction( CapJitResolvedOperations, function ( tree )
                             
                         fi;
                         
+                        if not IsBound( tree.data_type ) then
+                            
+                            return tree;
+                            
+                        fi;
+                        
+                        #if IsBound( tree.data_type ) then
+                        #    
+                        #    Display( "asd" );
+                        #    
+                        #fi;
+                        
                     fi;
                     
                     if IsBound( category!.stop_compilation ) and category!.stop_compilation = true then
