@@ -632,15 +632,25 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
             range_list := ObjectList( Range( morphism ) );
             
             # 
-            if not (IsList( MorphismMatrix( morphism ) ) and ForAll( MorphismMatrix( morphism ), row -> IsList( row ) ) and Length( MorphismMatrix( morphism ) ) = nr_rows and ForAll( MorphismMatrix( morphism ), row -> Length( row ) = nr_cols ) ) then
+            if not (IsList( MorphismMatrix( morphism ) ) and Length( MorphismMatrix( morphism ) ) = nr_rows and ForAll( [ 1 .. nr_rows ], i -> IsList( MorphismMatrix( morphism )[i] ) ) and ForAll( MorphismMatrix( morphism ), row -> Length( row ) = nr_cols ) ) then
                 
                 return false;
                 
+            #elif not ForAll( [ 1 .. nr_rows ], i ->
+            #         ForAll( [ 1 .. nr_cols ], j ->
+            #           # is a well-defined CAP category morphism in the underlying category
+            #           #IsCapCategoryMorphism( morphism[i, j] ) and IsIdenticalObj( UnderlyingCategory( cat ), CapCategory( morphism[i, j] ) ) and IsWellDefinedForMorphisms( UnderlyingCategory( cat ), morphism[i, j] )
+            #           IsCapCategoryMorphism( morphism[i, j] )
+            #         ) 
+            #       ) then
+            #    
+            #    return false;
+            #    
             elif not ForAll( [ 1 .. nr_rows ], i ->
                      ForAll( [ 1 .. nr_cols ], j ->
                        # is a well-defined CAP category morphism in the underlying category
                        #IsCapCategoryMorphism( morphism[i, j] ) and IsIdenticalObj( UnderlyingCategory( cat ), CapCategory( morphism[i, j] ) ) and IsWellDefinedForMorphisms( UnderlyingCategory( cat ), morphism[i, j] )
-                       IsCapCategoryMorphism( morphism[i, j] ) and IsWellDefinedForMorphisms( UnderlyingCategory( cat ), morphism[i, j] )
+                       IsWellDefinedForMorphisms( UnderlyingCategory( cat ), morphism[i, j] )
                      ) 
                    ) then
                 
@@ -685,7 +695,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
             fi;
             
             return ForAll( [ 1 .. size_1 ], i -> IsEqualForObjects( UnderlyingCategory( cat ), list_1[i], list_2[i] ) );
-          
+            
         end );
         
     fi;
@@ -705,14 +715,10 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
         if nr_rows_1 <> nr_rows_2 then
             
             return false;
-        
+            
         elif nr_cols_1 <> nr_cols_2 then
             
             return false;
-            
-        elif nr_rows_1 = 0 or nr_cols_1 = 0 then
-            
-            return true;
             
         fi;
         

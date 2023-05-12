@@ -1231,3 +1231,55 @@ CapJitAddLogicFunction( function ( tree )
     return CapJitIterateOverTree( tree, pre_func, CapJitResultFuncCombineChildren, ReturnTrue, true );
     
 end );
+
+CapJitAddLogicFunction( function ( tree )
+  local pre_func;
+    
+    Info( InfoCapJit, 1, "####" );
+    Info( InfoCapJit, 1, "Apply logic for TODO." );
+    
+    pre_func := function ( tree, additional_arguments )
+      local combined_condition, branch, condition, i;
+        
+        if tree.type = "EXPR_CASE" and ForAll( [ 1 .. tree.branches.length - 1 ], i -> tree.branches.(i).value.type = "EXPR_FALSE" ) and Last( tree.branches ).value.type = "EXPR_TRUE" then
+            
+            Assert( 0, Last( tree.branches ).condition.type = "EXPR_TRUE" );
+            
+            combined_condition := rec( type := "EXPR_TRUE" );
+            
+            for i in [ 1 .. tree.branches.length - 1 ] do
+                
+                branch := tree.branches.(i);
+                
+                if branch.condition.type = "EXPR_NOT" then
+                    
+                    condition := branch.condition.op;
+                    
+                else
+                    
+                    condition := rec(
+                        type := "EXPR_NOT",
+                        op := branch.condition,
+                    );
+                    
+                fi;
+                
+                combined_condition := rec(
+                    type := "EXPR_AND",
+                    left := combined_condition,
+                    right := condition,
+                );
+                
+            od;
+            
+            return combined_condition;
+            
+        fi;
+        
+        return tree;
+        
+    end;
+    
+    return CapJitIterateOverTree( tree, pre_func, CapJitResultFuncCombineChildren, ReturnTrue, true );
+    
+end );
