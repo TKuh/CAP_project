@@ -1649,6 +1649,7 @@ InstallGlobalFunction( HandlePrecompiledTowers, function ( category, underlying_
 end );
 
 InstallGlobalFunction( CAP_JIT_INCOMPLETE_LOGIC, IdFunc );
+InstallGlobalFunction( CAP_JIT_FUNCTION_WRAPPER, IdFunc );
 
 ##
 #= comment for Julia

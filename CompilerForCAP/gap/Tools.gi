@@ -1024,7 +1024,7 @@ BINDING_STRENGTHS := [
     [ "AdditionForMorphisms", "AdditiveInverseForMorphisms", "+", "-" ],
     [ "TensorProductOnMorphisms", "TensorProductOnMorphismsWithGivenTensorProducts", "TensorProductOnObjects", "PreCompose", "PreComposeList", "*" ],
     [ "SumOfMorphisms" ],
-    [ "DualOnObjects", "DualOnMorphisms" ],
+    [ "DualOnObjects", "DualOnMorphisms", "[]" ],
 ];
 
 get_strength := function ( tree )
@@ -1257,6 +1257,13 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
     
     # TODO: populate CAP_JIT_INTERNAL_COMPILED_FUNCTIONS_STACK
     func_tree := CapJitInferredDataTypes( func_tree );
+    
+    if not IsBound( func_tree.bindings.BINDING_RETURN_VALUE.data_type ) then
+        
+        Error( "func could not be typed" );
+        
+    fi;
+    
     # TODO
     if IsBound( cat!.stop_compilation ) then
         old_stop_compilation := cat!.stop_compilation;
@@ -1400,6 +1407,33 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 string := Concatenation( "\\{", result.first.string, " \\ldots ", result.last.string, "\\}" ),
             );
             
+        elif tree.type = "EXPR_CASE" then
+            
+            # TODO: source and range for morphisms
+            
+            if tree.branches.length < 2 then
+                
+                Error( "degenerate case not handled" );
+                
+            fi;
+            
+            math_record := rec(
+                type := "plain",
+                string := Concatenation( """\left\{{\def\arraystretch{1.2}\begin{array}{@{}l@{\quad}l@{}}""", "\n" ),
+            );
+            
+            for i in [ 1 .. tree.branches.length - 1 ] do
+                
+                math_record.string := Concatenation( math_record.string, result.branches.(i).value.string, """ & \text{if } """, result.branches.(i).condition.string, """\text{,}\\""", "\n" );
+                
+            od;
+            
+            Assert( 0, Last( tree.branches ).condition.type = "EXPR_TRUE" );
+            
+            math_record.string := Concatenation( math_record.string, result.branches.(tree.branches.length).value.string, """ & \text{else.}""", "\n", """\end{array}}\right\}""" );
+            
+            return math_record;
+            
         elif tree.type = "EXPR_REF_FVAR" then
             
             # TODO: make variable names unique
@@ -1498,8 +1532,8 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                     name := LaTeXName( name );
                     
                     name := Concatenation( "\\myboxed{", name, "}" );
-                    source := Concatenation( "s(", name, ")" );
-                    range := Concatenation( "t(", name, ")" );
+                    source := Concatenation( "s\\left(", name, "\\right)" );
+                    range := Concatenation( "t\\left(", name, "\\right)" );
                     
                 fi;
                 
@@ -1514,8 +1548,8 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 
                 return rec(
                     type := "morphism",
-                    source := Concatenation( "s(", name, ")" ),
-                    range := Concatenation( "t(", name, ")" ),
+                    source := Concatenation( "s\\left(", name, "\\right)" ),
+                    range := Concatenation( "t\\left(", name, "\\right)" ),
                     string := name,
                 );
                 
@@ -1547,7 +1581,8 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 
                 return rec(
                     type := "plain",
-                    string := Concatenation( result.args.1.string, "[", result.args.2.string, "]" ),
+                    #string := Concatenation( "{", result.args.1.string, "}_{", result.args.2.string, "}" ),
+                    string := parenthesize_infix( tree, "_", tree.args.1, result.args.1, tree.args.2, result.args.2 ),
                 );
                 
             elif tree.funcref.gvar = "List" then
@@ -1601,7 +1636,7 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 
                 math_record := rec(
                     type := "morphism",
-                    string := Concatenation( result.args.1.string, " = ", result.args.2.string, " ? ", result.args.3.string, " : ", result.args.4.string ),
+                    string := Concatenation( """\left\{{\def\arraystretch{1.2}\begin{array}{@{}l@{\quad}l@{}}""", "\n", result.args.3.string, """ & \text{if } """, result.args.1.string, " = ", result.args.2.string, """\text{,}\\""", "\n", result.args.4.string, """ & \text{else.}""", "\n", """\end{array}}\right\}""" ),
                     #source := result.args.3.source,
                     #range := result.args.3.range,
                 );
@@ -1812,6 +1847,26 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                     math_record := rec(
                         type := "plain",
                         string := Concatenation( "\\mathrm{AsValue}(", result.args.1.string, ")" ),
+                    );
+                    
+                fi;
+                
+            elif tree.funcref.gvar = "ObjectList" and IsSpecializationOfFilter( "object", tree.args.1.data_type.filter ) then
+                
+                # TODO
+                
+                if Length( result.args.1.string ) >= 9 and result.args.1.string{[1 .. 9]} = "\\myboxed{" and Last( result.args.1.string ) = '}' then
+                    
+                    math_record := rec(
+                        type := "plain",
+                        string := result.args.1.string{[ 10 .. Length( result.args.1.string ) - 1 ]},
+                    );
+                    
+                else
+                    
+                    math_record := rec(
+                        type := "plain",
+                        string := Concatenation( "\\mathrm{MorphismMatrix}(", result.args.1.string, ")" ),
                     );
                     
                 fi;
@@ -2267,13 +2322,13 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 
                 if not IsBound( math_record.source ) then
                     
-                    math_record.source := Concatenation( "s(", math_record.string, ")" );
+                    math_record.source := Concatenation( "s\\left(", math_record.string, "\\right)" );
                     
                 fi;
                 
                 if not IsBound( math_record.range ) then
                     
-                    math_record.range := Concatenation( "t(", math_record.string, ")" );
+                    math_record.range := Concatenation( "t\\left(", math_record.string, "\\right)" );
                     
                 fi;
                 

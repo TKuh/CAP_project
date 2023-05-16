@@ -331,6 +331,12 @@ DeclareGlobalFunction( "HandlePrecompiledTowers" );
 DeclareGlobalFunction( "CAP_JIT_INCOMPLETE_LOGIC" );
 
 #! @Description
+#!   Simply returns <A>func</A>, which must be a literal function. Used to write expressions of the form `function() return ...; end()`,
+#!   as `CAP_JIT_FUNCTION_WRAPPER(function() return ...; end)()` because the former is not valid in Julia.
+#! @Arguments func
+DeclareGlobalFunction( "CAP_JIT_FUNCTION_WRAPPER" );
+
+#! @Description
 #!   Same as `List( <A>list</A>, <A>func</A> )` but <A>func</A> gets both the key `i` and `<A>list</A>[i]` as arguments.
 #! @Arguments list, func
 #! @Returns a list

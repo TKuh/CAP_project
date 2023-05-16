@@ -248,7 +248,7 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_ENHANCE_LOGIC_TEMPLATE, function ( templ
         
     fi;
     
-    diff := Difference( RecNames( template ), [ "variable_names", "variable_filters", "sublist_variable_names", "src_template", "src_template_tree", "dst_template", "dst_template_tree", "new_funcs", "needed_packages", "debug", "debug_path", "enhanced_syntax" ] );
+    diff := Difference( RecNames( template ), [ "variable_names", "variable_filters", "sublist_variable_names", "src_template", "src_template_tree", "dst_template", "dst_template_tree", "new_funcs", "number_of_applications", "needed_packages", "debug", "debug_path", "enhanced_syntax" ] );
     
     if not IsEmpty( diff ) then
         
@@ -320,6 +320,13 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_ENHANCE_LOGIC_TEMPLATE, function ( templ
     if not IsBound( template.new_funcs ) then
         
         template.new_funcs := [ ];
+        
+    fi;
+    
+    # default number of applications: infinity
+    if not IsBound( template.number_of_applications ) then
+        
+        template.number_of_applications := infinity;
         
     fi;
     
@@ -1380,7 +1387,7 @@ InstallGlobalFunction( CapJitAppliedLogicTemplates, function ( tree )
         
     od;
     
-    global_templates := Filtered( CAP_JIT_LOGIC_TEMPLATES, t -> IsBound( template.is_fully_enhanced ) and template.is_fully_enhanced = true );
+    global_templates := Filtered( CAP_JIT_LOGIC_TEMPLATES, t -> IsBound( template.is_fully_enhanced ) and template.is_fully_enhanced = true and template.number_of_applications > 0 );
     
     if Length( tree.local_replacements ) > 0 then
         
@@ -1397,6 +1404,7 @@ InstallGlobalFunction( CapJitAppliedLogicTemplates, function ( tree )
         dst_template := "local template",
         dst_template_tree := x.dst,
         new_func := [ ],
+        number_of_applications := infinity,
         is_fully_enhanced := true,
     ) );
     
@@ -1422,7 +1430,7 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_APPLIED_LOGIC_TEMPLATES, function ( tree
             # Try to apply the same logic template multiple times.
             # If it does not match multiple times, this does not increase the runtime noticeably
             # but if it does, the runtime improves noticeably.
-            while true do
+            while template.number_of_applications > 0 do
                 
                 if IsBound( template.debug ) and template.debug then
                     
@@ -1667,6 +1675,8 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_APPLIED_LOGIC_TEMPLATES, function ( tree
                     # Functions from src_template_tree can appear multiple times in dst_template_tree, so in dst_template_tree the same function ID can occur multiple times.
                     # Since we require function IDs to be unique in a tree except in this special case, we now have to create a copy with new IDs.
                     tree := CapJitCopyWithNewFunctionIDs( dst_tree );
+                    
+                    template.number_of_applications := template.number_of_applications - 1;
                     
                     continue;
                     

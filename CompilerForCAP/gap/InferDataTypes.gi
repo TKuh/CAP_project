@@ -365,7 +365,7 @@ InstallGlobalFunction( "CAP_JIT_INTERNAL_INFERRED_DATA_TYPES_OF_FUNCTION_BY_ARGU
         
     else
         
-        #Error( "can only handle EXPR_DECLARATIVE_FUNC and EXPR_REF_GVAR" );
+        Error( "can only handle EXPR_DECLARATIVE_FUNC and EXPR_REF_GVAR" );
         return fail;
         
     fi;
@@ -812,6 +812,8 @@ end );
 
 InstallGlobalFunction( CapJitInferredDataTypes, function ( tree )
   local orig_data_type;
+    
+    orig_tree := tree;
     
     if tree.type <> "EXPR_DECLARATIVE_FUNC" then
         

@@ -382,6 +382,8 @@ BindGlobal( "ApplyLogicTemplate", function ( logic_template )
         
     fi;
     
+    # TODO: handle number_of_applications
+    
     MakeReadWriteGlobal( "CAP_JIT_LOGIC_TEMPLATES" );
     
     CAP_JIT_LOGIC_TEMPLATES := old_logic_templates;
@@ -428,6 +430,8 @@ BindGlobal( "ApplyLogicTemplateAndReturnLaTeXString", function ( logic_template,
         Error( "applying the logic template did not have an effect" );
         
     fi;
+    
+    # TODO: handle number_of_applications
     
     MakeReadWriteGlobal( "CAP_JIT_LOGIC_TEMPLATES" );
     

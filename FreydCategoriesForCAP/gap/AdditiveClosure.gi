@@ -658,7 +658,15 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
                 
             elif not ForAll( [ 1 .. nr_rows ], i ->
                      ForAll( [ 1 .. nr_cols ], j ->
-                       IsEqualForObjects( UnderlyingCategory( cat ), Source( morphism[i, j] ), source_list[i] ) and IsEqualForObjects( UnderlyingCategory( cat ), Range( morphism[i, j] ), range_list[j] )
+                       IsEqualForObjects( UnderlyingCategory( cat ), Source( morphism[i, j] ), source_list[i] )
+                     )
+                   ) then
+                
+                return false;
+                
+            elif not ForAll( [ 1 .. nr_rows ], i ->
+                     ForAll( [ 1 .. nr_cols ], j ->
+                       IsEqualForObjects( UnderlyingCategory( cat ), Range( morphism[i, j] ), range_list[j] )
                      )
                    ) then
                 
@@ -764,9 +772,22 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
             size := Length( object_list );
             
             listlist := List( [ 1 .. size ], i ->
-                            List( [ 1 .. size ], j ->
-                                KroneckerDelta( i, j, IdentityMorphism( UnderlyingCategory( cat ), object_list[i] ), ZeroMorphism( UnderlyingCategory( cat ), object_list[i], object_list[j] ) )
-                            )
+                            List( [ 1 .. size ], function( j )
+                                
+                                if i = j then
+                                    
+                                    return IdentityMorphism( UnderlyingCategory( cat ), object_list[i] );
+                                    
+                                else
+                                    
+                                    return ZeroMorphism( UnderlyingCategory( cat ), object_list[i], object_list[j] );
+                                    
+                                fi;
+                                
+                            end )
+                            #List( [ 1 .. size ], j ->
+                            #    KroneckerDelta( i, j, IdentityMorphism( UnderlyingCategory( cat ), object_list[i] ), ZeroMorphism( UnderlyingCategory( cat ), object_list[i], object_list[j] ) )
+                            #)
                         );
             
             return AdditiveClosureMorphism( cat, object, listlist, object );

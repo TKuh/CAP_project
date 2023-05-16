@@ -613,6 +613,29 @@ InstallGlobalFunction( ENHANCED_SYNTAX_TREE, function ( func )
             
         od;
         
+        # drop CAP_JIT_FUNCTION_WRAPPER
+        if CapJitIsCallToGlobalFunction( tree, "CAP_JIT_FUNCTION_WRAPPER" ) then
+            
+            if tree.args.length <> 1 or tree.args.1.type <> "EXPR_DECLARATIVE_FUNC" then
+                
+                # CAP_JIT_DROP_NEXT_STATEMENT
+                Error( "CAP_JIT_FUNCTION_WRAPPER must be called with a literal function as the only argument"  );
+                
+            fi;
+            
+            tree := tree.args.1;
+            
+        fi;
+        
+        if tree.type = "EXPR_FUNCCALL" and tree.funcref.type = "EXPR_DECLARATIVE_FUNC" and tree.funcref.narg = 0 and Length( tree.funcref.bindings.names ) = 1 then
+            
+            Assert( 0, tree.args.length = 0 );
+            Assert( 0, tree.funcref.bindings.names = [ "RETURN_VALUE" ] );
+            
+            tree := tree.funcref.bindings.BINDING_RETURN_VALUE;
+            
+        fi;
+        
         if tree.type = "EXPR_FUNC" then
             
             tree.local_replacements := [ ];
@@ -1425,8 +1448,8 @@ InstallGlobalFunction( ENHANCED_SYNTAX_TREE_CODE, function ( tree )
             
             if tree.type = "EXPR_CASE" then
                 
-                # code as IdFunc( function( ) if ... then return ...; else return ...; fi; end )()
-                # the IdFunc is required because the GAP syntax `function() return ...; end()` is not valid in Julia
+                # code as CAP_JIT_FUNCTION_WRAPPER( function( ) if ... then return ...; else return ...; fi; end )()
+                # the wrapper is necessary because the GAP syntax `function() return ...; end()` is not valid in Julia
                 tree := rec(
                     type := "EXPR_FUNCCALL_0ARGS",
                     args := AsSyntaxTreeList( [ ] ),
@@ -1434,7 +1457,7 @@ InstallGlobalFunction( ENHANCED_SYNTAX_TREE_CODE, function ( tree )
                         type := "EXPR_FUNCCALL",
                         funcref := rec(
                             type := "EXPR_REF_GVAR",
-                            gvar := "IdFunc",
+                            gvar := "CAP_JIT_FUNCTION_WRAPPER",
                         ),
                         args := AsSyntaxTreeList( [ rec(
                             type := "EXPR_FUNC",
