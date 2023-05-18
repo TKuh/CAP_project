@@ -1387,7 +1387,7 @@ InstallGlobalFunction( CapJitAppliedLogicTemplates, function ( tree )
         
     od;
     
-    global_templates := Filtered( CAP_JIT_LOGIC_TEMPLATES, t -> IsBound( template.is_fully_enhanced ) and template.is_fully_enhanced = true and template.number_of_applications > 0 );
+    global_templates := Filtered( CAP_JIT_LOGIC_TEMPLATES, t -> IsBound( t.is_fully_enhanced ) and t.is_fully_enhanced = true );
     
     if Length( tree.local_replacements ) > 0 then
         
@@ -1408,14 +1408,22 @@ InstallGlobalFunction( CapJitAppliedLogicTemplates, function ( tree )
         is_fully_enhanced := true,
     ) );
     
-    return CAP_JIT_INTERNAL_APPLIED_LOGIC_TEMPLATES( tree, Concatenation( global_templates, local_templates ) );
+    tree := CAP_JIT_INTERNAL_APPLIED_LOGIC_TEMPLATES( tree, Concatenation( global_templates, local_templates ) );
+    
+    MakeReadWriteGlobal( "CAP_JIT_LOGIC_TEMPLATES" );
+    
+    CAP_JIT_LOGIC_TEMPLATES := Filtered( CAP_JIT_LOGIC_TEMPLATES, t -> t.number_of_applications <> 0 );
+    
+    MakeReadOnlyGlobal( "CAP_JIT_LOGIC_TEMPLATES" );
+    
+    return tree;
     
 end );
 
 InstallGlobalFunction( CAP_JIT_INTERNAL_APPLIED_LOGIC_TEMPLATES, function ( tree, templates )
   local path_debugging_enabled, pre_func, additional_arguments_func;
     
-    Assert( 0, ForAll( templates, template -> IsBound( template.is_fully_enhanced ) and template.is_fully_enhanced ) );
+    Assert( 0, ForAll( templates, template -> IsBound( template.is_fully_enhanced ) and template.is_fully_enhanced and template.number_of_applications > 0 ) );
     
     path_debugging_enabled := ForAny( templates, template -> IsBound( template.debug_path ) );
     
@@ -1677,6 +1685,7 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_APPLIED_LOGIC_TEMPLATES, function ( tree
                     tree := CapJitCopyWithNewFunctionIDs( dst_tree );
                     
                     template.number_of_applications := template.number_of_applications - 1;
+                    Assert( 0, template.number_of_applications >= 0 );
                     
                     continue;
                     
