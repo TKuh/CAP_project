@@ -384,6 +384,8 @@ BindGlobal( "ApplyLogicTemplate", function ( logic_template )
         
         Display( ENHANCED_SYNTAX_TREE_CODE( new_tree ) );
         
+        Perform( CAP_JIT_LOGIC_TEMPLATES, function ( t ) if t.number_of_applications <> infinity and t.number_of_applications <> 0 then Display( t.number_of_applications ); fi; end );
+        
         Error( "there are logic templates with a non-zero number of remaining applications" );
         
     fi;
@@ -489,6 +491,23 @@ end );
 BindGlobal( "AssertLemma", function ( )
     
     return ASSERT_THEOREM( "lemma" );
+    
+end );
+
+BindGlobal( "RESET_THEOREM", function ( type )
+    
+    Print( "WARNING: Resetting theorem.\n" );
+    
+    Assert( 0, CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM <> fail );
+    Assert( 0, CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM.type = type );
+    
+    CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_THEOREM := fail;
+    
+end );
+
+BindGlobal( "ResetLemma", function ( )
+    
+    RESET_THEOREM( "lemma" );
     
 end );
 
