@@ -78,6 +78,80 @@ ConcatenationWithGivenLengths := function ( lengths, lists )
     
 end;
 
+# ConcatenationWithGivenLengths( lengths, lists )[i] = lists[ListIndexForConcatenationWithGivenLengths( lengths, i )][IndexInListForConcatenationWithGivenLengths( lengths, i )]
+
+ListIndexForConcatenationWithGivenLengths := function ( lengths, i )
+  local length, j;
+    
+    if i <= 0 then
+        
+        Error( "index out of range" );
+        
+    fi;
+    
+    length := 0;
+    
+    for j in [ 1 .. Length( lengths ) ] do
+        
+        length := length + lengths[j];
+        
+        if i <= length then
+            
+            return j;
+            
+        fi;
+        
+    od;
+    
+    Error( "index out of range" );
+    
+end;
+
+CapJitAddTypeSignature( "ListIndexForConcatenationWithGivenLengths", [ IsList, IsInt ], function ( input_types )
+    
+    Assert( 0, input_types[1].element_type.filter = IsInt );
+    
+    return rec( filter := IsInt );
+    
+end );
+
+IndexInListForConcatenationWithGivenLengths := function ( lengths, i )
+  local length, base_length, j;
+    
+    if i <= 0 then
+        
+        Error( "index out of range" );
+        
+    fi;
+    
+    length := 0;
+    
+    for j in [ 1 .. Length( lengths ) ] do
+        
+        base_length := length;
+        
+        length := length + lengths[j];
+        
+        if i <= length then
+            
+            return i - base_length;
+            
+        fi;
+        
+    od;
+    
+    Error( "index out of range" );
+    
+end;
+
+CapJitAddTypeSignature( "IndexInListForConcatenationWithGivenLengths", [ IsList, IsInt ], function ( input_types )
+    
+    Assert( 0, input_types[1].element_type.filter = IsInt );
+    
+    return rec( filter := IsInt );
+    
+end );
+
 InstallGlobalFunction( UnionOfRowsListList, function ( row_lengths, nr_cols, matrices )
     #% CAP_JIT_RESOLVE_FUNCTION
     
@@ -961,15 +1035,15 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
     ##
     AddComponentOfMorphismIntoDirectSum( category,
       function( cat, morphism, summands, nr )
-        local lengths, columns_before, start, stop, matrix;
+        local lengths, offset, start, stop, matrix;
         
         lengths := List( summands, s -> Length( ObjectList( s ) ) );
         
-        columns_before := Sum( lengths{[ 1 .. nr-1 ]} );
+        offset := Sum( lengths{[ 1 .. nr-1 ]} );
         
-        start := columns_before + 1;
+        start := offset + 1;
         
-        stop := columns_before + lengths[nr];
+        stop := offset + lengths[nr];
         
         matrix := MorphismMatrix( morphism );
         
@@ -982,13 +1056,15 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
     ##
     AddComponentOfMorphismFromDirectSum( category,
       function( cat, morphism, summands, nr )
-        local lengths, start, stop;
+        local lengths, offset, start, stop;
         
         lengths := List( summands, s -> Length( ObjectList( s ) ) );
         
-        start := Sum( lengths{[ 1 .. nr-1 ]} ) + 1;
+        offset := Sum( lengths{[ 1 .. nr-1 ]} );
         
-        stop := (start - 1) + lengths[nr];
+        start := offset + 1;
+        
+        stop := offset + lengths[nr];
         
         return AdditiveClosureMorphism( cat, summands[nr],
                                         MorphismMatrix( morphism ){[ start .. stop ]}, # CertainRows

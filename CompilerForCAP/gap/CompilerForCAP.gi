@@ -243,7 +243,7 @@ InstallGlobalFunction( CapJitCompiledFunctionAsEnhancedSyntaxTree, function ( fu
         
         if not IsBound( tree.bindings.BINDING_RETURN_VALUE.data_type ) then
             
-            PrintWithCurrentlyCompiledFunctionLocation( "WARNING: Could not determine data type. This is not supported in proof assistant mode." );
+            ErrorWithCurrentlyCompiledFunctionLocation( "Could not determine data type. This is not supported in proof assistant mode." );
             
         fi;
         
@@ -274,6 +274,12 @@ InstallGlobalFunction( CapJitCompiledFunctionAsEnhancedSyntaxTree, function ( fu
     
     orig_tree := rec( );
     while tree <> orig_tree do
+        
+        if IsBoundGlobal( "MY_GLOBAL" ) then
+            
+            Display( ENHANCED_SYNTAX_TREE_CODE( tree ) );
+            
+        fi;
         
         orig_tree := tree;
         
@@ -357,6 +363,12 @@ InstallGlobalFunction( CapJitCompiledFunctionAsEnhancedSyntaxTree, function ( fu
     
     orig_tree := rec( );
     while tree <> orig_tree do
+        
+        if IsBoundGlobal( "MY_GLOBAL" ) then
+            
+            Display( ENHANCED_SYNTAX_TREE_CODE( tree ) );
+            
+        fi;
         
         orig_tree := tree;
         
