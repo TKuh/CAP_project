@@ -685,7 +685,8 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
         AddIsWellDefinedForObjects( category,
           function( cat, object )
             
-            if not ForAll( ObjectList( object ), obj -> IsIdenticalObj( UnderlyingCategory( cat ), CapCategory( obj ) ) and IsWellDefinedForObjects( UnderlyingCategory( cat ), obj ) ) then
+            # IsIdenticalObj( UnderlyingCategory( cat ), CapCategory( obj ) ) and 
+            if not(IsList( ObjectList( object ) ) and ForAll( ObjectList( object ), obj -> IsWellDefinedForObjects( UnderlyingCategory( cat ), obj ) )) then
                 
                 return false;
                 
@@ -966,6 +967,25 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_ADDITIVE_CLOSURE,
             return AdditiveClosureMorphism( cat, Source( morphism_1 ),
                                             listlist,
                                             Range( morphism_1 ) );
+            
+        end );
+        
+    fi;
+    
+    if CanCompute( underlying_category, "SumOfMorphisms" ) then
+        
+        ##
+        AddSumOfMorphisms( category,
+          function( cat, source, morphisms, range )
+            local listlist;
+            
+            listlist := List( [ 1 .. Length( ObjectList( source ) ) ],
+                            i -> List( [ 1 .. Length( ObjectList( range ) ) ],
+                                j -> SumOfMorphisms( UnderlyingCategory( cat ), source[i], List( morphisms, m -> m[i,j] ), range[j] ) ) );
+            
+            return AdditiveClosureMorphism( cat, source,
+                                            listlist,
+                                            range );
             
         end );
         
