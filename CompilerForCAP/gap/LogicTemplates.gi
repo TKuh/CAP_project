@@ -1706,6 +1706,13 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_APPLIED_LOGIC_TEMPLATES, function ( tree
                     template.number_of_applications := template.number_of_applications - 1;
                     Assert( 0, template.number_of_applications >= 0 );
                     
+                    #if template.number_of_applications <> infinity then
+                    #    Display( template.number_of_applications );
+                    #    Display( ForAny( CAP_JIT_LOGIC_TEMPLATES, t -> t.number_of_applications <> infinity and t.number_of_applications <> 0 ) );
+                    #    Display( Last( CAP_JIT_LOGIC_TEMPLATES ).number_of_applications );
+                    #    Error("asd");
+                    #fi;
+                    
                     continue;
                     
                 else

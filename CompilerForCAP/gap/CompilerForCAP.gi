@@ -110,7 +110,7 @@ InstallGlobalFunction( CapJitCompiledFunctionAsEnhancedSyntaxTree, function ( fu
     
     Add( CAP_JIT_INTERNAL_COMPILED_FUNCTIONS_STACK, func );
     
-    if IsOperation( func ) or IsKernelFunction( func ) then
+    if IsFunction( func ) and (IsOperation( func ) or IsKernelFunction( func )) then
         
         # COVERAGE_IGNORE_NEXT_LINE
         Error( "<func> is a operation or kernel function, this is not supported yet." );
@@ -197,7 +197,17 @@ InstallGlobalFunction( CapJitCompiledFunctionAsEnhancedSyntaxTree, function ( fu
         
     fi;
     
-    if category_as_first_argument then
+    if IsRecord( func ) then
+        
+        tree := func;
+        
+        if IsBound( tree.data_type ) then
+            
+            type_signature := tree.data_type;
+            
+        fi;
+        
+    elif category_as_first_argument then
         
         tree := ENHANCED_SYNTAX_TREE( func : globalize_hvars := true, given_arguments := [ category ], type_signature := type_signature );
         

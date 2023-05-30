@@ -1267,6 +1267,31 @@ CapJitAddLogicFunction( function ( tree )
     
 end );
 
+# ForAll for empty list
+# TODO: Turn into logic template with type
+CapJitAddLogicFunction( function ( tree )
+  local pre_func;
+    
+    Info( InfoCapJit, 1, "####" );
+    Info( InfoCapJit, 1, "Apply logic for ForAll for empty list." );
+    
+    pre_func := function ( tree, additional_arguments )
+      local value;
+        
+        if CapJitIsCallToGlobalFunction( tree, "ForAll" ) and tree.args.1.type = "EXPR_LIST" and tree.args.1.list.length = 0 then
+            
+            return rec( type := "EXPR_TRUE" );
+            
+        fi;
+        
+        return tree;
+        
+    end;
+    
+    return CapJitIterateOverTree( tree, pre_func, CapJitResultFuncCombineChildren, ReturnTrue, true );
+    
+end );
+
 CapJitAddLogicFunction( function ( tree )
   local pre_func;
     
@@ -1324,6 +1349,14 @@ CapJitAddLogicFunction( function ( tree )
                 if branch.condition.type = "EXPR_NOT" then
                     
                     condition := branch.condition.op;
+                    
+                elif branch.condition.type = "EXPR_NE" then
+                    
+                    condition := rec(
+                        type := "EXPR_EQ",
+                        left := branch.condition.left,
+                        right := branch.condition.right
+                    );
                     
                 else
                     

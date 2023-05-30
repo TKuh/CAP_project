@@ -828,8 +828,6 @@ end );
 InstallGlobalFunction( CapJitInferredDataTypes, function ( tree )
   local orig_data_type;
     
-    orig_tree := tree;
-    
     if tree.type <> "EXPR_DECLARATIVE_FUNC" then
         
         # COVERAGE_IGNORE_NEXT_LINE

@@ -1450,7 +1450,7 @@ InstallGlobalFunction( ENHANCED_SYNTAX_TREE_CODE, function ( tree )
                     # for dummy functions this case is expected
                     if not is_dummy_function then
                         
-                        Error( "An FVAR references a variable outside of the function stack. However, if you type 'return;', it will be replaced by a dummy variable." );
+                        #Error( "An FVAR references a variable outside of the function stack. However, if you type 'return;', it will be replaced by a dummy variable." );
                         
                     fi;
                     
