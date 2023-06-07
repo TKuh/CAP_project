@@ -725,25 +725,25 @@ CapJitAddLogicTemplate(
 # This causes some minor overhead if the index is fixed (e.g. for ProjectionInFactorOfDirectSum) because f is applied to the whole list
 # instead of only the element given by the index, but such examples are rare.
 # Additionally, this should only trigger for homogeneous lists, i.e. `func` must be applicable to all elements of `L`.
-CapJitAddLogicTemplate(
-    rec(
-        variable_names := [ "list", "func", "index" ],
-        variable_filters := [ IsList, IsFunction, IsInt ],
-        src_template := "func( list[index] )",
-        dst_template := "List( list, func )[index]",
-    )
-);
+#CapJitAddLogicTemplate(
+#    rec(
+#        variable_names := [ "list", "func", "index" ],
+#        variable_filters := [ IsList, IsFunction, IsInt ],
+#        src_template := "func( list[index] )",
+#        dst_template := "List( list, func )[index]",
+#    )
+#);
 
 # List( list_of_lists[index], func ) => List( list_of_lists, list -> List( list, func ) )[index]
-CapJitAddLogicTemplate(
-    rec(
-        variable_names := [ "list_of_lists", "index", "func" ],
-        variable_filters := [ IsList, IsInt, IsFunction ],
-        src_template := "List( list_of_lists[index], func )",
-        dst_template := "List( list_of_lists, list -> List( list, func ) )[index]",
-        new_funcs := [ [ "list" ] ],
-    )
-);
+#CapJitAddLogicTemplate(
+#    rec(
+#        variable_names := [ "list_of_lists", "index", "func" ],
+#        variable_filters := [ IsList, IsInt, IsFunction ],
+#        src_template := "List( list_of_lists[index], func )",
+#        dst_template := "List( list_of_lists, list -> List( list, func ) )[index]",
+#        new_funcs := [ [ "list" ] ],
+#    )
+#);
 
 # Length( List( list, func ) ) => Length( list )
 CapJitAddLogicTemplate(
