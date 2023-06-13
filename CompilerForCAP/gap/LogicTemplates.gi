@@ -1434,7 +1434,7 @@ InstallGlobalFunction( CapJitAppliedLogicTemplates, function ( tree )
         src_template_tree := x.src,
         dst_template := "local template",
         dst_template_tree := x.dst,
-        new_func := [ ],
+        new_funcs := [ ],
         number_of_applications := infinity,
         is_fully_enhanced := true,
     ) );
