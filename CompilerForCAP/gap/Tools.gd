@@ -169,3 +169,5 @@ DeclareGlobalFunction( "ErrorWithCurrentlyCompiledFunctionLocation" );
 #!   Same as `EvalString`, but enters a break-loop when encountering syntax errors.
 #! @Arguments string
 DeclareGlobalFunction( "EvalStringStrict" );
+
+DeclareGlobalName( "CapJitMadeVariableNamesUnique" );
