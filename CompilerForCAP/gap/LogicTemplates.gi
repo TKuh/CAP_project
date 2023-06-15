@@ -236,7 +236,7 @@ parse := function ( string )
 end;
 
 InstallGlobalFunction( CAP_JIT_INTERNAL_ENHANCE_LOGIC_TEMPLATE, function ( template )
-  local diff, unbound_global_variable_names, pre_func_identify_syntax_tree_variables, additional_arguments_func_identify_syntax_tree_variables, src_template, dst_template, name, variable_names, tmp_tree, pre_func, additional_arguments_func, i;
+  local diff, unbound_global_variable_names, syntax_tree_variables_ids, syntax_tree_sublist_variables_ids, pre_func_identify_syntax_tree_variables, additional_arguments_func_identify_syntax_tree_variables, src_template, dst_template, name, variable_names, tmp_tree, pre_func, additional_arguments_func, i;
     
     # Caution: this function must only be called once the needed packages of the template are loaded!
     
@@ -356,6 +356,7 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_ENHANCE_LOGIC_TEMPLATE, function ( templ
     fi;
     
     pre_func_identify_syntax_tree_variables := function ( tree, outer_func_id )
+      local id;
         
         # `IsBoundGlobal` calls `CheckGlobalName`, which warns about names containing characters not in `IdentifierLetters`.
         # This is expected for operations in CAP_JIT_INTERNAL_OPERATION_TO_SYNTAX_TREE_TRANSLATIONS, so we avoid IsBoundGlobal in this case.
@@ -363,7 +364,7 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_ENHANCE_LOGIC_TEMPLATE, function ( templ
             
             # for debugging only
             # COVERAGE_IGNORE_NEXT_LINE
-            Add( unbound_global_variable_names, tree.gvar );
+            AddSet( unbound_global_variable_names, tree.gvar );
             
         fi;
         
@@ -371,16 +372,24 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_ENHANCE_LOGIC_TEMPLATE, function ( templ
             
             if tree.name in template.variable_names then
                 
+                id := SafeUniquePosition( template.variable_names, tree.name );
+                
+                AddSet( syntax_tree_variables_ids, id );
+                
                 return rec(
                     type := "SYNTAX_TREE_VARIABLE",
-                    id := SafeUniquePosition( template.variable_names, tree.name ),
+                    id := id,
                 );
                 
             elif tree.name in template.sublist_variable_names then
                 
+                id := SafeUniquePosition( template.sublist_variable_names, tree.name );
+                
+                AddSet( syntax_tree_sublist_variables_ids, id );
+                
                 return rec(
                     type := "SYNTAX_TREE_SUBLIST_VARIABLE",
-                    id := SafeUniquePosition( template.sublist_variable_names, tree.name ),
+                    id := id,
                 );
                 
             else
@@ -423,13 +432,6 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_ENHANCE_LOGIC_TEMPLATE, function ( templ
             
         fi;
         
-        if PositionSublist( src_template, name ) = fail then
-            
-            # COVERAGE_IGNORE_NEXT_LINE
-            Error( "Variable name \"", name, "\" does not appear in src_template. This is not supported." );
-            
-        fi;
-        
     od;
     
     # get src_template_tree from src_template
@@ -442,12 +444,22 @@ InstallGlobalFunction( CAP_JIT_INTERNAL_ENHANCE_LOGIC_TEMPLATE, function ( templ
         
         unbound_global_variable_names := [ ];
         
+        syntax_tree_variables_ids := [ ];
+        syntax_tree_sublist_variables_ids := [ ];
+        
         template.src_template_tree := CapJitIterateOverTree( CapJitValueOfBinding( tmp_tree.bindings, "RETURN_VALUE" ), pre_func_identify_syntax_tree_variables, CapJitResultFuncCombineChildren, additional_arguments_func_identify_syntax_tree_variables, tmp_tree.id );
         
         if not IsEmpty( unbound_global_variable_names ) then
             
             # COVERAGE_IGNORE_NEXT_LINE
             Error( "found the following unbound global variables in src_template, they should probably be listed in variable_names: ", unbound_global_variable_names );
+            
+        fi;
+        
+        if syntax_tree_variables_ids <> [ 1 .. Length( template.variable_names ) ] then
+            
+            # COVERAGE_IGNORE_NEXT_LINE
+            Error( "The following variable names do not appear in src_template: ", template.variable_names{Difference( [ 1 .. Length( template.variable_names ) ], syntax_tree_variables_ids )},". This is not supported." );
             
         fi;
         
