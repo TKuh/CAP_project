@@ -1170,8 +1170,10 @@ enhance_propositions( propositions );
 
 CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_PROPOSITION := fail;
 
-StateProposition := function ( cat, cat_description, category_symbols, proposition_id, variable_name_translator )
+StateProposition := function ( proposition_id, variable_name_translator )
+  local cat_description;
     
+    Assert( 0, CAP_JIT_PROOF_ASSISTANT_CURRENT_CATEGORY <> fail );
     Assert( 0, CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_PROPOSITION = fail );
     
     if not IsBound( propositions.(proposition_id) ) then
@@ -1185,7 +1187,7 @@ StateProposition := function ( cat, cat_description, category_symbols, propositi
     CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_PROPOSITION.active_lemma_index := 0;
     CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_PROPOSITION.variable_name_translator := variable_name_translator;
     
-    SetCurrentCategory( cat, cat_description, category_symbols );
+    cat_description := CAP_JIT_PROOF_ASSISTANT_CURRENT_CATEGORY.description;
     
     return Concatenation(
         "\\begin{proposition}\n",
@@ -1231,7 +1233,6 @@ AssertProposition := function ( )
     proposition_description := CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_PROPOSITION.proposition.description;
     
     CAP_JIT_PROOF_ASSISTANT_MODE_ACTIVE_PROPOSITION := fail;
-    CAP_JIT_PROOF_ASSISTANT_CURRENT_CATEGORY := fail;
     
     return Concatenation(
         "With this, we have shown:\n",
