@@ -2521,7 +2521,7 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                     string := result.args.1.source,
                 );
                 
-            elif tree.funcref.gvar = "Range" then
+            elif tree.funcref.gvar in [ "Range", "Target" ] then
                 
                 math_record := rec(
                     type := "plain",
@@ -3063,7 +3063,7 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
         latex_string := Concatenation( "% neutralize abovedisplayskip\n\\vskip-\\abovedisplayskip\n\\begin{equation*}\n\\begin{split}\n&", JoinStringsWithSeparator( latex_strings, "\\\\\n\\text{and}\\enspace&" ), suffix, "\n\\end{split}\n\\end{equation*}\n" );
         return latex_string;
         
-    elif CapJitIsCallToGlobalFunction( return_value, "IsEqualForObjects" ) and CapJitIsCallToGlobalFunction( return_value.args.2, gvar -> gvar = "Source" or gvar = "Range" ) then
+    elif CapJitIsCallToGlobalFunction( return_value, "IsEqualForObjects" ) and CapJitIsCallToGlobalFunction( return_value.args.2, gvar -> gvar = "Source" or gvar = "Range" or gvar = "Target" ) then
         
         latex_record_left_morphism := CapJitIterateOverTree( return_value.args.2.args.1, ReturnFirst, result_func, additional_arguments_func, [ func_tree ] );
         latex_record_right := CapJitIterateOverTree( return_value.args.3, ReturnFirst, result_func, additional_arguments_func, [ func_tree ] );
@@ -3072,9 +3072,9 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
             
             latex_string_left := Concatenation( "the source of $", latex_record_left_morphism.string, "$" );
             
-        elif return_value.args.2.funcref.gvar = "Range" then
+        elif return_value.args.2.funcref.gvar in [ "Range", "Target" ] then
             
-            latex_string_left := Concatenation( "the range of $", latex_record_left_morphism.string, "$" );
+            latex_string_left := Concatenation( "the target of $", latex_record_left_morphism.string, "$" );
             
         else
             

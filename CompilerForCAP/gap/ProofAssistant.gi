@@ -614,7 +614,7 @@ BindGlobal( "CheckDerivationSourceAndRange", function ( )
         pre_func := function ( tree, additional_arguments )
           local info, getter;
             
-            if CapJitIsCallToGlobalFunction( tree, gvar -> gvar = "Source" or gvar = "Range" ) and tree.args.length = 1 and CapJitIsCallToGlobalFunction( tree.args.1, gvar -> gvar in RecNames( CAP_INTERNAL_METHOD_NAME_RECORD ) ) then
+            if CapJitIsCallToGlobalFunction( tree, gvar -> gvar = "Source" or gvar = "Range" or gvar = "Target" ) and tree.args.length = 1 and CapJitIsCallToGlobalFunction( tree.args.1, gvar -> gvar in RecNames( CAP_INTERNAL_METHOD_NAME_RECORD ) ) then
                 
                 info := CAP_INTERNAL_METHOD_NAME_RECORD.(tree.args.1.funcref.gvar);
                 
@@ -624,7 +624,7 @@ BindGlobal( "CheckDerivationSourceAndRange", function ( )
                         
                         getter := info.output_source_getter;
                         
-                    elif tree.funcref.gvar = "Range" and IsBound( info.output_range_getter ) then
+                    elif tree.funcref.gvar in [ "Range", "Target" ] and IsBound( info.output_range_getter ) then
                         
                         getter := info.output_range_getter;
                         

@@ -1318,7 +1318,7 @@ CapJitAddLogicFunction( function ( tree )
     pre_func := function ( tree, additional_arguments )
       local operation_name, getter;
         
-        if CapJitIsCallToGlobalFunction( tree, gvar -> gvar = "Source" or gvar = "Range" ) and tree.args.length = 1 and CapJitIsCallToGlobalFunction( tree.args.1, gvar -> gvar in RecNames( CAP_INTERNAL_METHOD_NAME_RECORD ) ) then
+        if CapJitIsCallToGlobalFunction( tree, gvar -> gvar = "Source" or gvar = "Range" or gvar = "Target" ) and tree.args.length = 1 and CapJitIsCallToGlobalFunction( tree.args.1, gvar -> gvar in RecNames( CAP_INTERNAL_METHOD_NAME_RECORD ) ) then
             
             operation_name := tree.args.1.funcref.gvar;
             
@@ -1326,7 +1326,7 @@ CapJitAddLogicFunction( function ( tree )
                 
                 getter := CAP_INTERNAL_METHOD_NAME_RECORD.(operation_name).output_source_getter;
                 
-            elif tree.funcref.gvar = "Range" and IsBound( CAP_INTERNAL_METHOD_NAME_RECORD.(operation_name).output_range_getter ) then
+            elif tree.funcref.gvar in [ "Range", "Target" ] and IsBound( CAP_INTERNAL_METHOD_NAME_RECORD.(operation_name).output_range_getter ) then
                 
                 getter := CAP_INTERNAL_METHOD_NAME_RECORD.(operation_name).output_range_getter;
                 
