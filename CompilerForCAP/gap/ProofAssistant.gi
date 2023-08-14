@@ -993,6 +993,7 @@ specifications := rec(
         ],
     ),
     DirectSum := rec( ),
+    KernelObject := rec( ),
     KernelEmbedding := rec(
         postconditions := [
             rec(
@@ -1030,7 +1031,7 @@ propositions := rec(
     ),
     has_kernels := rec(
         description := "has kernels",
-        operations := [ "KernelEmbedding", "KernelLift" ],
+        operations := [ "KernelObject", "KernelEmbedding", "KernelLift" ],
     ),
 );
 
