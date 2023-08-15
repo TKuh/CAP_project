@@ -741,6 +741,16 @@ DeclareOperation( "LinearCombinationOfMorphisms",
 DeclareOperation( "IsWellDefinedForMorphisms",
                   [ IsCapCategoryMorphism ] );
 
+#! @Description
+#! TODO
+#! The argument is a morphism $\alpha$.
+#! The output is <C>true</C> if $\alpha$ is well-defined,
+#! otherwise the output is <C>false</C>.
+#! @Returns a boolean
+#! @Arguments alpha
+DeclareOperation( "IsWellDefinedForMorphismsWithGivenSourceAndRange",
+                  [ IsCapCategoryObject, IsCapCategoryMorphism, IsCapCategoryObject ] );
+
 ###################################
 ##
 #! @Section Lift/Colift

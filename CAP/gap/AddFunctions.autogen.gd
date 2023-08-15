@@ -2273,6 +2273,25 @@ DeclareOperation( "AddIsWellDefinedForMorphisms",
 #! @Description
 #! The arguments are a category $C$ and a function $F$.
 #! This operation adds the given function $F$
+#! to the category for the basic operation `IsWellDefinedForMorphismsWithGivenSourceAndRange`.
+#! $F: ( arg2, arg3, arg4 ) \mapsto \mathtt{IsWellDefinedForMorphismsWithGivenSourceAndRange}(arg2, arg3, arg4)$.
+#! @Returns nothing
+#! @Arguments C, F
+DeclareOperation( "AddIsWellDefinedForMorphismsWithGivenSourceAndRange",
+                  [ IsCapCategory, IsFunction ] );
+
+DeclareOperation( "AddIsWellDefinedForMorphismsWithGivenSourceAndRange",
+                  [ IsCapCategory, IsFunction, IsInt ] );
+
+DeclareOperation( "AddIsWellDefinedForMorphismsWithGivenSourceAndRange",
+                  [ IsCapCategory, IsList, IsInt ] );
+
+DeclareOperation( "AddIsWellDefinedForMorphismsWithGivenSourceAndRange",
+                  [ IsCapCategory, IsList ] );
+
+#! @Description
+#! The arguments are a category $C$ and a function $F$.
+#! This operation adds the given function $F$
 #! to the category for the basic operation `IsWellDefinedForObjects`.
 #! $F: ( arg2 ) \mapsto \mathtt{IsWellDefinedForObjects}(arg2)$.
 #! @Returns nothing

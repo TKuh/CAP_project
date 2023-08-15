@@ -2588,6 +2588,14 @@ IsWellDefinedForMorphisms := rec(
   compatible_with_congruence_of_morphisms := true, # TODO
 ),
 
+IsWellDefinedForMorphismsWithGivenSourceAndRange := rec(
+  filter_list := [ "category", "object", "morphism", "object" ],
+  return_type := "bool",
+  dual_operation := "IsWellDefinedForMorphismsWithGivenSourceAndRange",
+  dual_arguments_reversed := true,
+  compatible_with_congruence_of_morphisms := true, # TODO
+),
+
 IsWellDefinedForObjects := rec(
   filter_list := [ "category", "object" ],
   dual_operation := "IsWellDefinedForObjects",
