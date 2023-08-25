@@ -2101,9 +2101,9 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                 
             elif tree.funcref.gvar = "PreComposeList" then
                 
-                if tree.args.2.type = "EXPR_LIST" and ForAll( tree.args.2.list, x -> x.type = "EXPR_REF_FVAR" ) then
+                if tree.args.3.type = "EXPR_LIST" and ForAll( tree.args.3.list, x -> x.type = "EXPR_REF_FVAR" ) then
                     
-                    list := result.args.2;
+                    list := result.args.3;
                     
                     if list.type <> "list" then
                         
@@ -2118,7 +2118,7 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
                     
                 else
                     
-                    list := result.args.2;
+                    list := result.args.3;
                     
                     if list.type <> "list" then
                         
@@ -2933,7 +2933,7 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
         
         #Error( "only functions returning the result of a call to IsCongruentForMorphisms can be displayed as math" );
         
-        left_list := CapJitIterateOverTree( return_value.args.2.args.2, ReturnFirst, result_func, additional_arguments_func, [ func_tree ] );
+        left_list := CapJitIterateOverTree( return_value.args.2.args.3, ReturnFirst, result_func, additional_arguments_func, [ func_tree ] );
         right := CapJitIterateOverTree( return_value.args.3, ReturnFirst, result_func, additional_arguments_func, [ func_tree ] );
         
         #Assert( 0, left_list.type = "list" );
@@ -3005,7 +3005,7 @@ FunctionAsMathString := function ( func, cat, input_filters, args... )
         
         #Error( "only functions returning the result of a call to IsCongruentForMorphisms can be displayed as math" );
         
-        left_list := CapJitIterateOverTree( return_value.args.2, ReturnFirst, result_func, additional_arguments_func, [ func_tree ] );
+        left_list := CapJitIterateOverTree( return_value.args.3, ReturnFirst, result_func, additional_arguments_func, [ func_tree ] );
         
         Assert( 0, left_list.type = "list" );
         
