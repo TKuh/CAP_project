@@ -3390,86 +3390,88 @@ end
         
 ########
 function ( cat_1, a_1, L_1 )
-    local morphism_attr_1_1, hoisted_5_1, deduped_6_1, deduped_7_1, deduped_8_1, deduped_9_1;
+    local hoisted_4_1, deduped_5_1, deduped_6_1, deduped_7_1, deduped_8_1, deduped_9_1;
     deduped_9_1 := Length( L_1 );
     deduped_8_1 := List( L_1, Dimension );
     deduped_7_1 := Dimension( a_1 );
     deduped_6_1 := UnderlyingRing( cat_1 );
-    hoisted_5_1 := HomalgIdentityMatrix( deduped_7_1, deduped_6_1 );
-    morphism_attr_1_1 := UnionOfColumns( deduped_6_1, deduped_7_1 * Sum( deduped_8_1 ), List( [ 1 .. deduped_9_1 ], function ( i_2 )
-              local deduped_1_2;
-              deduped_1_2 := deduped_8_1[i_2];
-              return KroneckerMat( hoisted_5_1, UnionOfRows( HomalgZeroMatrix( Sum( deduped_8_1{[ 1 .. i_2 - 1 ]} ), deduped_1_2, deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( Sum( deduped_8_1{[ i_2 + 1 .. deduped_9_1 ]} ), deduped_1_2, deduped_6_1 ) ) );
+    hoisted_4_1 := HomalgIdentityMatrix( deduped_7_1, deduped_6_1 );
+    deduped_5_1 := UnionOfColumns( deduped_6_1, deduped_7_1 * Sum( deduped_8_1 ), List( [ 1 .. deduped_9_1 ], function ( i_2 )
+              local deduped_1_2, deduped_2_2;
+              deduped_2_2 := CAP_JIT_INCOMPLETE_LOGIC( i_2 );
+              deduped_1_2 := deduped_8_1[deduped_2_2];
+              return KroneckerMat( hoisted_4_1, CAP_JIT_INCOMPLETE_LOGIC( UnionOfRows( HomalgZeroMatrix( Sum( deduped_8_1{[ 1 .. deduped_2_2 - 1 ]} ), deduped_1_2, deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( Sum( deduped_8_1{[ deduped_2_2 + 1 .. deduped_9_1 ]} ), deduped_1_2, deduped_6_1 ) ) ) );
           end ) );
-    return CreateCapCategoryMorphismWithAttributes( cat_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberRows( morphism_attr_1_1 ) ), CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberColumns( morphism_attr_1_1 ) ), UnderlyingMatrix, morphism_attr_1_1 );
+    return CreateCapCategoryMorphismWithAttributes( cat_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberRows( deduped_5_1 ) ), CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberColumns( deduped_5_1 ) ), UnderlyingMatrix, deduped_5_1 );
 end
 ########
         
-    , 1707 : IsPrecompiledDerivation := true );
+    , 1204 : IsPrecompiledDerivation := true );
     
     ##
     AddLeftDistributivityExpandingWithGivenObjects( cat,
         
 ########
 function ( cat_1, s_1, a_1, L_1, r_1 )
-    local morphism_attr_1_1, deduped_2_1, hoisted_5_1, deduped_6_1, deduped_7_1;
-    deduped_7_1 := Length( L_1 );
-    deduped_6_1 := UnderlyingRing( cat_1 );
-    hoisted_5_1 := HomalgIdentityMatrix( Dimension( a_1 ), deduped_6_1 );
-    deduped_2_1 := List( L_1, Dimension );
-    morphism_attr_1_1 := UnionOfColumns( deduped_6_1, Dimension( s_1 ), List( [ 1 .. deduped_7_1 ], function ( i_2 )
-              local deduped_1_2;
-              deduped_1_2 := deduped_2_1[i_2];
-              return KroneckerMat( hoisted_5_1, UnionOfRows( HomalgZeroMatrix( Sum( deduped_2_1{[ 1 .. i_2 - 1 ]} ), deduped_1_2, deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( Sum( deduped_2_1{[ i_2 + 1 .. deduped_7_1 ]} ), deduped_1_2, deduped_6_1 ) ) );
-          end ) );
-    return CreateCapCategoryMorphismWithAttributes( cat_1, s_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberColumns( morphism_attr_1_1 ) ), UnderlyingMatrix, morphism_attr_1_1 );
+    local deduped_1_1, hoisted_4_1, deduped_5_1, deduped_6_1;
+    deduped_6_1 := Length( L_1 );
+    deduped_5_1 := UnderlyingRing( cat_1 );
+    hoisted_4_1 := HomalgIdentityMatrix( Dimension( a_1 ), deduped_5_1 );
+    deduped_1_1 := List( L_1, Dimension );
+    return CreateCapCategoryMorphismWithAttributes( cat_1, s_1, r_1, UnderlyingMatrix, UnionOfColumns( deduped_5_1, Dimension( s_1 ), List( [ 1 .. deduped_6_1 ], function ( i_2 )
+                local deduped_1_2, deduped_2_2;
+                deduped_2_2 := CAP_JIT_INCOMPLETE_LOGIC( i_2 );
+                deduped_1_2 := deduped_1_1[deduped_2_2];
+                return KroneckerMat( hoisted_4_1, CAP_JIT_INCOMPLETE_LOGIC( UnionOfRows( HomalgZeroMatrix( Sum( deduped_1_1{[ 1 .. deduped_2_2 - 1 ]} ), deduped_1_2, deduped_5_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_5_1 ), HomalgZeroMatrix( Sum( deduped_1_1{[ deduped_2_2 + 1 .. deduped_6_1 ]} ), deduped_1_2, deduped_5_1 ) ) ) );
+            end ) ) );
 end
 ########
         
-    , 1506 : IsPrecompiledDerivation := true );
+    , 1003 : IsPrecompiledDerivation := true );
     
     ##
     AddLeftDistributivityFactoring( cat,
         
 ########
 function ( cat_1, a_1, L_1 )
-    local morphism_attr_1_1, hoisted_5_1, deduped_6_1, deduped_7_1, deduped_8_1, deduped_9_1;
+    local hoisted_4_1, deduped_5_1, deduped_6_1, deduped_7_1, deduped_8_1, deduped_9_1;
     deduped_9_1 := Length( L_1 );
     deduped_8_1 := List( L_1, Dimension );
     deduped_7_1 := Dimension( a_1 );
     deduped_6_1 := UnderlyingRing( cat_1 );
-    hoisted_5_1 := HomalgIdentityMatrix( deduped_7_1, deduped_6_1 );
-    morphism_attr_1_1 := UnionOfRows( deduped_6_1, deduped_7_1 * Sum( deduped_8_1 ), List( [ 1 .. deduped_9_1 ], function ( i_2 )
-              local deduped_1_2;
-              deduped_1_2 := deduped_8_1[i_2];
-              return KroneckerMat( hoisted_5_1, UnionOfColumns( HomalgZeroMatrix( deduped_1_2, Sum( deduped_8_1{[ 1 .. i_2 - 1 ]} ), deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( deduped_1_2, Sum( deduped_8_1{[ i_2 + 1 .. deduped_9_1 ]} ), deduped_6_1 ) ) );
+    hoisted_4_1 := HomalgIdentityMatrix( deduped_7_1, deduped_6_1 );
+    deduped_5_1 := UnionOfRows( deduped_6_1, deduped_7_1 * Sum( deduped_8_1 ), List( [ 1 .. deduped_9_1 ], function ( i_2 )
+              local deduped_1_2, deduped_2_2;
+              deduped_2_2 := CAP_JIT_INCOMPLETE_LOGIC( i_2 );
+              deduped_1_2 := deduped_8_1[deduped_2_2];
+              return KroneckerMat( hoisted_4_1, CAP_JIT_INCOMPLETE_LOGIC( UnionOfColumns( HomalgZeroMatrix( deduped_1_2, Sum( deduped_8_1{[ 1 .. deduped_2_2 - 1 ]} ), deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( deduped_1_2, Sum( deduped_8_1{[ deduped_2_2 + 1 .. deduped_9_1 ]} ), deduped_6_1 ) ) ) );
           end ) );
-    return CreateCapCategoryMorphismWithAttributes( cat_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberRows( morphism_attr_1_1 ) ), CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberColumns( morphism_attr_1_1 ) ), UnderlyingMatrix, morphism_attr_1_1 );
+    return CreateCapCategoryMorphismWithAttributes( cat_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberRows( deduped_5_1 ) ), CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberColumns( deduped_5_1 ) ), UnderlyingMatrix, deduped_5_1 );
 end
 ########
         
-    , 1707 : IsPrecompiledDerivation := true );
+    , 1204 : IsPrecompiledDerivation := true );
     
     ##
     AddLeftDistributivityFactoringWithGivenObjects( cat,
         
 ########
 function ( cat_1, s_1, a_1, L_1, r_1 )
-    local morphism_attr_1_1, deduped_2_1, hoisted_5_1, deduped_6_1, deduped_7_1;
-    deduped_7_1 := Length( L_1 );
-    deduped_6_1 := UnderlyingRing( cat_1 );
-    hoisted_5_1 := HomalgIdentityMatrix( Dimension( a_1 ), deduped_6_1 );
-    deduped_2_1 := List( L_1, Dimension );
-    morphism_attr_1_1 := UnionOfRows( deduped_6_1, Dimension( r_1 ), List( [ 1 .. deduped_7_1 ], function ( i_2 )
-              local deduped_1_2;
-              deduped_1_2 := deduped_2_1[i_2];
-              return KroneckerMat( hoisted_5_1, UnionOfColumns( HomalgZeroMatrix( deduped_1_2, Sum( deduped_2_1{[ 1 .. i_2 - 1 ]} ), deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( deduped_1_2, Sum( deduped_2_1{[ i_2 + 1 .. deduped_7_1 ]} ), deduped_6_1 ) ) );
-          end ) );
-    return CreateCapCategoryMorphismWithAttributes( cat_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberRows( morphism_attr_1_1 ) ), r_1, UnderlyingMatrix, morphism_attr_1_1 );
+    local deduped_1_1, hoisted_4_1, deduped_5_1, deduped_6_1;
+    deduped_6_1 := Length( L_1 );
+    deduped_5_1 := UnderlyingRing( cat_1 );
+    hoisted_4_1 := HomalgIdentityMatrix( Dimension( a_1 ), deduped_5_1 );
+    deduped_1_1 := List( L_1, Dimension );
+    return CreateCapCategoryMorphismWithAttributes( cat_1, s_1, r_1, UnderlyingMatrix, UnionOfRows( deduped_5_1, Dimension( r_1 ), List( [ 1 .. deduped_6_1 ], function ( i_2 )
+                local deduped_1_2, deduped_2_2;
+                deduped_2_2 := CAP_JIT_INCOMPLETE_LOGIC( i_2 );
+                deduped_1_2 := deduped_1_1[deduped_2_2];
+                return KroneckerMat( hoisted_4_1, CAP_JIT_INCOMPLETE_LOGIC( UnionOfColumns( HomalgZeroMatrix( deduped_1_2, Sum( deduped_1_1{[ 1 .. deduped_2_2 - 1 ]} ), deduped_5_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_5_1 ), HomalgZeroMatrix( deduped_1_2, Sum( deduped_1_1{[ deduped_2_2 + 1 .. deduped_6_1 ]} ), deduped_5_1 ) ) ) );
+            end ) ) );
 end
 ########
         
-    , 1506 : IsPrecompiledDerivation := true );
+    , 1003 : IsPrecompiledDerivation := true );
     
     ##
     AddLeftUnitor( cat,
@@ -4901,86 +4903,88 @@ end
         
 ########
 function ( cat_1, L_1, a_1 )
-    local morphism_attr_1_1, hoisted_5_1, deduped_6_1, deduped_7_1, deduped_8_1, deduped_9_1;
+    local hoisted_4_1, deduped_5_1, deduped_6_1, deduped_7_1, deduped_8_1, deduped_9_1;
     deduped_9_1 := Length( L_1 );
     deduped_8_1 := Dimension( a_1 );
     deduped_7_1 := List( L_1, Dimension );
     deduped_6_1 := UnderlyingRing( cat_1 );
-    hoisted_5_1 := HomalgIdentityMatrix( deduped_8_1, deduped_6_1 );
-    morphism_attr_1_1 := UnionOfColumns( deduped_6_1, Sum( deduped_7_1 ) * deduped_8_1, List( [ 1 .. deduped_9_1 ], function ( i_2 )
-              local deduped_1_2;
-              deduped_1_2 := deduped_7_1[i_2];
-              return KroneckerMat( UnionOfRows( HomalgZeroMatrix( Sum( deduped_7_1{[ 1 .. i_2 - 1 ]} ), deduped_1_2, deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( Sum( deduped_7_1{[ i_2 + 1 .. deduped_9_1 ]} ), deduped_1_2, deduped_6_1 ) ), hoisted_5_1 );
+    hoisted_4_1 := HomalgIdentityMatrix( deduped_8_1, deduped_6_1 );
+    deduped_5_1 := UnionOfColumns( deduped_6_1, Sum( deduped_7_1 ) * deduped_8_1, List( [ 1 .. deduped_9_1 ], function ( i_2 )
+              local deduped_1_2, deduped_2_2;
+              deduped_2_2 := CAP_JIT_INCOMPLETE_LOGIC( i_2 );
+              deduped_1_2 := deduped_7_1[deduped_2_2];
+              return KroneckerMat( CAP_JIT_INCOMPLETE_LOGIC( UnionOfRows( HomalgZeroMatrix( Sum( deduped_7_1{[ 1 .. deduped_2_2 - 1 ]} ), deduped_1_2, deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( Sum( deduped_7_1{[ deduped_2_2 + 1 .. deduped_9_1 ]} ), deduped_1_2, deduped_6_1 ) ) ), hoisted_4_1 );
           end ) );
-    return CreateCapCategoryMorphismWithAttributes( cat_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberRows( morphism_attr_1_1 ) ), CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberColumns( morphism_attr_1_1 ) ), UnderlyingMatrix, morphism_attr_1_1 );
+    return CreateCapCategoryMorphismWithAttributes( cat_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberRows( deduped_5_1 ) ), CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberColumns( deduped_5_1 ) ), UnderlyingMatrix, deduped_5_1 );
 end
 ########
         
-    , 1707 : IsPrecompiledDerivation := true );
+    , 1204 : IsPrecompiledDerivation := true );
     
     ##
     AddRightDistributivityExpandingWithGivenObjects( cat,
         
 ########
 function ( cat_1, s_1, L_1, a_1, r_1 )
-    local morphism_attr_1_1, deduped_2_1, hoisted_5_1, deduped_6_1, deduped_7_1;
-    deduped_7_1 := Length( L_1 );
-    deduped_6_1 := UnderlyingRing( cat_1 );
-    hoisted_5_1 := HomalgIdentityMatrix( Dimension( a_1 ), deduped_6_1 );
-    deduped_2_1 := List( L_1, Dimension );
-    morphism_attr_1_1 := UnionOfColumns( deduped_6_1, Dimension( s_1 ), List( [ 1 .. deduped_7_1 ], function ( i_2 )
-              local deduped_1_2;
-              deduped_1_2 := deduped_2_1[i_2];
-              return KroneckerMat( UnionOfRows( HomalgZeroMatrix( Sum( deduped_2_1{[ 1 .. i_2 - 1 ]} ), deduped_1_2, deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( Sum( deduped_2_1{[ i_2 + 1 .. deduped_7_1 ]} ), deduped_1_2, deduped_6_1 ) ), hoisted_5_1 );
-          end ) );
-    return CreateCapCategoryMorphismWithAttributes( cat_1, s_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberColumns( morphism_attr_1_1 ) ), UnderlyingMatrix, morphism_attr_1_1 );
+    local deduped_1_1, hoisted_4_1, deduped_5_1, deduped_6_1;
+    deduped_6_1 := Length( L_1 );
+    deduped_5_1 := UnderlyingRing( cat_1 );
+    hoisted_4_1 := HomalgIdentityMatrix( Dimension( a_1 ), deduped_5_1 );
+    deduped_1_1 := List( L_1, Dimension );
+    return CreateCapCategoryMorphismWithAttributes( cat_1, s_1, r_1, UnderlyingMatrix, UnionOfColumns( deduped_5_1, Dimension( s_1 ), List( [ 1 .. deduped_6_1 ], function ( i_2 )
+                local deduped_1_2, deduped_2_2;
+                deduped_2_2 := CAP_JIT_INCOMPLETE_LOGIC( i_2 );
+                deduped_1_2 := deduped_1_1[deduped_2_2];
+                return KroneckerMat( CAP_JIT_INCOMPLETE_LOGIC( UnionOfRows( HomalgZeroMatrix( Sum( deduped_1_1{[ 1 .. deduped_2_2 - 1 ]} ), deduped_1_2, deduped_5_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_5_1 ), HomalgZeroMatrix( Sum( deduped_1_1{[ deduped_2_2 + 1 .. deduped_6_1 ]} ), deduped_1_2, deduped_5_1 ) ) ), hoisted_4_1 );
+            end ) ) );
 end
 ########
         
-    , 1506 : IsPrecompiledDerivation := true );
+    , 1003 : IsPrecompiledDerivation := true );
     
     ##
     AddRightDistributivityFactoring( cat,
         
 ########
 function ( cat_1, L_1, a_1 )
-    local morphism_attr_1_1, hoisted_5_1, deduped_6_1, deduped_7_1, deduped_8_1, deduped_9_1;
+    local hoisted_4_1, deduped_5_1, deduped_6_1, deduped_7_1, deduped_8_1, deduped_9_1;
     deduped_9_1 := Length( L_1 );
     deduped_8_1 := Dimension( a_1 );
     deduped_7_1 := List( L_1, Dimension );
     deduped_6_1 := UnderlyingRing( cat_1 );
-    hoisted_5_1 := HomalgIdentityMatrix( deduped_8_1, deduped_6_1 );
-    morphism_attr_1_1 := UnionOfRows( deduped_6_1, Sum( deduped_7_1 ) * deduped_8_1, List( [ 1 .. deduped_9_1 ], function ( i_2 )
-              local deduped_1_2;
-              deduped_1_2 := deduped_7_1[i_2];
-              return KroneckerMat( UnionOfColumns( HomalgZeroMatrix( deduped_1_2, Sum( deduped_7_1{[ 1 .. i_2 - 1 ]} ), deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( deduped_1_2, Sum( deduped_7_1{[ i_2 + 1 .. deduped_9_1 ]} ), deduped_6_1 ) ), hoisted_5_1 );
+    hoisted_4_1 := HomalgIdentityMatrix( deduped_8_1, deduped_6_1 );
+    deduped_5_1 := UnionOfRows( deduped_6_1, Sum( deduped_7_1 ) * deduped_8_1, List( [ 1 .. deduped_9_1 ], function ( i_2 )
+              local deduped_1_2, deduped_2_2;
+              deduped_2_2 := CAP_JIT_INCOMPLETE_LOGIC( i_2 );
+              deduped_1_2 := deduped_7_1[deduped_2_2];
+              return KroneckerMat( CAP_JIT_INCOMPLETE_LOGIC( UnionOfColumns( HomalgZeroMatrix( deduped_1_2, Sum( deduped_7_1{[ 1 .. deduped_2_2 - 1 ]} ), deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( deduped_1_2, Sum( deduped_7_1{[ deduped_2_2 + 1 .. deduped_9_1 ]} ), deduped_6_1 ) ) ), hoisted_4_1 );
           end ) );
-    return CreateCapCategoryMorphismWithAttributes( cat_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberRows( morphism_attr_1_1 ) ), CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberColumns( morphism_attr_1_1 ) ), UnderlyingMatrix, morphism_attr_1_1 );
+    return CreateCapCategoryMorphismWithAttributes( cat_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberRows( deduped_5_1 ) ), CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberColumns( deduped_5_1 ) ), UnderlyingMatrix, deduped_5_1 );
 end
 ########
         
-    , 1707 : IsPrecompiledDerivation := true );
+    , 1204 : IsPrecompiledDerivation := true );
     
     ##
     AddRightDistributivityFactoringWithGivenObjects( cat,
         
 ########
 function ( cat_1, s_1, L_1, a_1, r_1 )
-    local morphism_attr_1_1, deduped_2_1, hoisted_5_1, deduped_6_1, deduped_7_1;
-    deduped_7_1 := Length( L_1 );
-    deduped_6_1 := UnderlyingRing( cat_1 );
-    hoisted_5_1 := HomalgIdentityMatrix( Dimension( a_1 ), deduped_6_1 );
-    deduped_2_1 := List( L_1, Dimension );
-    morphism_attr_1_1 := UnionOfRows( deduped_6_1, Dimension( r_1 ), List( [ 1 .. deduped_7_1 ], function ( i_2 )
-              local deduped_1_2;
-              deduped_1_2 := deduped_2_1[i_2];
-              return KroneckerMat( UnionOfColumns( HomalgZeroMatrix( deduped_1_2, Sum( deduped_2_1{[ 1 .. i_2 - 1 ]} ), deduped_6_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_6_1 ), HomalgZeroMatrix( deduped_1_2, Sum( deduped_2_1{[ i_2 + 1 .. deduped_7_1 ]} ), deduped_6_1 ) ), hoisted_5_1 );
-          end ) );
-    return CreateCapCategoryMorphismWithAttributes( cat_1, CreateCapCategoryObjectWithAttributes( cat_1, Dimension, NumberRows( morphism_attr_1_1 ) ), r_1, UnderlyingMatrix, morphism_attr_1_1 );
+    local deduped_1_1, hoisted_4_1, deduped_5_1, deduped_6_1;
+    deduped_6_1 := Length( L_1 );
+    deduped_5_1 := UnderlyingRing( cat_1 );
+    hoisted_4_1 := HomalgIdentityMatrix( Dimension( a_1 ), deduped_5_1 );
+    deduped_1_1 := List( L_1, Dimension );
+    return CreateCapCategoryMorphismWithAttributes( cat_1, s_1, r_1, UnderlyingMatrix, UnionOfRows( deduped_5_1, Dimension( r_1 ), List( [ 1 .. deduped_6_1 ], function ( i_2 )
+                local deduped_1_2, deduped_2_2;
+                deduped_2_2 := CAP_JIT_INCOMPLETE_LOGIC( i_2 );
+                deduped_1_2 := deduped_1_1[deduped_2_2];
+                return KroneckerMat( CAP_JIT_INCOMPLETE_LOGIC( UnionOfColumns( HomalgZeroMatrix( deduped_1_2, Sum( deduped_1_1{[ 1 .. deduped_2_2 - 1 ]} ), deduped_5_1 ), HomalgIdentityMatrix( deduped_1_2, deduped_5_1 ), HomalgZeroMatrix( deduped_1_2, Sum( deduped_1_1{[ deduped_2_2 + 1 .. deduped_6_1 ]} ), deduped_5_1 ) ) ), hoisted_4_1 );
+            end ) ) );
 end
 ########
         
-    , 1506 : IsPrecompiledDerivation := true );
+    , 1003 : IsPrecompiledDerivation := true );
     
     ##
     AddRightUnitor( cat,
