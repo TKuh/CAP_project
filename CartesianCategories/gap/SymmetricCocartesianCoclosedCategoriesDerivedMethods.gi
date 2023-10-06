@@ -542,7 +542,7 @@ end : CategoryFilter := IsCocartesianCoclosedCategory );
 AddDerivationToCAP( IsomorphismFromCoexponentialToObjectWithGivenCoexponential,
                     "IsomorphismFromCoexponentialToObjectWithGivenCoexponential using the cocartesian coevaluation morphism",
                     [ [ InitialObject, 1 ],
-                      [ PreCompose, 1 ],
+                      [ PreComposeList, 1 ],
                       [ CoexponentialOnMorphisms, 1 ],
                       [ CocartesianRightUnitorInverse, 1 ],
                       [ IdentityMorphism, 1 ],
@@ -563,12 +563,13 @@ AddDerivationToCAP( IsomorphismFromCoexponentialToObjectWithGivenCoexponential,
     
     unit := InitialObject( cat );
     
-    return PreCompose( cat,
-                   CoexponentialOnMorphisms( cat,
-                           CocartesianRightUnitorInverse( cat, a ),
-                           IdentityMorphism( cat, unit ) ),
-                   
-                   CocartesianCoevaluationMorphism( cat, a, unit ) );
+    return PreComposeList( cat,
+                internal_cohom,
+                [ CoexponentialOnMorphisms( cat,
+                        CocartesianRightUnitorInverse( cat, a ),
+                        IdentityMorphism( cat, unit ) ),
+                  CocartesianCoevaluationMorphism( cat, a, unit ) ],
+                a );
     
 end : CategoryFilter := IsCocartesianCoclosedCategory );
 
@@ -576,7 +577,7 @@ end : CategoryFilter := IsCocartesianCoclosedCategory );
 AddDerivationToCAP( IsomorphismFromCoexponentialToObjectWithGivenCoexponential,
                     "IsomorphismFromCoexponentialToObjectWithGivenCoexponential as the adjoint of the right inverse unitor",
                     [ [ InitialObject, 1 ],
-                      [ CoproductToCoexponentialAdjunctionMap, 1 ],
+                      [ CoproductToCoexponentialAdjunctionMapWithGivenCoexponential, 1 ],
                       [ CocartesianRightUnitorInverse, 1 ] ],
                     
   function( cat, a, internal_cohom )
@@ -585,10 +586,11 @@ AddDerivationToCAP( IsomorphismFromCoexponentialToObjectWithGivenCoexponential,
     #
     # Adjoint( (ρ_a)^-1 ) = ( Coexp(a,1) → a )
     
-    return CoproductToCoexponentialAdjunctionMap( cat,
+    return CoproductToCoexponentialAdjunctionMapWithGivenCoexponential( cat,
                    a,
                    InitialObject( cat ),
-                   CocartesianRightUnitorInverse( cat, a ) );
+                   CocartesianRightUnitorInverse( cat, a ),
+                   internal_cohom );
     
 end : CategoryFilter := IsCocartesianCoclosedCategory );
 
@@ -609,7 +611,7 @@ end : CategoryFilter := IsCocartesianCoclosedCategory );
 AddDerivationToCAP( IsomorphismFromObjectToCoexponentialWithGivenCoexponential,
                     "IsomorphismFromObjectToCoexponentialWithGivenCoexponential using the cocartesian evaluation morphism",
                     [ [ InitialObject, 1 ],
-                      [ PreCompose, 1 ],
+                      [ PreComposeList, 1 ],
                       [ CocartesianEvaluationMorphism, 1 ],
                       [ CocartesianRightUnitor, 1 ] ],
                     
@@ -625,9 +627,11 @@ AddDerivationToCAP( IsomorphismFromObjectToCoexponentialWithGivenCoexponential,
     #       v
     #   Coexp(a,1)
     
-    return PreCompose( cat,
-                   CocartesianEvaluationMorphism( cat, a, InitialObject( cat ) ),
-                   CocartesianRightUnitor( cat, internal_cohom ) );
+    return PreComposeList( cat,
+                   a,
+                   [ CocartesianEvaluationMorphism( cat, a, InitialObject( cat ) ),
+                     CocartesianRightUnitor( cat, internal_cohom ) ],
+                   internal_cohom );
     
 end : CategoryFilter := IsCocartesianCoclosedCategory );
 

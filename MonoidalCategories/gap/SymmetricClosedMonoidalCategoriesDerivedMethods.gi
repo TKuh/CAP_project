@@ -531,7 +531,7 @@ end : CategoryFilter := IsSymmetricClosedMonoidalCategory );
 AddDerivationToCAP( IsomorphismFromObjectToInternalHomWithGivenInternalHom,
                     "IsomorphismFromObjectToInternalHomWithGivenInternalHom using the coevaluation morphism",
                     [ [ TensorUnit, 1 ],
-                      [ PreCompose, 1 ],
+                      [ PreComposeList, 1 ],
                       [ CoevaluationMorphism, 1 ],
                       [ InternalHomOnMorphisms, 1 ],
                       [ IdentityMorphism, 1 ],
@@ -552,11 +552,11 @@ AddDerivationToCAP( IsomorphismFromObjectToInternalHomWithGivenInternalHom,
     
     unit := TensorUnit( cat );
     
-    return PreCompose( cat,
-             CoevaluationMorphism( cat, a, unit ),
-             InternalHomOnMorphisms( cat,
-               IdentityMorphism( cat, unit ),
-               RightUnitor( cat, a ) ) );
+    return PreComposeList( cat,
+                a,
+                [ CoevaluationMorphism( cat, a, unit ),
+                  InternalHomOnMorphisms( cat, IdentityMorphism( cat, unit ), RightUnitor( cat, a ) ) ],
+                internal_hom );
     
 end : CategoryFilter := IsSymmetricClosedMonoidalCategory );
 
@@ -564,7 +564,7 @@ end : CategoryFilter := IsSymmetricClosedMonoidalCategory );
 AddDerivationToCAP( IsomorphismFromObjectToInternalHomWithGivenInternalHom,
                     "IsomorphismFromObjectToInternalHomWithGivenInternalHom as the adjoint of the right unitor",
                     [ [ TensorUnit, 1 ],
-                      [ TensorProductToInternalHomAdjunctionMap, 1 ],
+                      [ TensorProductToInternalHomAdjunctionMapWithGivenInternalHom, 1 ],
                       [ RightUnitor, 1 ] ],
                     
   function( cat, a, internal_hom )
@@ -573,10 +573,11 @@ AddDerivationToCAP( IsomorphismFromObjectToInternalHomWithGivenInternalHom,
     #
     # Adjoint( ρ_a ) = ( a → Hom(1,a) )
     
-    return TensorProductToInternalHomAdjunctionMap( cat,
+    return TensorProductToInternalHomAdjunctionMapWithGivenInternalHom( cat,
                    a,
                    TensorUnit( cat ),
-                   RightUnitor( cat, a ) );
+                   RightUnitor( cat, a ),
+                   internal_hom );
     
 end : CategoryFilter := IsSymmetricClosedMonoidalCategory );
 
@@ -597,7 +598,7 @@ end : CategoryFilter := IsSymmetricClosedMonoidalCategory );
 AddDerivationToCAP( IsomorphismFromInternalHomToObjectWithGivenInternalHom,
                     "IsomorphismFromInternalHomToObjectWithGivenInternalHom using the evaluation morphism",
                     [ [ TensorUnit, 1 ],
-                      [ PreCompose, 1 ],
+                      [ PreComposeList, 1 ],
                       [ RightUnitorInverse, 1 ],
                       [ EvaluationMorphism, 1 ] ],
                     
@@ -613,9 +614,11 @@ AddDerivationToCAP( IsomorphismFromInternalHomToObjectWithGivenInternalHom,
     #      v
     #      a
     
-    return PreCompose( cat,
-                   RightUnitorInverse( cat, internal_hom ),
-                   EvaluationMorphism( cat, TensorUnit( cat ), a ) );
+    return PreComposeList( cat,
+                internal_hom,
+                [ RightUnitorInverse( cat, internal_hom ),
+                  EvaluationMorphism( cat, TensorUnit( cat ), a ) ],
+                a );
     
 end : CategoryFilter := IsSymmetricClosedMonoidalCategory );
 
