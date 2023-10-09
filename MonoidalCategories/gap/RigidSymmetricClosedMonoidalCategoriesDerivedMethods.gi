@@ -416,18 +416,18 @@ AddDerivationToCAP( MorphismFromInternalHomToTensorProductWithGivenObjects,
 
     unit := TensorUnit( cat );
     
-    return PostComposeList( cat, [
-             TensorProductOnMorphisms( cat,
-               IsomorphismFromInternalHomIntoTensorUnitToDualObject( cat, a ),
-               IsomorphismFromInternalHomToObject( cat, b ) ),
-                
-             TensorProductInternalHomCompatibilityMorphismInverse( cat,
-               [ a, unit, unit, b ] ),
-                
-             InternalHomOnMorphisms( cat,
-               RightUnitor( cat, a ),
-               LeftUnitorInverse( cat, b ) ),
-           ] );
+    return PostComposeList( cat,
+                    internal_hom,
+                    [ TensorProductOnMorphisms( cat,
+                        IsomorphismFromInternalHomIntoTensorUnitToDualObject( cat, a ),
+                        IsomorphismFromInternalHomToObject( cat, b ) ),
+                      
+                      TensorProductInternalHomCompatibilityMorphismInverse( cat, [ a, unit, unit, b ] ),
+                      
+                      InternalHomOnMorphisms( cat,
+                        RightUnitor( cat, a ),
+                        LeftUnitorInverse( cat, b ) ) ],
+                    tensor_object );
     
 end : CategoryFilter := IsRigidSymmetricClosedMonoidalCategory );
 
