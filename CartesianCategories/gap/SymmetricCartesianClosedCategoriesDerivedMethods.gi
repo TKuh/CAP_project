@@ -861,7 +861,7 @@ AddDerivationToCAP( CartesianPostComposeMorphismWithGivenObjects,
                     "CartesianPostComposeMorphismWithGivenObjects using CartesianPreComposeMorphism and braiding",
                     [ [ CartesianBraiding, 1 ],
                       [ ExponentialOnObjects, 2 ],
-                      [ PreCompose, 1 ],
+                      [ PreComposeList, 1 ],
                       [ CartesianPreComposeMorphism, 1 ] ],
                     
   function( cat, source, a, b, c, range )
@@ -879,7 +879,7 @@ AddDerivationToCAP( CartesianPostComposeMorphismWithGivenObjects,
     
     braiding := CartesianBraiding( cat, ExponentialOnObjects( cat, b, c ), ExponentialOnObjects( cat, a, b ) );
     
-    return PreCompose( cat, braiding, CartesianPreComposeMorphism( cat, a, b, c ) );
+    return PreComposeList( cat, source, [ braiding, CartesianPreComposeMorphism( cat, a, b, c ) ], range );
     
 end : CategoryFilter := IsCartesianClosedCategory );
 
@@ -888,7 +888,7 @@ AddDerivationToCAP( CartesianPreComposeMorphismWithGivenObjects,
                     "CartesianPreComposeMorphismWithGivenObjects using CartesianPostComposeMorphism and braiding",
                     [ [ CartesianBraiding, 1 ],
                       [ ExponentialOnObjects, 2 ],
-                      [ PreCompose, 1 ],
+                      [ PreComposeList, 1 ],
                       [ CartesianPostComposeMorphism, 1 ] ],
                     
   function( cat, source, a, b, c, range )
@@ -906,7 +906,7 @@ AddDerivationToCAP( CartesianPreComposeMorphismWithGivenObjects,
     
     braiding := CartesianBraiding( cat, ExponentialOnObjects( cat, a, b ), ExponentialOnObjects( cat, b, c ) );
     
-    return PreCompose( cat, braiding, CartesianPostComposeMorphism( cat, a, b, c ) );
+    return PreComposeList( cat, source, [ braiding, CartesianPostComposeMorphism( cat, a, b, c ) ], range );
     
 end : CategoryFilter := IsCartesianClosedCategory );
 

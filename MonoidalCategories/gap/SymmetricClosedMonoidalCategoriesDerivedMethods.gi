@@ -858,7 +858,7 @@ AddDerivationToCAP( MonoidalPostComposeMorphismWithGivenObjects,
                     "MonoidalPostComposeMorphismWithGivenObjects using MonoidalPreComposeMorphism and braiding",
                     [ [ Braiding, 1 ],
                       [ InternalHomOnObjects, 2 ],
-                      [ PreCompose, 1 ],
+                      [ PreComposeList, 1 ],
                       [ MonoidalPreComposeMorphism, 1 ] ],
                     
   function( cat, source, a, b, c, range )
@@ -876,7 +876,7 @@ AddDerivationToCAP( MonoidalPostComposeMorphismWithGivenObjects,
     
     braiding := Braiding( cat, InternalHomOnObjects( cat, b, c ), InternalHomOnObjects( cat, a, b ) );
     
-    return PreCompose( cat, braiding, MonoidalPreComposeMorphism( cat, a, b, c ) );
+    return PreComposeList( cat, source, [ braiding, MonoidalPreComposeMorphism( cat, a, b, c ) ], range );
     
 end : CategoryFilter := IsSymmetricClosedMonoidalCategory );
 
@@ -885,7 +885,7 @@ AddDerivationToCAP( MonoidalPreComposeMorphismWithGivenObjects,
                     "MonoidalPreComposeMorphismWithGivenObjects using MonoidalPostComposeMorphism and braiding",
                     [ [ Braiding, 1 ],
                       [ InternalHomOnObjects, 2 ],
-                      [ PreCompose, 1 ],
+                      [ PreComposeList, 1 ],
                       [ MonoidalPostComposeMorphism, 1 ] ],
                     
   function( cat, source, a, b, c, range )
@@ -903,7 +903,7 @@ AddDerivationToCAP( MonoidalPreComposeMorphismWithGivenObjects,
     
     braiding := Braiding( cat, InternalHomOnObjects( cat, a, b ), InternalHomOnObjects( cat, b, c ) );
     
-    return PreCompose( cat, braiding, MonoidalPostComposeMorphism( cat, a, b, c ) );
+    return PreComposeList( cat, source, [ braiding, MonoidalPostComposeMorphism( cat, a, b, c ) ], range );
     
 end : CategoryFilter := IsSymmetricClosedMonoidalCategory );
 

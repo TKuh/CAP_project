@@ -869,7 +869,7 @@ AddDerivationToCAP( CocartesianPostCoComposeMorphismWithGivenObjects,
                     "CocartesianPostCoComposeMorphismWithGivenObjects using CocartesianPreCoComposeMorphism and braiding",
                     [ [ CocartesianBraiding, 1 ],
                       [ CoexponentialOnObjects, 2 ],
-                      [ PreCompose, 1 ],
+                      [ PreComposeList, 1 ],
                       [ CocartesianPreCoComposeMorphism, 1 ] ],
                     
   function( cat, source, a, b, c, range )
@@ -887,7 +887,7 @@ AddDerivationToCAP( CocartesianPostCoComposeMorphismWithGivenObjects,
     
     braiding := CocartesianBraiding( cat, CoexponentialOnObjects( cat, b, c ), CoexponentialOnObjects( cat, a, b ) );
     
-    return PreCompose( cat, CocartesianPreCoComposeMorphism( cat, a, b, c ), braiding );
+    return PreComposeList( cat, source, [ CocartesianPreCoComposeMorphism( cat, a, b, c ), braiding ], range );
     
 end : CategoryFilter := IsCocartesianCoclosedCategory );
 
@@ -896,7 +896,7 @@ AddDerivationToCAP( CocartesianPreCoComposeMorphismWithGivenObjects,
                     "CocartesianPreCoComposeMorphismWithGivenObjects using CocartesianPostCoComposeMorphism and braiding",
                     [ [ CocartesianBraiding, 1 ],
                       [ CoexponentialOnObjects, 2 ],
-                      [ PreCompose, 1 ],
+                      [ PreComposeList, 1 ],
                       [ CocartesianPostCoComposeMorphism, 1 ] ],
                     
   function( cat, source, a, b, c, range )
@@ -914,7 +914,7 @@ AddDerivationToCAP( CocartesianPreCoComposeMorphismWithGivenObjects,
 
     braiding := CocartesianBraiding( cat, CoexponentialOnObjects( cat, a, b ), CoexponentialOnObjects( cat, b, c ) );
     
-    return PreCompose( cat, CocartesianPostCoComposeMorphism( cat, a, b, c ), braiding );
+    return PreComposeList( cat, source, [ CocartesianPostCoComposeMorphism( cat, a, b, c ), braiding ], range );
     
 end : CategoryFilter := IsCocartesianCoclosedCategory );
 
