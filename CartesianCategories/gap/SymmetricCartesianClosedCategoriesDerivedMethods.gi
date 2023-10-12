@@ -98,12 +98,14 @@ end : CategoryFilter := IsCartesianClosedCategory );
 AddDerivationToCAP( ExponentialToDirectProductAdjunctionMapWithGivenDirectProduct,
                     "ExponentialToDirectProductAdjunctionMapWithGivenDirectProduct using DirectProductOnMorphisms and CartesianEvaluationMorphism",
                     [ [ PreCompose, 1 ],
+                      [ DirectProduct, 1 ],
                       [ DirectProductOnMorphismsWithGivenDirectProducts, 1 ],
+                      [ ExponentialOnObjects, 1 ],
                       [ IdentityMorphism, 1 ],
-                      [ CartesianEvaluationMorphism, 1 ] ],
+                      [ CartesianEvaluationMorphismWithGivenSource, 1 ] ],
                     
   function( cat, b, c, g, t )
-    local ev_bc;
+    local exp_bc_x_b;
     
     # g: a → Exp(b,c)
     #
@@ -117,11 +119,11 @@ AddDerivationToCAP( ExponentialToDirectProductAdjunctionMapWithGivenDirectProduc
     #      v
     #      c
      
-     ev_bc := CartesianEvaluationMorphism( cat, b, c );
+    exp_bc_x_b := BinaryDirectProduct( cat, ExponentialOnObjects( cat, b, c ), b );
      
     return PreCompose( cat,
-             DirectProductOnMorphismsWithGivenDirectProducts( cat, t, g, IdentityMorphism( cat, b ), Source( ev_bc ) ),
-             ev_bc );
+             DirectProductOnMorphismsWithGivenDirectProducts( cat, t, g, IdentityMorphism( cat, b ), exp_bc_x_b ),
+             CartesianEvaluationMorphismWithGivenSource( cat, b, c, exp_bc_x_b ) );
     
 end : CategoryFilter := IsCartesianClosedCategory );
 
