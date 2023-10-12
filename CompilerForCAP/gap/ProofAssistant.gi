@@ -611,7 +611,7 @@ BindGlobal( "PrintLemma", function ( args... )
 end );
 
 BindGlobal( "CheckDerivationSourceAndRange", function ( )
-  local cat, info, derivations, func1, template_func, compiled_tree1, template_tree, tree, func2, compiled_tree2, name, derivation;
+local cat, info, derivations, func1, template_func, compiled_tree1, template_tree, tree, func2, compiled_tree2, skip, name, derivation;
     
     CapJitAddLogicFunction( function ( tree )
       local pre_func;
@@ -684,7 +684,68 @@ BindGlobal( "CheckDerivationSourceAndRange", function ( )
         #    
         #fi;
         
-        name := "CocartesianCoevaluationMorphismWithGivenSource";
+        # name := "CocartesianCoevaluationMorphismWithGivenSource";
+        
+        skip := [ # CAP
+                  "CoimageProjection",
+                  "CokernelColift",
+                  "CokernelColiftWithGivenCokernelObject",
+                  "Colift",
+                  "EmbeddingOfEqualizer",
+                  "ImageEmbedding",
+                  "InjectionOfCofactorOfCoproduct",
+                  "InjectionOfCofactorOfDirectSum",
+                  "InjectionOfCofactorOfPushout",
+                  "KernelLift",
+                  "KernelLiftWithGivenKernelObject",
+                  "Lift",
+                  "MorphismFromCoimageToImageWithGivenObjects",
+                  "PostComposeList",
+                  "PreComposeList",
+                  "ProjectionInFactorOfDirectProduct",
+                  "ProjectionInFactorOfDirectSum",
+                  "ProjectionInFactorOfFiberProduct",
+                  "ProjectionOntoCoequalizer",
+                  "SumOfMorphisms",
+                  "UniversalMorphismFromCoequalizer",
+                  "UniversalMorphismFromCoequalizerWithGivenCoequalizer",
+                  "UniversalMorphismFromCoproduct", #Iso
+                  "UniversalMorphismFromDirectSum", #Iso
+                  "UniversalMorphismFromImage",
+                  "UniversalMorphismFromImageWithGivenImageObject",
+                  "UniversalMorphismFromInitialObject", #Iso
+                  "UniversalMorphismFromPushout", #Iso
+                  "UniversalMorphismFromZeroObject", #Iso
+                  "UniversalMorphismIntoDirectProduct", #Iso
+                  "UniversalMorphismIntoDirectSum", # Iso
+                  "UniversalMorphismIntoEqualizer", #Iso
+                  "UniversalMorphismIntoEqualizerWithGivenEqualizer",
+                  "UniversalMorphismIntoFiberProduct", #Iso
+                  "UniversalMorphismIntoTerminalObject", #Iso
+                  "UniversalMorphismIntoZeroObject", #Iso
+
+                  # Monoidal
+                  "MorphismFromInternalCoHomToTensorProductWithGivenObjects",
+                  "MorphismFromInternalHomToTensorProductWithGivenObjects",
+                  "MorphismFromTensorProductToInternalCoHomWithGivenObjects",
+                  "MorphismFromTensorProductToInternalHomWithGivenObjects",
+
+                  # To be fixed in PR 1488
+                  "MorphismToBidualWithGivenBidual",
+                  "MorphismToCartesianBidualWithGivenCartesianBidual",
+                  "MorphismFromCoBidualWithGivenCoBidual",
+                  "MorphismFromCocartesianBidualWithGivenCocartesianBidual",
+                  
+                  # Freyd
+                  "UniversalMorphismFromWeakBiPushout",
+                  "UniversalMorphismIntoWeakBiFiberProduct",
+                ];
+        
+        if name in skip then
+        
+            continue;
+        
+        fi;
         
         info := CAP_INTERNAL_METHOD_NAME_RECORD.(name);
         
@@ -694,7 +755,7 @@ BindGlobal( "CheckDerivationSourceAndRange", function ( )
             
         fi;
         
-        if false and IsBound( info.output_source_getter_string ) then
+        if IsBound( info.output_source_getter_string ) then
             
             Print( "#### ", name, "\n" );
             
