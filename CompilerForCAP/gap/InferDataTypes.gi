@@ -1623,3 +1623,6 @@ CapJitAddTypeSignature( "RepresentativeAction", [ IsGroup, IsGroup, IsGroup ], f
     
 end );
 # =#
+
+CapJitAddTypeSignature( "BooleanToInteger", [ IsBool ], IsInt );
+

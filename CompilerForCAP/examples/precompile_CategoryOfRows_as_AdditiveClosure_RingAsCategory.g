@@ -6,7 +6,7 @@
 
 LoadPackage( "AdditiveClosuresForCAP", false );
 #! true
-ReadPackage( "AdditiveClosuresForCAP",
+ReadPackageOnce( "AdditiveClosuresForCAP",
     "gap/CategoryOfRows_as_AdditiveClosure_RingAsCategory_CompilerLogic.gi");
 #! true
 

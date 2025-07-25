@@ -15,12 +15,9 @@ InstallMethod( MultiplicityArray,
     
     index_list := [ 1 .. Size( irr ) ];
     
-    return
-      List( index_list, i ->
-        List( index_list, j ->
-          List( index_list, k -> ScalarProduct( irr[i], irr[j] * irr[k] ) )
-        )
-      );
+    return List( index_list, i ->
+                List( index_list, j ->
+                      List( index_list, k -> ScalarProduct( irr[i], irr[j] * irr[k] ) ) ) );
     
 end );
 
@@ -35,14 +32,42 @@ InstallMethod( MultiplicityTripleArray,
     
     index_list := [ 1 .. Size( irr ) ];
     
-    return
-      List( index_list, i ->
-        List( index_list, j ->
-          List( index_list, k -> 
-            List( index_list, l -> ScalarProduct( irr[i], irr[j] * irr[k] * irr[l] ) )
-          )
-        )
-      );
+    return List( index_list, i ->
+                List( index_list, j ->
+                      List( index_list, k -> 
+                            List( index_list, l -> ScalarProduct( irr[i], irr[j] * irr[k] * irr[l] ) ) ) ) );
+    
+end );
+
+InstallGlobalFunction( AssociatorsOnIrreduciblesFromDatabase,
+  function( group )
+    local group_name, associator_filename, stream, command, associator_data;
+    
+    group_name := StructureDescription( group );
+    
+    group_name := Concatenation( group_name, "Ass.g" );
+    
+    # TODO: extract the path from Sebastians database keys.
+    associator_filename :=
+      Concatenation( PackageInfo( "GroupRepresentationsForCAP" )[1].InstallationPath,
+                     "/gap/AssociatorsDatabase/",
+                     group_name );
+    
+    if IsExistingFile( associator_filename ) then
+        
+        stream := InputTextFile( associator_filename );
+        
+        command := ReadAll( stream );
+        
+        associator_data := EvalString( command );
+        
+        return associator_data;
+        
+    else
+        
+        return fail;
+        
+    fi;
     
 end );
 

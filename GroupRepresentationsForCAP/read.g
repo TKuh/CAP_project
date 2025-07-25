@@ -4,6 +4,20 @@
 # Reading the implementation part of the package.
 #
 
+############################ Experimental #############################
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_CategoryOfPermutations.gi" );
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_CategoryOfPermutations_AsSubcategoryOfSkeletalGroupRepresentations.gi" );
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/CategoryOfInsertionMatrices.gi" );
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_CartesianCategory.gi" );
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_CategoryOfInsertionMatrices_AsSubcategoryOfSkeletalGroupRepresentations.gi" );
+
+############################ Experimental #############################
+
 ReadPackage( "GroupRepresentationsForCAP", "gap/SemisimpleCategoryObjects.gi" );
 
 ReadPackage( "GroupRepresentationsForCAP", "gap/SemisimpleCategoryMorphisms.gi" );
@@ -16,6 +30,23 @@ ReadPackage( "GroupRepresentationsForCAP", "gap/GZGradedIrreducibleObjects.gi" )
 
 ReadPackage( "GroupRepresentationsForCAP", "gap/RepresentationCategoryOfGroup.gi" );
 
+ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations.gi" );
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_PermutationOperations.gi" );
+
+# ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_AssociatorMorphisms.gi" );
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_AssociatorMorphisms_new.gi" );
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_BraidingMorphisms.gi" );
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_CoEvaluationForDualMorphisms.gi" );
+
 ReadPackage( "GroupRepresentationsForCAP", "gap/AssociatorsForRepresentationCategoryOfGroup.gi" );
 
+ReadPackage( "GroupRepresentationsForCAP", "gap/SemisimpleCategory_BraidingMorphisms.gi" );
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/SemisimpleCategory_AssociatorMorphisms.gi" );
+
 ReadPackage( "GroupRepresentationsForCAP", "gap/Tools.gi" );
+
