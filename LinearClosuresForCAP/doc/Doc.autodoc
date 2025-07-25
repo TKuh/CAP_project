@@ -1,5 +1,31 @@
-@Chapter Introduction
+@Chapter Linear closure of a category
 
-@Chapter Functionality
+@Section Attributes
+@Section Constructors
+@Section Operations
+@Section Functors
+@Section GAP Categories
 
-@Section Example Methods
+@Section Examples and Tests
+@Subsection Linear closure of a group as category
+@Subsection Matrices over ZG
+
+@Chapter Coproducts of CategoryOfRows
+
+@Section Attributes
+@Section Constructors
+@InsertChunk CoproductCategoryOfRows_constructors
+@Section Operations
+@Section GAP Categories
+@Section Examples and Tests
+
+@Chapter Coproducts of CategoryOfRows with sparse datastructure
+@InsertChunk CoproductOfCategoryOfRowsWithSparseDatastructureIntroduction
+
+@Section Attributes
+@Section Constructors
+@InsertChunk CoproductCategoryOfRowsWithSparseDatastructure_constructors
+@Section Operations
+@Section GAP Categories
+@Section Examples and Tests
+

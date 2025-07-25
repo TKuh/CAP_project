@@ -7,3 +7,8 @@
 ReadPackage( "LinearClosuresForCAP", "gap/LinearClosure.gd" );
 
 ReadPackage( "LinearClosuresForCAP", "gap/HomomorphismStructure.gd" );
+
+ReadPackage( "LinearClosuresForCAP", "gap/CoproductOfCategoryOfRows.gd" );
+
+ReadPackage( "LinearClosuresForCAP", "gap/CoproductOfCategoryOfRowsWithSparseDatastructure.gd" );
+

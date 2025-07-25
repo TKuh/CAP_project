@@ -3,7 +3,8 @@
 #
 # Declarations
 #
-#! @Chapter Groups as categories
+
+#! @Chapter Linear closure of a category
 
 ####################################
 ##
