@@ -1,0 +1,2048 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# GroupRepresentationsForCAP: Skeletal category of group representations for CAP
+#
+# Implementations
+#
+#! @Chapter Semisimple Categories
+
+####################################
+##
+## Constructors
+##
+####################################
+
+# InstallMethod( SGRepObject,
+#                [ IsSkeletalCategoryOfGroupRepresentations, IsList ],
+#
+#   function( SGReps, pairs_of_multiplicities_and_objects)
+#     local CoproductOfCatOfRows, L, P, lifted_pairs_of_multiplicities_and_objects;
+#
+#     S := ModelingCategory( SGReps );
+#     L := UnderlyingCategory( S );;
+#
+#     lifted_pairs_of_multiplicities_and_objects :=
+#         List( pairs_of_multiplicities_and_objects, pair ->
+#             Npair( 2, pair[1], ObjectConstructor( L, pair[2] ) ) );
+#
+#     return ObjectConstructor( SGReps, ObjectConstructor( CoproductOfCatOfRows, lifted_pairs_of_multiplicities_and_objects ) );
+#
+# end );
+
+##
+InstallMethod( SkeletalCategoryOfGroupRepresentations,
+               [ IsGroup, IsFieldForHomalg ],
+               
+  FunctionWithNamedArguments(
+  [
+    [ "FinalizeCategory", true ],
+  ],
+  function( CAP_NAMED_ARGUMENTS, G, splitting_field )
+    local character_table, irreducible_characters, nr_irreducible_characters, CoproductOfCatOfRows, object_datum_type, object_datum, object_constructor, morphism_datum_type, morphism_datum, morphism_constructor, modeling_tower_object_datum, modeling_tower_object_constructor, modeling_tower_morphism_datum, modeling_tower_morphism_constructor, name, SGReps;
+    
+    Assert( 0, HasCharacteristic( splitting_field ) and Characteristic( splitting_field ) = 0 );
+    
+    character_table := CharacterTable( G );
+    
+    irreducible_characters := Irr( character_table );
+    
+    nr_irreducible_characters := Length( irreducible_characters );
+    
+    CoproductOfCatOfRows := CoproductOfCategoryOfRows( splitting_field,
+                                                       nr_irreducible_characters
+                                                       : FinalizeCategory := false );
+    
+    ####################################
+    # Tensor structure
+    ####################################
+    
+    # AddTensorUnit( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows )
+    #
+    #     return SemisimpleCategoryObject( [ [ 1, tensor_unit ] ], category );
+    #
+    # end );
+    #
+    # AddLeftUnitorWithGivenTensorProduct( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, object, tensor_product )
+    #
+    #     return IdentityMorphism( object );
+    #
+    # end );
+    #
+    # AddRightUnitorWithGivenTensorProduct( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, object, tensor_product )
+    #
+    #     return IdentityMorphism( object );
+    #
+    # end );
+    #
+    # AddTensorProductOnObjects( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, object_1, object_2 )
+    #     local object_1_list, object_2_list, object_list, elem_1, elem_2, prod, multiplicity;
+    #
+    #     object_1_list := PairsOfRankAndCharacter( object_1 );
+    #
+    #     object_2_list := SemisimpleCategoryObjectList( object_2 );
+    #
+    #     object_list := [ ];
+    #
+    #     for elem_1 in object_1_list do
+    #
+    #         for elem_2 in object_2_list do
+    #
+    #             prod := elem_1[2] * elem_2[2];
+    #
+    #             multiplicity := elem_1[1] * elem_2[1];
+    #
+    #             Append( object_list, List( prod, pair -> [ pair[1] * multiplicity, pair[2] ] ) );
+    #
+    #         od;
+    #
+    #     od;
+    #
+    #     return SemisimpleCategoryObject( object_list, category );
+    #
+    # end );
+    #
+    # ##
+    # AddTensorProductOnMorphismsWithGivenTensorProducts( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, new_source, morphism_1, morphism_2, new_range )
+    #     local morphism_1_list, morphism_2_list, size_1, size_2, tensor_products, i, j,
+    #           support, size_support, morphism_list, chi, i_list, j_list, multiplicity,
+    #           object;
+    #
+    #     morphism_1_list := SemisimpleCategoryMorphismList( morphism_1 );
+    #
+    #     morphism_2_list := SemisimpleCategoryMorphismList( morphism_2 );
+    #
+    #     size_1 := Size( morphism_1_list );
+    #
+    #     size_2 := Size( morphism_2_list );
+    #
+    #     tensor_products := [ ];
+    #
+    #     # precompute matrices for tensor products
+    #     for i in [ 1 .. size_1 ] do
+    #
+    #         Add( tensor_products, [ ] );
+    #
+    #         for j in [ 1 .. size_2 ] do
+    #
+    #             tensor_products[i][j] := TensorProductOnMorphisms( morphism_1_list[i][1], morphism_2_list[j][1] );
+    #
+    #         od;
+    #
+    #     od;
+    #
+    #     support := Union( Support( new_source ), Support( new_range ) );
+    #
+    #     size_support := Size( support );
+    #
+    #     morphism_list := [ ];
+    #
+    #     for chi in support do
+    #
+    #         i_list := [ ];
+    #
+    #         for i in [ 1 .. size_1 ] do
+    #
+    #             j_list := [ ];
+    #
+    #             for j in [ 1 .. size_2 ] do
+    #
+    #                 multiplicity := Multiplicity( chi, morphism_1_list[i][2], morphism_2_list[j][2] );
+    #
+    #                 if multiplicity > 0 then
+    #
+    #                     object := MatrixCategoryObject( underlying_category, multiplicity );
+    #
+    #                     Add( j_list, TensorProductOnMorphisms( tensor_products[i][j], IdentityMorphism( object ) ) );
+    #
+    #                 fi;
+    #
+    #             od;
+    #
+    #             if not IsEmpty( j_list ) then
+    #
+    #                 Add( i_list, DirectSumFunctorial( j_list ) );
+    #
+    #             fi;
+    #
+    #         od;
+    #
+    #         if not IsEmpty( i_list ) then
+    #
+    #             Add( morphism_list, [ DirectSumFunctorial( i_list ), chi ] );
+    #
+    #         fi;
+    #
+    #     od;
+    #
+    #     return SemisimpleCategoryMorphism( new_source, morphism_list, new_range );
+    #
+    # end );
+    
+    # ## -- Helper functions for distributivity --
+    #
+    # ##
+    # right_distributivity_expanding_permutation := FunctionWithCache(
+    #     function( object_b, list_of_objects, direct_sum, support_tensor_product, is_expanded )
+    #       local permutation_list, k_permutation, size_support, size_list_of_objects, height, l, i, k, direct_sum_support,
+    #             multiplicity_li, sum_up_to_l_minus_1, j, b_j_times_c_kij, cols, rows, height_of_zeros, object_b_list,
+    #             multiplicity_directsum_i;
+    #
+    #       if not is_expanded then
+    #
+    #           list_of_objects := CAP_INTERNAL_ExpandSemisimpleCategoryObjectList( list_of_objects );
+    #
+    #       fi;
+    #
+    #       permutation_list := [ ];
+    #
+    #       size_list_of_objects := Size( list_of_objects );
+    #
+    #       object_b_list := SemisimpleCategoryObjectList( object_b );
+    #
+    #       direct_sum_support := Support( direct_sum );
+    #
+    #       for k in support_tensor_product do
+    #
+    #           k_permutation := [ ];
+    #
+    #           for l in [ 1 .. size_list_of_objects ] do
+    #
+    #               height := 0;
+    #
+    #               for i in direct_sum_support do
+    #
+    #                   multiplicity_li := Multiplicity( list_of_objects[l], i );
+    #
+    #                   sum_up_to_l_minus_1 :=
+    #                     Sum( List( [ 1 .. l - 1 ], m -> Multiplicity( list_of_objects[m], i ) ) );
+    #
+    #                   multiplicity_directsum_i := Multiplicity( direct_sum, i );
+    #
+    #                   for j in object_b_list do
+    #
+    #                       b_j_times_c_kij := j[1] * Multiplicity( k, i, j[2] );
+    #
+    #                       cols := multiplicity_li * b_j_times_c_kij;
+    #
+    #                       rows :=  multiplicity_directsum_i * b_j_times_c_kij;
+    #
+    #                       height_of_zeros := sum_up_to_l_minus_1 * b_j_times_c_kij;
+    #
+    #                       Append( k_permutation,
+    #                         List( [ 1 .. cols ], m -> height + height_of_zeros + m ) );
+    #
+    #                       height := height + rows;
+    #
+    #                   od;
+    #
+    #               od;
+    #
+    #           od;
+    #
+    #           Add( permutation_list, [ k_permutation, k ] );
+    #
+    #       od;
+    #
+    #       return permutation_list;
+    #
+    #     end
+    # );
+    # ##
+    # left_distributivity_expanding_permutation := FunctionWithCache(
+    #     function( object_b, list_of_objects, direct_sum, support_tensor_product, is_expanded )
+    #       local permutation_list, k_permutation, size_list_of_objects, height, l, i, k, direct_sum_support,
+    #             j, l_times_j, c_kij, list_of_objects_j, rows, zeros_above, ones, step, object_b_list;
+    #
+    #       if not is_expanded then
+    #
+    #           list_of_objects := CAP_INTERNAL_ExpandSemisimpleCategoryObjectList( list_of_objects );
+    #
+    #       fi;
+    #
+    #       permutation_list := [ ];
+    #
+    #       size_list_of_objects := Size( list_of_objects );
+    #
+    #       object_b_list := SemisimpleCategoryObjectList( object_b );
+    #
+    #       direct_sum_support := Support( direct_sum );
+    #
+    #       for k in support_tensor_product do
+    #
+    #           k_permutation := [ ];
+    #
+    #           for l in [ 1 .. size_list_of_objects ] do
+    #
+    #               height := 0;
+    #
+    #               for i in object_b_list do
+    #
+    #                   for j in direct_sum_support do
+    #
+    #                       l_times_j := Multiplicity( list_of_objects[l], j );
+    #
+    #                       c_kij := Multiplicity( k, i[2], j );
+    #
+    #                       list_of_objects_j := Multiplicity( direct_sum, j );
+    #
+    #                       rows := i[1] * list_of_objects_j * c_kij;
+    #
+    #                       zeros_above := Sum( List( [ 1 .. l - 1 ], m -> Multiplicity( list_of_objects[m], j ) ) ) * c_kij;
+    #
+    #                       ones := l_times_j * c_kij;
+    #
+    #                       step := list_of_objects_j * c_kij;
+    #
+    #                       Append( k_permutation, Flat(
+    #                         List( [ 1 .. i[1] ], m -> List( [ 1 .. ones ], n -> height + (m-1)*step + zeros_above + n ) )
+    #                       ) );
+    #
+    #                       height := height + rows;
+    #
+    #                   od;
+    #
+    #               od;
+    #
+    #           od;
+    #
+    #           Add( permutation_list, [ k_permutation, k ] );
+    #
+    #       od;
+    #
+    #       return permutation_list;
+    #
+    #     end
+    # );
+    # ##
+    # distributivity_function := function( new_source, object_b, list_of_objects, new_range, permutation_function, invert )
+    #   local support, support_tensor_product, size_support, direct_sum, morphism_list, k, permutation,
+    #         object, dim, homalg_matrix, permutation_list, entry;
+    #
+    #     support_tensor_product := Support( new_source );
+    #
+    #     direct_sum := DirectSum( list_of_objects );
+    #
+    #     permutation_list := permutation_function( object_b, list_of_objects, direct_sum, support_tensor_product, true );
+    #
+    #     if invert then
+    #
+    #         permutation_list := 
+    #           List( permutation_list, entry ->
+    #             [ ListPerm( PermList( entry[1] )^(-1), Size( entry[1] ) ), entry[2] ] );
+    #
+    #     fi;
+    #
+    #     morphism_list := [ ];
+    #
+    #     for entry in permutation_list do
+    #
+    #         object := Component( new_source, entry[2] );
+    #
+    #         dim := Dimension( object );
+    #
+    #         homalg_matrix := CertainRows(
+    #           HomalgIdentityMatrix( dim, field ),
+    #           entry[1] );
+    #
+    #         Add( morphism_list, [ VectorSpaceMorphism( object, homalg_matrix, object ), entry[2] ] );
+    #
+    #     od;
+    #
+    #     return SemisimpleCategoryMorphism( new_source, morphism_list, new_range );
+    #
+    # end;
+    #
+    # ##
+    # AddRightDistributivityExpandingWithGivenObjects( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, new_source, list_of_objects, object_b, new_range )
+    #
+    #       return distributivity_function(
+    #                new_source, object_b, list_of_objects, new_range, right_distributivity_expanding_permutation, true );
+    #
+    # end );
+    #
+    #
+    # ##
+    # AddRightDistributivityFactoringWithGivenObjects( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, new_source, list_of_objects, object_b, new_range )
+    #
+    #       return distributivity_function(
+    #                new_source, object_b, list_of_objects, new_range, right_distributivity_expanding_permutation, false );
+    #
+    # end );
+    #
+    # ##
+    # AddLeftDistributivityExpandingWithGivenObjects( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, new_source, object_b, list_of_objects, new_range )
+    #
+    #       return distributivity_function(
+    #                new_source, object_b, list_of_objects, new_range, left_distributivity_expanding_permutation, true );
+    #
+    # end );
+    #
+    # ##
+    # AddLeftDistributivityFactoringWithGivenObjects( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, new_source, object_b, list_of_objects, new_range )
+    #
+    #       return distributivity_function(
+    #                new_source, object_b, list_of_objects, new_range, left_distributivity_expanding_permutation, false );
+    #
+    # end );
+    #
+    # ## -- Helper functions for the associator --
+    #
+    # if associator_available then
+    #
+    # ## computes the associator (left to right) of (c,a,b) via the coherence axiom involving the braiding
+    # InstallMethodWithCacheFromObject( CAP_INTERNAL_AssociatorFromCoherenceAxiomLeft,
+    #   [ ObjectFilter( category ) and IsSemisimpleCategoryObject,
+    #     ObjectFilter( category ) and IsSemisimpleCategoryObject,
+    #     ObjectFilter( category ) and IsSemisimpleCategoryObject,
+    #     MorphismFilter( category ) and IsSemisimpleCategoryMorphism,
+    #     MorphismFilter( category ) and IsSemisimpleCategoryMorphism ],
+    #
+    #     function( object_a, object_b, object_c, associator_left_to_right_acb, associator_right_to_left_abc )
+    #
+    #       return PreCompose( [
+    #         TensorProductOnMorphisms( Braiding( object_c, object_a ), IdentityMorphism( object_b ) ),
+    #         associator_left_to_right_acb,
+    #         TensorProductOnMorphisms( IdentityMorphism( object_a ), Braiding( object_c, object_b ) ),
+    #         associator_right_to_left_abc,
+    #         Braiding( TensorProductOnObjects( object_a, object_b ), object_c ) ] );
+    #
+    # end );
+    #
+    # ## computes the associator (left to right )of (b,c,a) via the coherence axiom involving the braiding
+    # InstallMethodWithCacheFromObject( CAP_INTERNAL_AssociatorFromCoherenceAxiomRight,
+    #   [ ObjectFilter( category ) and IsSemisimpleCategoryObject,
+    #     ObjectFilter( category ) and IsSemisimpleCategoryObject,
+    #     ObjectFilter( category ) and IsSemisimpleCategoryObject,
+    #     MorphismFilter( category ) and IsSemisimpleCategoryMorphism,
+    #     MorphismFilter( category ) and IsSemisimpleCategoryMorphism ],
+    #
+    #     function( object_a, object_b, object_c, associator_right_to_left_abc, associator_left_to_right_bac )
+    #
+    #       return PreCompose( [
+    #         Braiding( TensorProductOnObjects( object_b, object_c ), object_a ),
+    #         associator_right_to_left_abc,
+    #         TensorProductOnMorphisms( Braiding( object_a, object_b ), IdentityMorphism( object_c ) ),
+    #         associator_left_to_right_bac,
+    #         TensorProductOnMorphisms( IdentityMorphism( object_b ), Braiding( object_a, object_c ) ) ] );
+    #
+    # end );
+    #
+    #
+    # ## the input are objects whose underlying list is of the form [ 1, irr ].
+    # associator_on_irreducibles := function( object_1, object_2, object_3 )
+    #   local irr_1, irr_2, irr_3, data, morphism_list, object, pos_1, 
+    #         pos_2, pos_3, size, homalg_matrix, source, range, i, string,
+    #         irr_1_nr, irr_2_nr, irr_3_nr, result_morphism,
+    #         associator_left_to_right, associator_right_to_left, intermediate_associator;
+    #
+    #   irr_1 := SemisimpleCategoryObjectList( object_1 )[1][2];
+    #
+    #   irr_2 := SemisimpleCategoryObjectList( object_2 )[1][2];
+    #
+    #   irr_3 := SemisimpleCategoryObjectList( object_3 )[1][2];
+    #
+    #   object := TensorProductOnObjects( TensorProductOnObjects( object_1, object_2 ), object_3 );
+    #
+    #   ## handle the cases where one of the inputs is the unit
+    #   if IsYieldingIdentities( irr_1 ) or IsYieldingIdentities( irr_2 ) or IsYieldingIdentities( irr_3 ) then
+    #
+    #       return IdentityMorphism( object );
+    #
+    #   fi;
+    #
+    #   if is_complete_data then
+    #
+    #       morphism_list := AssociatorFromData( irr_1, irr_2, irr_3, associator_data, underlying_category, SemisimpleCategoryObjectList( object ) );
+    #
+    #       result_morphism := SemisimpleCategoryMorphism( object, morphism_list, object );
+    #
+    #   else
+    #
+    #       # A <= B <= C
+    #
+    #       irr_1_nr := irr_1!.UnderlyingCharacterNumber;
+    #
+    #       irr_2_nr := irr_2!.UnderlyingCharacterNumber;
+    #
+    #       irr_3_nr := irr_3!.UnderlyingCharacterNumber;
+    #
+    #       if Size( Set( [ irr_1_nr, irr_2_nr, irr_3_nr ] ) ) = 2 then
+    #
+    #           if ( irr_1_nr <= irr_2_nr and irr_2_nr <= irr_3_nr ) then
+    #               #(AAB), (ABB): can be loaded directly
+    #
+    #               morphism_list := AssociatorFromData( irr_1, irr_2, irr_3, associator_data, underlying_category, SemisimpleCategoryObjectList( object ) );
+    #
+    #               result_morphism := SemisimpleCategoryMorphism( object, morphism_list, object );
+    #
+    #           elif ( irr_1_nr < irr_2_nr ) then
+    #               #(ABA)
+    #
+    #               associator_left_to_right := AssociatorLeftToRight( object_3, object_1, object_2 );
+    #
+    #               associator_right_to_left := AssociatorRightToLeft( object_1, object_3, object_2 );
+    #
+    #               result_morphism := CAP_INTERNAL_AssociatorFromCoherenceAxiomRight(
+    #                 object_1, object_3, object_2, associator_right_to_left, associator_left_to_right );
+    #
+    #           elif ( irr_1_nr = irr_3_nr) then
+    #               #(BAB)
+    #
+    #               associator_right_to_left := AssociatorRightToLeft( object_2, object_1, object_3 );
+    #
+    #               associator_left_to_right := AssociatorLeftToRight( object_2, object_3, object_1 );
+    #
+    #               result_morphism := CAP_INTERNAL_AssociatorFromCoherenceAxiomLeft(
+    #                 object_2, object_1, object_3, associator_left_to_right, associator_right_to_left );
+    #
+    #           elif (irr_2_nr = irr_3_nr ) then
+    #               #(BAA)
+    #
+    #               associator_right_to_left := AssociatorRightToLeft( object_2, object_3, object_1 );
+    #
+    #               associator_left_to_right := AssociatorLeftToRight( object_3, object_2, object_1 );
+    #
+    #               intermediate_associator := CAP_INTERNAL_AssociatorFromCoherenceAxiomRight(
+    #                 object_2, object_3, object_1, associator_right_to_left, associator_left_to_right );
+    #
+    #               associator_right_to_left := AssociatorRightToLeft( object_2, object_3, object_1 );
+    #
+    #               result_morphism := CAP_INTERNAL_AssociatorFromCoherenceAxiomLeft(
+    #                 object_2, object_3, object_1, intermediate_associator, associator_right_to_left );
+    #
+    #           else
+    #               #(BBA)
+    #
+    #               associator_left_to_right := AssociatorLeftToRight( object_3, object_2, object_1 );
+    #
+    #               associator_right_to_left := AssociatorRightToLeft( object_3, object_1, object_2 );
+    #
+    #               intermediate_associator := CAP_INTERNAL_AssociatorFromCoherenceAxiomLeft(
+    #                 object_3, object_1, object_2, associator_left_to_right, associator_right_to_left );
+    #
+    #               associator_right_to_left := AssociatorRightToLeft( object_3, object_1, object_2 );
+    #
+    #               result_morphism := CAP_INTERNAL_AssociatorFromCoherenceAxiomRight(
+    #                 object_3, object_1, object_2, associator_right_to_left, intermediate_associator );
+    #
+    #           fi;
+    #
+    #       else
+    #
+    #           if ( irr_1_nr <= irr_2_nr ) and ( irr_1_nr <= irr_3_nr ) then
+    #               #(ABC), (ACB): can be loaded directly
+    #
+    #               morphism_list := AssociatorFromData( irr_1, irr_2, irr_3, associator_data, underlying_category, SemisimpleCategoryObjectList( object ) );
+    #
+    #               result_morphism := SemisimpleCategoryMorphism( object, morphism_list, object );
+    #
+    #           elif (irr_1_nr <= irr_3_nr ) then
+    #               #(CAB), (BAC): usage of 1 helper function
+    #
+    #               associator_left_to_right := AssociatorLeftToRight( object_2, object_1, object_3 );
+    #
+    #               associator_right_to_left := AssociatorRightToLeft( object_2, object_3, object_1 );
+    #
+    #               result_morphism :=
+    #                 CAP_INTERNAL_AssociatorFromCoherenceAxiomLeft(
+    #                   object_2, object_3, object_1, associator_left_to_right, associator_right_to_left );
+    #
+    #           else
+    #               #(BCA), (CBA): usage of 2 helper functions
+    #
+    #               associator_left_to_right :=
+    #                 AssociatorLeftToRight( object_3, object_1, object_2 );
+    #
+    #               associator_right_to_left :=
+    #                 AssociatorRightToLeft( object_3, object_2, object_1 );
+    #
+    #               intermediate_associator :=
+    #                 CAP_INTERNAL_AssociatorFromCoherenceAxiomLeft( 
+    #                   object_3, object_2, object_1, associator_left_to_right, associator_right_to_left );
+    #
+    #               associator_right_to_left :=
+    #                 AssociatorRightToLeft( object_3, object_1, object_2 );
+    #
+    #               result_morphism :=
+    #                 CAP_INTERNAL_AssociatorFromCoherenceAxiomRight( 
+    #                   object_3, object_1, object_2, associator_right_to_left, intermediate_associator );
+    #
+    #           fi;
+    #
+    #       fi;
+    #
+    #   fi;
+    #
+    #   return result_morphism;
+    #
+    # end;
+    #
+    # InstallMethodWithCacheFromObject( CAP_INTERNAL_AssociatorOnIrreducibles,
+    #   [ ObjectFilter( category ) and IsSemisimpleCategoryObject,
+    #     ObjectFilter( category ) and IsSemisimpleCategoryObject,
+    #     ObjectFilter( category ) and IsSemisimpleCategoryObject ],
+    #
+    #     associator_on_irreducibles );
+    #
+    # fi; ## associator_available
+    #
+    # ##
+    # distributivity_expanding_for_triple := FunctionWithCache(
+    #     function( object_1, object_2, direct_sum, object_list_with_actual_objects, left_term )
+    #       local object, support_tensor_product_all, direct_sum_2, support_tensor_product_partial,
+    #             tensored_object_list_with_actual_objects, permutation_list_1, permutation_list_2, morphism_list, size, i,
+    #             dim, string, vector_space_object;
+    #
+    #       direct_sum_2 := TensorProductOnObjects( direct_sum, object_1 );
+    #
+    #       object := TensorProductOnObjects( direct_sum_2, object_2 );
+    #
+    #       support_tensor_product_all := Support( object );
+    #
+    #       support_tensor_product_partial := Support( direct_sum_2 );
+    #
+    #       tensored_object_list_with_actual_objects := 
+    #         List( object_list_with_actual_objects, pair -> [ pair[1], TensorProductOnObjects( pair[2], object_1 ) ] );
+    #
+    #       if left_term then
+    #
+    #           permutation_list_1 :=
+    #             right_distributivity_expanding_permutation( 
+    #               object_1, object_list_with_actual_objects, direct_sum, support_tensor_product_partial, false );
+    #
+    #           permutation_list_1 :=
+    #             CAP_INTERNAL_TensorProductOfPermutationListWithObjectFromRight( permutation_list_1, object_2, support_tensor_product_all );
+    #
+    #       else
+    #
+    #           permutation_list_1 :=
+    #             left_distributivity_expanding_permutation( 
+    #               object_1, object_list_with_actual_objects, direct_sum, support_tensor_product_partial, false );
+    #
+    #           permutation_list_1 :=
+    #             CAP_INTERNAL_TensorProductOfPermutationListWithObjectFromRight( permutation_list_1, object_2, support_tensor_product_all );
+    #
+    #       fi;
+    #
+    #       permutation_list_2 :=
+    #         right_distributivity_expanding_permutation(
+    #           object_2, tensored_object_list_with_actual_objects, direct_sum_2, support_tensor_product_all, false );
+    #
+    #       morphism_list := [ ];
+    #
+    #       ## CLAIM: permutation_lists are sorted w.r.t. ordering in second component
+    #       size := Size( permutation_list_1 );
+    #
+    #       for i in [ 1 .. size ] do
+    #
+    #           Add( morphism_list,
+    #                [ ListPerm( ( PermList( permutation_list_1[i][1] )^(-1) * PermList( permutation_list_2[i][1] )^(-1) )^(-1),
+    #                  Size( permutation_list_1[i][1] ) ),
+    #                  permutation_list_1[i][2] ] 
+    #           );
+    #
+    #       od;
+    #
+    #       return morphism_list;
+    #
+    #     end
+    # );
+    # ##
+    # distributivity_factoring_for_triple := FunctionWithCache(
+    #     function( object_1, object_2, direct_sum, object_list_with_actual_objects, right_term )
+    #       local object, support_tensor_product_all, direct_sum_2, support_tensor_product_partial,
+    #             tensored_object_list_with_actual_objects, permutation_list_1, permutation_list_2, morphism_list, size, i,
+    #             dim, string, vector_space_object;
+    #
+    #       direct_sum_2 := TensorProductOnObjects( direct_sum, object_2 );
+    #
+    #       object := TensorProductOnObjects( direct_sum_2, object_1 );
+    #
+    #       support_tensor_product_all := Support( object );
+    #
+    #       support_tensor_product_partial := Support( direct_sum_2 );
+    #
+    #       tensored_object_list_with_actual_objects := 
+    #         List( object_list_with_actual_objects, pair -> [ pair[1], TensorProductOnObjects( pair[2], object_2 ) ] );
+    #
+    #       if right_term then
+    #
+    #           permutation_list_1 :=
+    #             left_distributivity_expanding_permutation( 
+    #               object_2, object_list_with_actual_objects, direct_sum, support_tensor_product_partial, false );
+    #
+    #           permutation_list_1 :=
+    #             CAP_INTERNAL_TensorProductOfPermutationListWithObjectFromLeft( permutation_list_1, object_1, support_tensor_product_all );
+    #
+    #       else
+    #
+    #           permutation_list_1 :=
+    #             right_distributivity_expanding_permutation( 
+    #               object_2, object_list_with_actual_objects, direct_sum, support_tensor_product_partial, false );
+    #
+    #           permutation_list_1 :=
+    #             CAP_INTERNAL_TensorProductOfPermutationListWithObjectFromLeft( permutation_list_1, object_1, support_tensor_product_all );
+    #
+    #       fi;
+    #
+    #       permutation_list_2 :=
+    #         right_distributivity_expanding_permutation(
+    #           object_1, tensored_object_list_with_actual_objects, direct_sum_2, support_tensor_product_all, false );
+    #
+    #       morphism_list := [ ];
+    #
+    #       ## CLAIM: permutation_lists are sorted w.r.t. ordering in second component
+    #       size := Size( permutation_list_1 );
+    #
+    #       for i in [ 1 .. size ] do
+    #
+    #           Add( morphism_list,
+    #                [ ListPerm( ( PermList( permutation_list_2[i][1] ) * PermList( permutation_list_1[i][1] ) )^(-1), 
+    #                  Size( permutation_list_2[i][1] ) ),
+    #                  permutation_list_1[i][2] ]
+    #           );
+    #
+    #       od;
+    #
+    #       return morphism_list;
+    #
+    #     end
+    # );
+    #
+    # if associator_available then
+    #
+    # ##
+    # AddAssociatorLeftToRightWithGivenTensorProducts( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, new_source, object_a, object_b, object_c, new_range )
+    #     local object_a_list, object_b_list, object_c_list, result_morphism,
+    #           object_a_expanded_list, object_b_expanded_list, object_c_expanded_list,
+    #           elem, morphism, summand_list, inner_summand_list, outer_summand_list, innermost_summand_list,
+    #           elem_a, elem_b, elem_c,
+    #           morphism_1, morphism_2, morphism_3, morphism_4, morphism_5, morphism_6, morphism_7_inverse,
+    #           tensor_product, first_permutation, first_permutation_morphism_list,
+    #           second_permutation, second_permutation_morphism_list, chi,
+    #           perm1, perm2, perm3, dim, vector_space_object, homalg_matrix, support,
+    #           tensor_product_list, nr_components, morphism_4_string_list, morphism_4_position_list, i,
+    #           associator_string, add_string, multiplicity,
+    #           a_list, b_list, c_list, size_a, size_b, size_c, beta, gamma, a, b, c,
+    #           start_pos, g, G, p,
+    #           tensor_product_triple_list, matrix, associator_matrix,
+    #           morphism_4_degree_list, degree;
+    #
+    #     object_a_list := SemisimpleCategoryObjectListWithActualObjects( object_a );
+    #
+    #     object_b_list := SemisimpleCategoryObjectListWithActualObjects( object_b );
+    #
+    #     object_c_list := SemisimpleCategoryObjectListWithActualObjects( object_c );
+    #
+    #     if IsEmpty( object_a_list ) or IsEmpty( object_b_list ) or IsEmpty( object_c_list ) then
+    #
+    #         return ZeroMorphism( new_source, new_range );
+    #
+    #     fi;
+    #
+    #     object_a_expanded_list := (Size( object_a_list ) > 1) or (object_a_list[1][1] > 1);
+    #
+    #     object_b_expanded_list := (Size( object_b_list ) > 1) or (object_b_list[1][1] > 1);
+    #
+    #     object_c_expanded_list := (Size( object_c_list ) > 1) or (object_c_list[1][1] > 1);
+    #
+    #     result_morphism := IdentityMorphism( new_source );
+    #
+    #     support := Support( new_source );
+    #
+    #     ## morphism_1
+    #
+    #     morphism_1 := [ ];
+    #
+    #     if object_a_expanded_list then
+    #
+    #         morphism_1 := distributivity_expanding_for_triple( object_b, object_c, object_a, object_a_list, true );
+    #
+    #     fi;
+    #
+    #     ## morphism_2
+    #
+    #     morphism_2 := [ ];
+    #
+    #     if object_b_expanded_list then
+    #
+    #         summand_list := [ ];
+    #
+    #         for elem in object_a_list do
+    #
+    #             morphism := distributivity_expanding_for_triple( elem[2], object_c, object_b, object_b_list, false );
+    #
+    #             Append( summand_list, List( [ 1 .. elem[1] ], i -> morphism ) );
+    #
+    #         od;
+    #
+    #         morphism_2 := CAP_INTERNAL_DirectSumForPermutationLists( summand_list, support );
+    #
+    #     fi;
+    #
+    #     ## morphism_3
+    #
+    #     morphism_3 := [ ];
+    #
+    #     if object_c_expanded_list then
+    #
+    #         outer_summand_list := [ ];
+    #
+    #         for elem_a in object_a_list do
+    #
+    #             inner_summand_list := [ ];
+    #
+    #             for elem_b in object_b_list do
+    #
+    #                 tensor_product := TensorProductOnObjects( elem_a[2], elem_b[2] );
+    #
+    #                 morphism :=
+    #                   left_distributivity_expanding_permutation
+    #                     ( tensor_product, object_c_list,
+    #                       object_c, Support( TensorProductOnObjects( tensor_product, object_c ) ), false );
+    #
+    #                 Append( inner_summand_list, List( [ 1 .. elem_b[1] ], i -> morphism ) );
+    #
+    #             od;
+    #
+    #             morphism :=
+    #               CAP_INTERNAL_DirectSumForPermutationLists(
+    #                 inner_summand_list, Support( TensorProductOnObjects( TensorProductOnObjects( elem_a[2], object_b ), object_c ) )
+    #               );
+    #
+    #             Append( outer_summand_list, List( [ 1 .. elem_a[1] ], i -> morphism ) );
+    #
+    #         od;
+    #
+    #         morphism_3 := CAP_INTERNAL_DirectSumForPermutationLists( outer_summand_list, support );
+    #
+    #     fi;
+    #
+    #     ## morphism_4
+    #
+    #     if is_magma_ring and is_complete_data then
+    #
+    #         tensor_product_list := SemisimpleCategoryObjectList( new_source );
+    #
+    #         nr_components := Size( tensor_product_list );
+    #
+    #         morphism_4_string_list := List( [ 1 .. nr_components ], i -> "[" );
+    #
+    #         a_list := SemisimpleCategoryObjectList( object_a );
+    #
+    #         b_list := SemisimpleCategoryObjectList( object_b );
+    #
+    #         c_list := SemisimpleCategoryObjectList( object_c );
+    #
+    #         size_a := Size( a_list );
+    #
+    #         size_b := Size( b_list );
+    #
+    #         size_c := Size( c_list );
+    #
+    #         ## precomputation
+    #         beta := 
+    #           List( tensor_product_list, d ->
+    #             List( a_list, a -> 
+    #               List( b_list, b ->
+    #                 Sum( List( c_list, c -> c[1] * SignInt( Multiplicity( d[2], a[2], b[2], c[2] ) ) ) )
+    #                )
+    #             )
+    #           );
+    #
+    #         gamma := 
+    #           List( [ 1 .. nr_components ], d ->
+    #             List( [ 1 .. size_a ], a ->
+    #               Sum( List( [ 1 .. size_b ], b -> b_list[b][1] * beta[d][a][b] ) )
+    #             )
+    #           );
+    #
+    #         morphism_4 := List( [ 1 .. nr_components ], i ->[] );
+    #
+    #         morphism_4_degree_list := List( [ 1 .. nr_components ], i ->[] );
+    #
+    #         for a in [ 1 .. size_a ] do
+    #
+    #             for b in [ 1 .. size_b ] do
+    #
+    #                 for c in [ 1 .. size_c ] do
+    #
+    #                     if IsYieldingIdentities( a_list[a][2] ) or IsYieldingIdentities( b_list[b][2] ) or IsYieldingIdentities( c_list[c][2] ) then
+    #
+    #                         tensor_product_triple_list := 
+    #                           TensorProductOfIrreduciblesOp( [ a_list[a][2], b_list[b][2], c_list[c][2] ], a_list[a][2] );
+    #
+    #                         for elem in tensor_product_triple_list do
+    #
+    #                             i := PositionProperty( tensor_product_list, j -> j[2] = elem[2] );
+    #
+    #                             multiplicity := elem[1];
+    #
+    #                             #Compute morphism_4_position_list
+    #
+    #                             #1.step: find start position
+    #
+    #                             start_pos := 
+    #                               Sum( List( [ 1 .. a-1 ], al -> a_list[al][1] * gamma[i][al] ) )
+    #                               + Sum( List( [ 1 .. b-1 ], bl -> b_list[bl][1] * beta[i][a][bl] ) )
+    #                               + Sum( List( [ 1 .. c-1 ], cl -> c_list[cl][1] * SignInt( Multiplicity( tensor_product_list[i][2], a_list[a][2], b_list[b][2], c_list[cl][2] ) ) ) )
+    #                               + 1;
+    #
+    #                             #2.step fill in the other positions
+    #
+    #                             g := beta[i][a][b];
+    #
+    #                             G := gamma[i][a];
+    #
+    #                             morphism_4_position_list :=
+    #                               Flat(
+    #                                 List( [ 0 .. a_list[a][1]-1 ], al ->
+    #                                   List( [ 0 .. b_list[b][1]-1 ], bl ->
+    #                                     List( [ 0 .. c_list[c][1]-1 ], cl ->
+    #                                     start_pos + cl + al*G + bl*g
+    #                                   )
+    #                                   )
+    #                                 )
+    #                               );
+    #
+    #                             matrix := String( Flat( IdentityMat( multiplicity ) ) );
+    #
+    #                             for p in morphism_4_position_list do
+    #
+    #                                 morphism_4[i][p] := matrix;
+    #
+    #                                 morphism_4_degree_list[i][p] := multiplicity;
+    #
+    #                             od;
+    #
+    #                         od;
+    #
+    #                     else
+    #
+    #                         for i in [ 1 .. nr_components ] do
+    #
+    #                             associator_string :=
+    #                               AssociatorStringListFromData( a_list[a][2], b_list[b][2], c_list[c][2], support[i], associator_data );
+    #
+    #                             if not IsEmpty( associator_string ) then
+    #
+    #                                 #Compute morphism_4_position_list
+    #
+    #                                 #1.step: find start position
+    #
+    #                                 start_pos := 
+    #                                   Sum( List( [ 1 .. a-1 ], al -> a_list[al][1] * gamma[i][al] ) )
+    #                                   + Sum( List( [ 1 .. b-1 ], bl -> b_list[bl][1] * beta[i][a][bl] ) )
+    #                                   + Sum( List( [ 1 .. c-1 ], cl -> c_list[cl][1] * SignInt( Multiplicity( tensor_product_list[i][2], a_list[a][2], b_list[b][2], c_list[cl][2] ) ) ) )
+    #                                   + 1;
+    #
+    #                                 #2.step fill in the other positions
+    #
+    #                                 g := beta[i][a][b];
+    #
+    #                                 G := gamma[i][a];
+    #
+    #                                 morphism_4_position_list :=
+    #                                   Flat(
+    #                                     List( [ 0 .. a_list[a][1]-1 ], al ->
+    #                                       List( [ 0 .. b_list[b][1]-1 ], bl ->
+    #                                         List( [ 0 .. c_list[c][1]-1 ], cl ->
+    #                                         start_pos + cl + al*G + bl*g
+    #                                       )
+    #                                       )
+    #                                     )
+    #                                   );
+    #
+    #                                 degree := Sqrt( Size( SplitString( associator_string, "," ) ) );
+    #
+    #                                 associator_string := Concatenation( "[", associator_string, "]" );
+    #
+    #                                 for p in morphism_4_position_list do
+    #
+    #                                     morphism_4[i][p] := associator_string;
+    #
+    #                                     morphism_4_degree_list[i][p] := degree;
+    #
+    #                                 od;
+    #
+    #                             fi;
+    #
+    #                         od;
+    #
+    #                     fi;
+    #
+    #                 od;
+    #
+    #             od;
+    #
+    #         od; 
+    #
+    #         morphism_4 := 
+    #           CAP_INTERNAL_Create_Semisimple_Endomorphism_From_String_List( new_source, morphism_4, morphism_4_degree_list );
+    #
+    #     else
+    #
+    #         outer_summand_list := [ ];
+    #
+    #         for elem_a in object_a_list do
+    #
+    #             inner_summand_list := [ ];
+    #
+    #             for elem_b in object_b_list do
+    #
+    #                 innermost_summand_list := [ ];
+    #
+    #                 for elem_c in object_c_list do
+    #
+    #                     morphism := CAP_INTERNAL_AssociatorOnIrreducibles( elem_a[2], elem_b[2], elem_c[2] );
+    #
+    #                     Append( innermost_summand_list, List( [ 1 .. elem_c[1] ], i -> morphism ) );
+    #
+    #                 od;
+    #
+    #                 morphism := DirectSumFunctorial( innermost_summand_list );
+    #
+    #                 Append( inner_summand_list, List( [ 1 .. elem_b[1] ], i -> morphism ) );
+    #
+    #             od;
+    #
+    #             morphism := DirectSumFunctorial( inner_summand_list );
+    #
+    #             Append( outer_summand_list, List( [ 1 .. elem_a[1] ], i -> morphism ) );
+    #
+    #         od;
+    #
+    #         morphism_4 := DirectSumFunctorial( outer_summand_list );
+    #
+    #     fi;
+    #
+    #     ## morphism_5
+    #
+    #     morphism_5 := [ ];
+    #
+    #     if object_c_expanded_list then
+    #
+    #         outer_summand_list := [ ];
+    #
+    #         for elem_a in object_a_list do
+    #
+    #             inner_summand_list := [ ];
+    #
+    #             for elem_b in object_b_list do
+    #
+    #                 morphism :=
+    #                   distributivity_factoring_for_triple( elem_a[2], elem_b[2], object_c, object_c_list, true );
+    #
+    #                 Append( inner_summand_list, List( [ 1 .. elem_b[1] ], i -> morphism ) );
+    #
+    #             od;
+    #
+    #             morphism := CAP_INTERNAL_DirectSumForPermutationLists( inner_summand_list,
+    #                           Support( TensorProductOnObjects( TensorProductOnObjects( elem_a[2], object_b ), object_c ) ) );
+    #
+    #             Append( outer_summand_list, List( [ 1 .. elem_a[1] ], i -> morphism ) );
+    #
+    #         od;
+    #
+    #         morphism_5 := CAP_INTERNAL_DirectSumForPermutationLists( outer_summand_list, support );
+    #
+    #     fi;
+    #
+    #     ## morphism_6
+    #
+    #     morphism_6 := [ ];
+    #
+    #     if object_b_expanded_list then
+    #
+    #         summand_list := [ ];
+    #
+    #         for elem in object_a_list do
+    #
+    #             morphism := distributivity_factoring_for_triple( elem[2], object_c, object_b, object_b_list, false );
+    #
+    #             Append( summand_list, List( [ 1 .. elem[1] ], i -> morphism ) );
+    #
+    #         od;
+    #
+    #         morphism_6 := CAP_INTERNAL_DirectSumForPermutationLists( summand_list, support );
+    #
+    #     fi;
+    #
+    #     ## morphism_7_inverse
+    #
+    #     morphism_7_inverse := [ ];
+    #
+    #     if object_a_expanded_list then
+    #
+    #         tensor_product := TensorProductOnObjects( object_b, object_c );
+    #
+    #         morphism_7_inverse := 
+    #           right_distributivity_expanding_permutation
+    #                       ( tensor_product, object_a_list,
+    #                         object_a, support, false );
+    #
+    #     fi;
+    #
+    #     first_permutation_morphism_list := [ ];
+    #
+    #     first_permutation := IdentityMorphism( new_source );
+    #
+    #     if not ( IsEmpty( morphism_1 ) and IsEmpty( morphism_2 ) and IsEmpty( morphism_3 ) ) then
+    #
+    #         for chi in support do
+    #
+    #             perm1 := First( morphism_1, i -> i[2] = chi );
+    #
+    #             if not perm1 = fail then
+    #
+    #                 perm1 := PermList( perm1[1] )^(-1);
+    #
+    #             else
+    #
+    #                 perm1 := ();
+    #
+    #             fi;
+    #
+    #             perm2 := First( morphism_2, i -> i[2] = chi );
+    #
+    #             if not perm2 = fail then
+    #
+    #                 perm2 := PermList( perm2[1] )^(-1);
+    #
+    #             else
+    #
+    #                 perm2 := ();
+    #
+    #             fi;
+    #
+    #             perm3 := First( morphism_3, i -> i[2] = chi );
+    #
+    #             if not perm3 = fail then
+    #
+    #                 perm3 := PermList( perm3[1] )^(-1);
+    #
+    #             else
+    #
+    #                 perm3 := ();
+    #
+    #             fi;
+    #
+    #             dim := Multiplicity( new_source, chi );
+    #
+    #             vector_space_object := MatrixCategoryObject( underlying_category, dim );
+    #
+    #             homalg_matrix := CertainRows(
+    #               HomalgIdentityMatrix( dim, field ),
+    #               ListPerm( perm1 * perm2 * perm3, dim )
+    #             );
+    #
+    #             Add( first_permutation_morphism_list, [ VectorSpaceMorphism( vector_space_object, homalg_matrix, vector_space_object ),
+    #                  chi ] );
+    #
+    #         od;
+    #
+    #         first_permutation := SemisimpleCategoryMorphism( new_source, first_permutation_morphism_list, new_range );
+    #
+    #     fi;
+    #
+    #     second_permutation_morphism_list := [ ];
+    #
+    #     second_permutation := IdentityMorphism( new_source );
+    #
+    #     if not ( IsEmpty( morphism_5 ) and IsEmpty( morphism_6 ) and IsEmpty( morphism_7_inverse ) ) then
+    #
+    #         for chi in support do
+    #
+    #             perm1 := First( morphism_5, i -> i[2] = chi );
+    #
+    #             if not perm1 = fail then
+    #
+    #                 perm1 := PermList( perm1[1] )^(-1);
+    #
+    #             else
+    #
+    #                 perm1 := ();
+    #
+    #             fi;
+    #
+    #             perm2 := First( morphism_6, i -> i[2] = chi );
+    #
+    #             if not perm2 = fail then
+    #
+    #                 perm2 := PermList( perm2[1] )^(-1);
+    #
+    #             else
+    #
+    #                 perm2 := ();
+    #
+    #             fi;
+    #
+    #             perm3 := First( morphism_7_inverse, i -> i[2] = chi );
+    #
+    #             if not perm3 = fail then
+    #
+    #                 perm3 := PermList( perm3[1] ); ## the inverse!
+    #
+    #             else
+    #
+    #                 perm3 := ();
+    #
+    #             fi;
+    #
+    #             dim := Multiplicity( new_source, chi );
+    #
+    #             vector_space_object := MatrixCategoryObject( underlying_category, dim );
+    #
+    #             homalg_matrix := CertainRows(
+    #               HomalgIdentityMatrix( dim, field ),
+    #               ListPerm( perm1 * perm2 * perm3, dim )
+    #             );
+    #
+    #             Add( second_permutation_morphism_list, [ VectorSpaceMorphism( vector_space_object, homalg_matrix, vector_space_object ),
+    #                  chi ] );
+    #
+    #         od;
+    #
+    #         second_permutation := SemisimpleCategoryMorphism( new_source, second_permutation_morphism_list, new_range );
+    #
+    #     fi;
+    #
+    #     return PreCompose( [ first_permutation, morphism_4, second_permutation ] );
+    #
+    # end );
+    #
+    # fi; ## associator_available
+    #
+    # ## -- Helper functions for the braiding --
+    #
+    # ## the input are objects whose underlying list is of the form [ 1, irr ].
+    # braiding_on_irreducibles := function( object_1, object_2 )
+    #   local irr_1, irr_2, object, exterior_power_list, exterior_power, object_list, morphism_list,
+    #         elem, number_minus_1, number_1, diagonal, homalg_mat, vector_space;
+    #
+    #   irr_1 := SemisimpleCategoryObjectList( object_1 )[1][2];
+    #
+    #   irr_2 := SemisimpleCategoryObjectList( object_2 )[1][2];
+    #
+    #   object := TensorProductOnObjects( object_1, object_2 );
+    #
+    #   if IsYieldingIdentities( irr_1 ) or IsYieldingIdentities( irr_2 ) then
+    #
+    #       return IdentityMorphism( object );
+    #
+    #   fi;
+    #
+    #   exterior_power_list := ExteriorPower( irr_1, irr_2 );
+    #
+    #   if IsEmpty( exterior_power_list ) then
+    #
+    #       return IdentityMorphism( object );
+    #
+    #   fi;
+    #
+    #   exterior_power := SemisimpleCategoryObject( exterior_power_list, category );
+    #
+    #   object_list := SemisimpleCategoryObjectList( object );
+    #
+    #   morphism_list := [ ];
+    #
+    #   for elem in object_list do
+    #
+    #       number_minus_1 := Multiplicity( exterior_power, elem[2] );
+    #
+    #       number_1 := elem[1] - number_minus_1;
+    #
+    #       diagonal := Concatenation( List( [ 1 .. number_1 ], i -> 1 ), List( [ 1 .. number_minus_1 ], i -> -1 ) );
+    #
+    #       homalg_mat := HomalgDiagonalMatrix( diagonal, field );
+    #
+    #       vector_space := MatrixCategoryObject( underlying_category, elem[1] );
+    #
+    #       Add( morphism_list, [ VectorSpaceMorphism( vector_space, homalg_mat, vector_space ), elem[2] ] );
+    #
+    #   od;
+    #
+    #   return SemisimpleCategoryMorphism( object, morphism_list, object );
+    #
+    # end;
+    #
+    # ##
+    # InstallMethodWithCacheFromObject( CAP_INTERNAL_Braiding_On_Irreducibles,
+    #   [ ObjectFilter( category ) and IsSemisimpleCategoryObject,
+    #     ObjectFilter( category ) and IsSemisimpleCategoryObject ],
+    #
+    #     braiding_on_irreducibles );
+    #
+    #
+    # ##
+    # AddBraidingWithGivenTensorProducts( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, object_a_tensored_object_b, object_a, object_b, object_b_tensored_object_a )
+    #     local object_a_list, object_b_list, result_morphism, object_a_expanded_list, object_b_expanded_list,
+    #           morphism, outer_summand_list, inner_summand_list, summand_list, elem, elem_a, elem_b;
+    #
+    #     object_a_list := SemisimpleCategoryObjectListWithActualObjects( object_a );
+    #
+    #     object_b_list := SemisimpleCategoryObjectListWithActualObjects( object_b );
+    #
+    #     if IsEmpty( object_a_list ) or IsEmpty( object_b_list ) then
+    #
+    #         return ZeroMorphism( object_a_tensored_object_b, object_b_tensored_object_a );
+    #
+    #     fi;
+    #
+    #     result_morphism := IdentityMorphism( object_a_tensored_object_b );
+    #
+    #     object_a_expanded_list := CAP_INTERNAL_ExpandSemisimpleCategoryObjectList( object_a_list );
+    #
+    #     object_b_expanded_list := CAP_INTERNAL_ExpandSemisimpleCategoryObjectList( object_b_list );
+    #
+    #     ## morphism_1
+    #     if Size( object_a_expanded_list ) > 1 then
+    #
+    #         morphism := RightDistributivityExpanding( object_a_expanded_list, object_b );
+    #
+    #         result_morphism := PreCompose( result_morphism, morphism );
+    #
+    #     fi;
+    #
+    #     ## morphism_2
+    #     if Size( object_b_expanded_list ) > 1 then
+    #
+    #         summand_list := [ ];
+    #
+    #         for elem in object_a_list do
+    #
+    #             morphism := LeftDistributivityExpanding( elem[2], object_b_expanded_list );
+    #
+    #             Append( summand_list, List( [ 1 .. elem[1] ], i -> morphism ) );
+    #
+    #         od;
+    #
+    #         morphism := DirectSumFunctorial( summand_list );
+    #
+    #         result_morphism := PreCompose( result_morphism, morphism );
+    #
+    #     fi;
+    #
+    #     ## morphism_3
+    #
+    #     outer_summand_list := [ ];
+    #
+    #     for elem_a in object_a_list do
+    #
+    #         inner_summand_list := [ ];
+    #
+    #         for elem_b in object_b_list do
+    #
+    #             morphism := braiding_on_irreducibles( elem_a[2], elem_b[2] );
+    #
+    #             Append( inner_summand_list, List( [ 1 .. elem_b[1] ], i -> morphism ) );
+    #
+    #         od;
+    #
+    #         morphism := DirectSumFunctorial( inner_summand_list );
+    #
+    #         Append( outer_summand_list, List( [ 1 .. elem_a[1] ], i -> morphism ) );
+    #
+    #     od;
+    #
+    #     morphism := DirectSumFunctorial( outer_summand_list );
+    #
+    #     result_morphism := PreCompose( result_morphism, morphism );
+    #
+    #     ## morphism_4
+    #     if Size( object_b_expanded_list ) > 1 then
+    #
+    #         summand_list := [ ];
+    #
+    #         for elem in object_a_list do
+    #
+    #             morphism := RightDistributivityFactoring( object_b_expanded_list, elem[2] );
+    #
+    #             Append( summand_list, List( [ 1 .. elem[1] ], i -> morphism ) );
+    #
+    #         od;
+    #
+    #         morphism := DirectSumFunctorial( summand_list );
+    #
+    #         result_morphism := PreCompose( result_morphism, morphism );
+    #
+    #     fi;
+    #
+    #     ## morphism_5
+    #     if Size( object_a_expanded_list ) > 1 then
+    #
+    #         morphism := LeftDistributivityFactoring( object_b, object_a_expanded_list );
+    #
+    #         result_morphism := PreCompose( result_morphism, morphism );
+    #
+    #     fi;
+    #
+    #     return result_morphism;
+    #
+    # end );
+    #
+    # ##
+    # AddDualOnObjects( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, object )
+    #     local object_list, dual_list, elem;
+    #
+    #     object_list := SemisimpleCategoryObjectList( object );
+    #
+    #     dual_list := [ ];
+    #
+    #     for elem in object_list do
+    #
+    #         Add( dual_list, [ elem[1], Dual( elem[2] ) ] );
+    #
+    #     od;
+    #
+    #     return SemisimpleCategoryObject( dual_list, category );
+    #
+    # end );
+    #
+    # ##
+    # AddDualOnMorphismsWithGivenDuals( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, dual_source, morphism, dual_range )
+    #     local morphism_list;
+    #
+    #     morphism_list := SemisimpleCategoryMorphismList( morphism );
+    #
+    #     return SemisimpleCategoryMorphism(
+    #              dual_source,
+    #              List( morphism_list, elem -> [ DualOnMorphisms( elem[1] ), Dual( elem[2] ) ] ),
+    #              dual_range );
+    #
+    # end );
+    #
+    # if associator_available then
+    #
+    # ##
+    # AddCoevaluationForDualWithGivenTensorProduct( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, unit, object, tensor_object )
+    #     local object_list, dual_object, dual_object_list, object_expanded_list, elem,
+    #           dual_object_expanded_list, dim, matrix_list, zero_list,
+    #           summand_list, trivial_chi, vector_space, vector_space_morphism,
+    #           i, result_morphism, morphism;
+    #
+    #     object_list := SemisimpleCategoryObjectListWithActualObjects( object );
+    #
+    #     if IsEmpty( object_list ) then
+    #
+    #         return ZeroMorphism( unit, tensor_object );
+    #
+    #     fi;
+    #
+    #     dual_object := DualOnObjects( object );
+    #
+    #     dual_object_list := SemisimpleCategoryObjectListWithActualObjects( dual_object );
+    #
+    #     object_expanded_list := CAP_INTERNAL_ExpandSemisimpleCategoryObjectList( object_list );
+    #
+    #     dual_object_expanded_list := CAP_INTERNAL_ExpandSemisimpleCategoryObjectList( dual_object_list );
+    #
+    #     ## morphism_1
+    #
+    #     trivial_chi := Support( unit )[1];
+    #
+    #     matrix_list := [ ];
+    #
+    #     for elem in object_list do
+    #
+    #         Add( matrix_list, 1 );
+    #
+    #         zero_list := List( [ 1 .. elem[1] ], i -> 0 );
+    #
+    #         for i in [ 2 .. elem[1] ] do
+    #
+    #             Append( matrix_list, zero_list );
+    #
+    #             Add( matrix_list, 1 );
+    #
+    #         od;
+    #
+    #     od;
+    #
+    #     dim := Multiplicity( tensor_object, trivial_chi );
+    #
+    #     vector_space := MatrixCategoryObject( underlying_category, dim );
+    #
+    #     vector_space_morphism :=
+    #       VectorSpaceMorphism( TensorUnit( UnderlyingCategoryForSemisimpleCategory( CapCategory( unit ) ) ),
+    #                            HomalgMatrix( matrix_list, 1, dim, field ),
+    #                            vector_space );
+    #
+    #     result_morphism := SemisimpleCategoryMorphismSparse( unit, [ [ vector_space_morphism, trivial_chi ] ], tensor_object );
+    #
+    #     ## morphism_2 and morphism_3
+    #     if Size( object_expanded_list ) > 1 then
+    #
+    #         ## morphism_2
+    #         summand_list := [ ];
+    #
+    #         for elem in object_list do
+    #
+    #             morphism := LeftDistributivityFactoring( elem[2], dual_object_expanded_list );
+    #
+    #             Append( summand_list, List( [ 1 .. elem[1] ], i -> morphism ) );
+    #
+    #         od;
+    #
+    #         morphism := DirectSumFunctorial( summand_list );
+    #
+    #         result_morphism := PreCompose( result_morphism, morphism );
+    #
+    #         ## morphism_3
+    #         morphism := RightDistributivityFactoring( object_expanded_list, dual_object );
+    #
+    #         result_morphism := PreCompose( result_morphism, morphism );
+    #
+    #     fi;
+    #
+    #     return result_morphism;
+    #
+    # end );
+    #
+    # ##
+    # AddEvaluationForDualWithGivenTensorProduct( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, tensor_object, object, unit )
+    #     local object_list, dual_object, dual_object_list, object_expanded_list, elem,
+    #           dual_object_expanded_list, trivial_chi, dim, vector_space, vector_space_morphism,
+    #           result_morphism, summand_list, morphism, string, string_entry, i, zero_list;
+    #
+    #     object_list := SemisimpleCategoryObjectListWithActualObjects( object );
+    #
+    #     if IsEmpty( object_list ) then
+    #
+    #         return ZeroMorphism( tensor_object, unit );
+    #
+    #     fi;
+    #
+    #     dual_object := DualOnObjects( object );
+    #
+    #     dual_object_list := SemisimpleCategoryObjectListWithActualObjects( dual_object );
+    #
+    #     object_expanded_list := CAP_INTERNAL_ExpandSemisimpleCategoryObjectList( object_list );
+    #
+    #     dual_object_expanded_list := CAP_INTERNAL_ExpandSemisimpleCategoryObjectList( dual_object_list );
+    #
+    #     ## morphism_3
+    #
+    #     trivial_chi := Support( unit )[1];
+    #
+    #     string := "";
+    #
+    #     for elem in object_list do
+    #
+    #         string_entry := Concatenation( ",", CAP_INTERNAL_EvaluationForDualOnIrreduciblesAsString( elem[2] ) );
+    #
+    #         Append( string, string_entry );
+    #
+    #         zero_list := Concatenation( List( [ 1 .. elem[1] ], i -> ",0" ) );
+    #
+    #         for i in [ 2 .. elem[1] ] do
+    #
+    #             Append( string, zero_list );
+    #
+    #             Append( string, string_entry );
+    #
+    #         od;
+    #
+    #     od;
+    #
+    #     Remove( string, 1 );
+    #
+    #     string := Concatenation( "[", string, "]" );
+    #
+    #     dim := Multiplicity( tensor_object, trivial_chi );
+    #
+    #     vector_space := MatrixCategoryObject( underlying_category, dim );
+    #
+    #     vector_space_morphism :=
+    #       VectorSpaceMorphism( vector_space,
+    #                            HomalgMatrix( string, dim, 1, field ),
+    #                            TensorUnit( UnderlyingCategoryForSemisimpleCategory( CapCategory( unit ) ) ) );
+    #
+    #     result_morphism := SemisimpleCategoryMorphismSparse( tensor_object, [ [ vector_space_morphism, trivial_chi ] ], unit );
+    #
+    #     ## morphism_1 and morphism_2
+    #     if Size( object_expanded_list ) > 1 then
+    #
+    #         ## morphism_2
+    #         summand_list := [ ];
+    #
+    #         for elem in dual_object_list do
+    #
+    #             morphism := LeftDistributivityExpanding( elem[2], object_expanded_list );
+    #
+    #             Append( summand_list, List( [ 1 .. elem[1] ], i -> morphism ) );
+    #
+    #         od;
+    #
+    #         morphism := DirectSumFunctorial( summand_list );
+    #
+    #         result_morphism := PreCompose( morphism, result_morphism );
+    #
+    #         ## morphism_1
+    #         morphism := RightDistributivityExpanding( dual_object_expanded_list, object );
+    #
+    #         result_morphism := PreCompose( morphism, result_morphism );
+    #
+    #     fi;
+    #
+    #     return result_morphism;
+    #
+    # end );
+    #
+    # fi;
+    
+    ##
+    # AddMorphismToBidualWithGivenBidual( CoproductOfCatOfRows,
+    #   function( CoproductOfCatOfRows, object, bidual_of_object )
+    #
+    #     return VectorSpaceMorphism( object,
+    #                                 HomalgIdentityMatrix( Dimension( object ), homalg_field ),
+    #                                 bidual_of_object
+    #                               );
+    #
+    # end );
+    
+    Finalize( CoproductOfCatOfRows );
+    
+    ####################################
+    # Reinterpretation
+    ####################################
+    
+    ##
+    object_datum_type :=
+        CapJitDataTypeOfListOf(
+            CapJitDataTypeOfNTupleOf( 2, IsBigInt, IsCharacter ) );
+    
+    ##
+    object_datum := { SGReps, obj } -> PairsOfRankAndCharacter( obj );
+    
+    ##
+    object_constructor :=
+      function( SGReps, pairs_of_rank_and_character )
+        local group, irreducible_characters, pair, pair_1, pair_2, i;
+        
+        #% CAP_JIT_DROP_NEXT_STATEMENT
+        Assert( 0,
+                IsList( pairs_of_rank_and_character ) and
+                ForAll( pairs_of_rank_and_character, pair -> IsList( pair ) and Length( pair ) = 2 ) );
+        
+        if Length( pairs_of_rank_and_character ) > NrIrreducibleCharacters( SGReps ) then
+            
+            # COVERAGE_IGNORE_NEXT_LINE
+            Error( "the number of pairs can be at most ",
+                   String( NrIrreducibleCharacters( SGReps ) ),
+                   "\n" );
+            
+        fi;
+        
+        group := UnderlyingGroup( SGReps );
+        
+        irreducible_characters := UnderlyingIrreducibleCharacters( SGReps );
+        
+        # TODO: merge this for-loop with the loop below?
+        for pair in pairs_of_rank_and_character do
+            
+            if pair[1] < 0 then
+                
+                # COVERAGE_IGNORE_NEXT_LINE
+                Error( "the rank of the pair at index ",
+                       String( Position( pairs_of_rank_and_character, pair ) ),
+                       " is smaller than 0\n" );
+                
+            fi;
+            
+            if not pair[2] in irreducible_characters then
+                
+                # COVERAGE_IGNORE_NEXT_LINE
+                Error( Concatenation( "the second object of the pair at index ",
+                                      String( Position( pairs_of_rank_and_character, pair ) ),
+                                      " is not a character of the group ",
+                                      String( UnderlyingGroup( SGReps ) ),
+                                      "\n" ) );
+                
+            fi;
+            
+        od;
+        
+        # All pairs [ rank, character ] have to be ordered by the indices of <character> in
+        # UnderlyingIrreducibleCharacters( SGReps ), which has the same
+        # order as the character table.
+        # 
+        # Example: the character X1 appears before X2,
+        #          so the pair [ i, X1 ] must appear before [ j, X2 ].
+        for i in [ 1 .. Length( pairs_of_rank_and_character ) - 1 ] do
+            
+            pair_1 := pairs_of_rank_and_character[ i ];
+            pair_2 := pairs_of_rank_and_character[ i + 1 ];
+            
+            if Position( irreducible_characters, pair_1[2] ) > Position( irreducible_characters, pair_2[2] ) then
+                
+                # COVERAGE_IGNORE_NEXT_LINE
+                Error( "the pairs at indices ",
+                       String( i ),
+                       " and ",
+                       String( i + 1 ),
+                       " have the wrong order\n");
+                
+            fi;
+            
+        od;
+        
+        return CreateCapCategoryObjectWithAttributes( SGReps,
+                   PairsOfRankAndCharacter, pairs_of_rank_and_character );
+        
+    end;
+    
+    ##
+    morphism_datum_type := CapJitDataTypeOfListOf( IsHomalgMatrix );
+    
+    ##
+    morphism_datum := { SGReps, phi } -> ListOfMatrices( phi );
+    
+    ##
+    morphism_constructor :=
+      function( SGReps, S, list_of_matrices, T )
+        local nr_irreducible_characters, matrix, i;
+        
+        #% CAP_JIT_DROP_NEXT_STATEMENT
+        Assert( 0, IsList( list_of_matrices ) );
+        
+        nr_irreducible_characters := NrIrreducibleCharacters( SGReps );
+        
+        if nr_irreducible_characters <> Length( list_of_matrices ) then
+            
+            # COVERAGE_IGNORE_NEXT_LINE
+            Error( Concatenation( "the number of matrices must be equal to ",
+                                  "the number of copies of the category of rows\n" ) );
+            
+        fi;
+        
+        for i in [ 1 .. nr_irreducible_characters ] do
+            
+            matrix := list_of_matrices[i];
+            
+            #% CAP_JIT_DROP_NEXT_STATEMENT
+            if not IsHomalgMatrix( matrix ) then
+                
+                # COVERAGE_IGNORE_NEXT_LINE
+                Error( "all matrices must be Homalg matrices\n" );
+                
+            fi;
+            
+            if HomalgRing( matrix ) <> UnderlyingSplittingField( SGReps ) then
+                
+                # COVERAGE_IGNORE_NEXT_LINE
+                Error( "all matrices must be defined over the same ring as the category\n" );
+                
+            fi;
+            
+            if NrRows( matrix ) <> Ranks( S )[i] then
+                
+                # COVERAGE_IGNORE_NEXT_LINE
+                Error( Concatenation( "<matrix> must have ",
+                                      String( Ranks( S )[i] ),
+                                      " rows\n" ) );
+                
+            fi;
+            
+            if NrColumns( matrix ) <> Ranks( T )[i] then
+                
+                # COVERAGE_IGNORE_NEXT_LINE
+                Error( Concatenation( "<matrix> must have ",
+                                      String( Ranks( T )[i] ),
+                                      " columns\n" ) );
+                
+            fi;
+            
+        od;
+        
+        return CreateCapCategoryMorphismWithAttributes( SGReps,
+                                                        S,
+                                                        T,
+                                                        ListOfMatrices, list_of_matrices );
+        
+    end;
+    
+    ####################################
+    # Modeling
+    ####################################
+    
+    ## From the raw object data to the object in the modeling category
+    modeling_tower_object_constructor :=
+      function( SGReps, pairs_of_rank_and_character )
+        local nr_irreducible_characters, multiplicities, pair, pos;
+        
+        # Checks are done in the modeling category.
+        
+        nr_irreducible_characters := 0;
+        
+        multiplicities := ListWithIdenticalEntries( NrIrreducibleCharacters( SGReps ), 0 );
+        
+        for pair in pairs_of_rank_and_character do
+            
+            nr_irreducible_characters := nr_irreducible_characters + pair[1];
+            
+            pos := Position( UnderlyingIrreducibleCharacters( SGReps ), pair[2] );
+            
+            multiplicities[ pos ] := pair[1];
+            
+        od;
+        
+        return ObjectConstructor( ModelingCategory( SGReps ), [ nr_irreducible_characters, multiplicities ] );
+        
+    end;
+    
+    ## From the object in the modeling category to the raw object data.
+    modeling_tower_object_datum :=
+      function( SGReps, object )
+        local irreducible_characters, pairs_of_rank_and_character;
+        
+        irreducible_characters := UnderlyingIrreducibleCharacters( SGReps );
+        
+        pairs_of_rank_and_character :=
+            ListWithKeys( Ranks( object ), { obj_index, ranks } ->
+                NTuple( 2, ranks, irreducible_characters[ obj_index ] ) );
+        
+        return pairs_of_rank_and_character;
+        
+    end;
+    
+    ## From the raw morphism data to the morphism in the modeling category.
+    modeling_tower_morphism_constructor :=
+      function( SGReps, source, list_of_matrices, target )
+        local coproduct_rows;
+        
+        # Checks are done in the modeling category.
+        
+        coproduct_rows := ModelingCategory( SGReps );
+        
+        return MorphismConstructor( coproduct_rows, source, list_of_matrices, target );
+        
+    end;
+    
+    ## From the morphism in the modeling category to the raw morphism data
+    modeling_tower_morphism_datum :=
+      function( SGReps, phi )
+        
+        return ListOfMatrices( phi );
+        
+    end;
+    name := Concatenation( "SkeletalGroupRepresentations( ", String( G ), ", ", String( splitting_field ), " )" );
+    
+    SGReps :=
+        ReinterpretationOfCategory( CoproductOfCatOfRows,
+            rec( name := name,
+                 category_filter := IsSkeletalCategoryOfGroupRepresentations,
+                 category_object_filter := IsObjectInSkeletalCategoryOfGroupRepresentations,
+                 category_morphism_filter := IsMorphismInSkeletalCategoryOfGroupRepresentations,
+                 object_constructor := object_constructor,
+                 object_datum := object_datum,
+                 morphism_constructor := morphism_constructor,
+                 morphism_datum := morphism_datum,
+                 modeling_tower_object_constructor := modeling_tower_object_constructor,
+                 modeling_tower_object_datum := modeling_tower_object_datum,
+                 modeling_tower_morphism_constructor := modeling_tower_morphism_constructor,
+                 modeling_tower_morphism_datum := modeling_tower_morphism_datum,
+                 only_primitive_operations := true, )
+            : FinalizeCategory := false );
+    
+    # DeactivateCachingOfCategory( SGReps );
+    
+    # CapCategorySwitchLogicOff( SGReps );
+    
+    # SetIsRigidSymmetricClosedMonoidalCategory( SGReps, true );
+    
+    SetUnderlyingGroup( SGReps, G );
+    
+    SetUnderlyingCharacterTable( SGReps, character_table );
+    
+    SetUnderlyingIrreducibleCharacters( SGReps, irreducible_characters );
+    
+    SetNrIrreducibleCharacters( SGReps, nr_irreducible_characters );
+    
+    SetUnderlyingSplittingField( SGReps, splitting_field );
+    
+    if CAP_NAMED_ARGUMENTS.FinalizeCategory then
+        
+        Finalize( SGReps );
+        
+    fi;
+    
+    return SGReps;
+    
+end ) );
+
+####################################
+##
+## Operations
+##
+####################################
+
+InstallMethodForCompilerForCAP( Ranks,
+                                [ IsObjectInSkeletalCategoryOfGroupRepresentations ],
+                                
+  function( object )
+    
+    return Ranks( ModelingObject( CapCategory( object ), object ) );
+    
+end );
+
+##
+InstallMethodForCompilerForCAP( \[\],
+                                [ IsObjectInSkeletalCategoryOfGroupRepresentations, IsInt ],
+                                
+  function( object, i )
+    local object_model;
+    
+    if i < 1 or i > NrIrreducibleCharacters( CapCategory( object ) ) then
+        
+        # COVERAGE_IGNORE_NEXT_LINE
+        Error( "out of bounds\n" );
+        
+    fi;
+    
+    object_model := ModelingObject( CapCategory( object ), object );
+    
+    return Ranks( object_model )[i];
+    
+end );
+
+##
+InstallMethodForCompilerForCAP( \[\],
+                                [ IsMorphismInSkeletalCategoryOfGroupRepresentations, IsInt ],
+                                
+  function( morphism, i )
+    
+    if i < 1 or i > NrIrreducibleCharacters( CapCategory( morphism ) ) then
+        
+        # COVERAGE_IGNORE_NEXT_LINE
+        Error( "out of bounds\n" );
+        
+    fi;
+    
+    return ListOfMatrices( morphism )[i];
+    
+end );
+
+####################################
+##
+## View & Display
+##
+####################################
+
+##
+InstallMethod( DisplayString,
+               [ IsObjectInSkeletalCategoryOfGroupRepresentations ],
+               
+  function( object )
+    local string, characters, pairs, SubscriptDigits, ToSubscript, i, character_nr, last_pair;
+    
+    string := "";
+    
+    characters := UnderlyingIrreducibleCharacters( CapCategory( object ) );
+    
+    pairs := PairsOfRankAndCharacter( object );
+    
+    SubscriptDigits := [ "₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉" ];
+    
+    ToSubscript := function ( n )
+        local digits, subscripts, d;
+        
+        if n = 0 then
+            
+            return SubscriptDigits[1];  #₀
+            
+        fi;
+        
+        digits := [];
+        
+        while n > 0 do
+            
+            Add( digits, n mod 10 );
+            
+            n := Int( n / 10 );
+            
+        od;
+        
+        subscripts := [];
+        
+        for d in Reversed( digits ) do
+            
+            Append( subscripts, SubscriptDigits[d + 1] );
+            
+        od;
+        
+        return subscripts;
+        
+    end;
+    
+    for i in [ 1 .. Length( pairs ) - 1 ] do
+        
+        character_nr := Position( characters, pairs[i][2] );
+        
+        string := Concatenation( string, String( pairs[i][1] ), "χ", ToSubscript( character_nr ), "⊕ " );
+        
+    od;
+    
+    last_pair := Last( pairs );
+    
+    character_nr := Position( characters, last_pair[2] );
+    
+    string := Concatenation( string, String( last_pair[1] ), "χ", ToSubscript( character_nr ) );
+    
+    return string;
+    
+end );
+
+##
+InstallMethod( DisplayString,
+               [ IsMorphismInSkeletalCategoryOfGroupRepresentations ],
+               
+  function( morphism )
+    local i, target, matrix, nr_rows, nr_cols, string, j, k;
+    
+    string := "";
+    
+    for matrix in ListOfMatrices( morphism ) do
+        
+        string := Concatenation( string, DisplayString( matrix ), "\n" );
+        
+    od;
+    
+    return string;
+    
+end );
+
+##
+InstallMethod( ViewString,
+               [ IsMorphismInSkeletalCategoryOfGroupRepresentations ],
+               
+  function( morphism )
+    local i, target, matrix, nr_rows, nr_cols, string, j, k;
+    
+    string := "";
+    
+    for matrix in ListOfMatrices( morphism ) do
+        
+        string := Concatenation( string, ViewString( matrix ), "\n" );
+        
+    od;
+    
+    return string;
+    
+end );
+
