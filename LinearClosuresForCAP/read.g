@@ -7,3 +7,6 @@
 ReadPackage( "LinearClosuresForCAP", "gap/LinearClosure.gi" );
 
 ReadPackage( "LinearClosuresForCAP", "gap/LinearClosureForGroupAsCategory.gi" );
+
+ReadPackage( "LinearClosuresForCAP", "gap/CoproductOfCategoryOfRows.gi" );
+

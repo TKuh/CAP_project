@@ -1,6 +1,6 @@
-#! @Chapter Examples and Tests
-
-#! @Section Matrices over ZG
+#! @Chapter Linear closure of a category
+#! @Section Examples and Tests
+#! @Subsection Matrices over ZG
 
 LoadPackage( "LinearClosuresForCAP" );;
 

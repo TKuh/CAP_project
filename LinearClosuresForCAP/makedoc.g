@@ -20,6 +20,7 @@ AutoDoc( rec(
     gapdoc := rec(
         LaTeXOptions := rec(
             LateExtraPreamble := """
+                \DeclareUnicodeCharacter{2295}{\ensuremath{\oplus}}
             """,
         ),
     ),

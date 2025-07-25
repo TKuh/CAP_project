@@ -1,6 +1,6 @@
-#! @Chapter Examples and Tests
-
-#! @Section Linear closure of categories
+#! @Chapter Linear closure of a category
+#! @Section Examples and Tests
+#! @Subsection Linear closure of a group as category
 
 LoadPackage( "LinearClosuresForCAP" );;
 
