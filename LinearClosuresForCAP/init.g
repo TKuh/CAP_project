@@ -11,3 +11,10 @@ ReadPackage( "LinearClosuresForCAP", "gap/LinearClosureForFiniteSkeletalDiscrete
 ReadPackage( "LinearClosuresForCAP", "gap/TwistedLinearClosure.gd" );
 
 ReadPackage( "LinearClosuresForCAP", "gap/HomomorphismStructure.gd" );
+
+ReadPackage( "LinearClosuresForCAP", "gap/AdditiveClosureOfLinearClosureOfFiniteSkeletalDiscreteCategory.gd" );
+
+# ReadPackage( "LinearClosuresForCAP", "gap/CoproductOfCategoryOfRows.gd" );
+
+# ReadPackage( "LinearClosuresForCAP", "gap/CoproductOfCategoryOfRowsWithSparseDatastructure.gd" );
+
