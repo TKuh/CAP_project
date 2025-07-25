@@ -58,3 +58,68 @@ Persons := [
                "Germany" ),
     Place := "Siegen",
     Institution := "University of Siegen",
+  ),
+],
+
+# BEGIN URLS
+SourceRepository := rec(
+    Type := "git",
+    URL := "https://github.com/homalg-project/CAP_project",
+),
+IssueTrackerURL := Concatenation( ~.SourceRepository.URL, "/issues" ),
+PackageWWWHome  := "https://homalg-project.github.io/pkg/LinearClosuresForCAP",
+PackageInfoURL  := "https://homalg-project.github.io/CAP_project/LinearClosuresForCAP/PackageInfo.g",
+README_URL      := "https://homalg-project.github.io/CAP_project/LinearClosuresForCAP/README.md",
+ArchiveURL      := Concatenation( "https://github.com/homalg-project/CAP_project/releases/download/LinearClosuresForCAP-", ~.Version, "/LinearClosuresForCAP-", ~.Version ),
+# END URLS
+
+ArchiveFormats := ".tar.gz .zip",
+
+##  Status information. Currently the following cases are recognized:
+##    "accepted"      for successfully refereed packages
+##    "submitted"     for packages submitted for the refereeing
+##    "deposited"     for packages for which the GAP developers agreed
+##                    to distribute them with the core GAP system
+##    "dev"           for development versions of packages
+##    "other"         for all other packages
+##
+Status := "dev",
+
+AbstractHTML   :=  "",
+
+PackageDoc := rec(
+  BookName  := "LinearClosuresForCAP",
+  ArchiveURLSubset := ["doc"],
+  HTMLStart := "doc/chap0.html",
+  PDFFile   := "doc/manual.pdf",
+  SixFile   := "doc/manual.six",
+  LongTitle := "Linear closures",
+),
+
+Dependencies := rec(
+  GAP := ">= 4.13.0",
+  NeededOtherPackages := [ [ "CAP", ">= 2025.06-05" ],
+                           [ "GroupsAsCategoriesForCAP", ">= 2025.07-01" ],
+                           [ "AdditiveClosuresForCAP", ">= 2025.07-03" ],
+                         ],
+  SuggestedOtherPackages := [
+    [ "FinSetsForCAP", ">= 2023.07-03" ],
+   ],
+  ExternalConditions := [ ],
+),
+
+Extensions := [
+  rec(
+    needed := [ [ "FinSetsForCAP", ">= 2023.07-03" ] ],
+    filename := "gap/HomomorphismStructure.gi",
+  ),
+],
+
+AvailabilityTest := function()
+        return true;
+    end,
+#Keywords := [ "TODO" ],
+
+TestFile := "tst/testall.g",
+
+));

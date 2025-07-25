@@ -29,12 +29,12 @@
 ####################################
 
 ##
-DeclareCategory( "IsObjectInLinearClosureOfFiniteSkeletalDiscreteCategory",
-                 IsCapCategoryObject );
+# DeclareCategory( "IsObjectInLinearClosureOfFiniteSkeletalDiscreteCategory",
+#                  IsCapCategoryObject );
 
 ##
-DeclareCategory( "IsMorphismInLinearClosureOfFiniteSkeletalDiscreteCategory",
-                 IsCapCategoryMorphism );
+# DeclareCategory( "IsIsMorphismInLinearClosureOfFiniteSkeletalDiscreteCategoryMorphismInLinearClosureOfFiniteSkeletalDiscreteCategory",
+#                  IsCapCategoryMorphism );
 
 ####################################
 ##
@@ -54,27 +54,27 @@ DeclareOperation( "LinearClosure",
 ##
 ####################################
 
-DeclareAttribute( "UnderlyingOriginalObject",
-                   IsObjectInLinearClosureOfFiniteSkeletalDiscreteCategory );
+# DeclareAttribute( "UnderlyingOriginalObject",
+#                    IsObjectInLinearClosureOfFiniteSkeletalDiscreteCategory );
+#
+# CapJitAddTypeSignature( "UnderlyingOriginalObject", [ IsObjectInLinearClosureOfFiniteSkeletalDiscreteCategory ], function ( input_types )
+#
+#     Assert( 0, IsLinearClosure( input_types[1].category ) );
+#
+#     return CapJitDataTypeOfObjectOfCategory( UnderlyingCategory( input_types[1].category ) );
+#
+# end );
 
-CapJitAddTypeSignature( "UnderlyingOriginalObject", [ IsObjectInLinearClosureOfFiniteSkeletalDiscreteCategory ], function ( input_types )
-    
-    Assert( 0, IsLinearClosure( input_types[1].category ) );
-    
-    return CapJitDataTypeOfObjectOfCategory( UnderlyingCategory( input_types[1].category ) );
-    
-end );
-
-DeclareAttribute( "Coefficient",
-                  IsMorphismInLinearClosureOfFiniteSkeletalDiscreteCategory );
-
-CapJitAddTypeSignature( "Coefficient", [ IsMorphismInLinearClosureOfFiniteSkeletalDiscreteCategory ], function ( input_types )
-    
-    Assert( 0, IsLinearClosure( input_types[1].category ) );
-    
-    return CapJitDataTypeOfElementOfRing( CommutativeRingOfLinearCategory( input_types[1].category ) );
-    
-end );
+# DeclareAttribute( "Coefficient",
+#                   IsMorphismInLinearClosureOfFiniteSkeletalDiscreteCategory );
+#
+# CapJitAddTypeSignature( "Coefficient", [ IsMorphismInLinearClosureOfFiniteSkeletalDiscreteCategory ], function ( input_types )
+#
+#     Assert( 0, IsLinearClosure( input_types[1].category ) );
+#
+#     return CapJitDataTypeOfElementOfRing( CommutativeRingOfLinearCategory( input_types[1].category ) );
+#
+# end );
 
 ####################################
 ##

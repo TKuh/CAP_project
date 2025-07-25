@@ -4,6 +4,8 @@
 # Declarations
 #
 
+#! @Chapter Linear closure of a category
+
 DeclareGlobalFunction( "HOM_STRUCTURE_BASED_SORTING_FUNCTION_OR_FAIL_FOR_LINEAR_CLOSURE" );
 
 DeclareGlobalFunction( "SET_HOMOMORPHISM_STRUCTURE_ATTRIBUTES_FOR_LINEAR_CLOSURE" );

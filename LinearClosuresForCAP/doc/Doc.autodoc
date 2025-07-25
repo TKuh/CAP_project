@@ -2,13 +2,13 @@
 
 @Section Constructors
 @Section Attributes
-@Section Functors
 @Section Operations
+@Section Functors
 @Section GAP Categories
 @Section Global functions
 
 @Section Examples and Tests
-@Subsection Linear closure of categories
+@Subsection Linear closure of a group as category
 @Subsection Matrices over ZG
 
 @Chapter Twisted linear closure of a category
@@ -26,4 +26,23 @@
 @Section Operations
 @Section GAP Categories
 @Section Global functions
+
+@Chapter Coproducts of CategoryOfRows
+
+@Section Attributes
+@Section Constructors
+@InsertChunk CoproductCategoryOfRows_constructors
+@Section Operations
+@Section GAP Categories
+@Section Examples and Tests
+
+@Chapter Coproducts of CategoryOfRows with sparse datastructure
+@InsertChunk CoproductOfCategoryOfRowsWithSparseDatastructureIntroduction
+
+@Section Attributes
+@Section Constructors
+@InsertChunk CoproductCategoryOfRowsWithSparseDatastructure_constructors
+@Section Operations
+@Section GAP Categories
+@Section Examples and Tests
 

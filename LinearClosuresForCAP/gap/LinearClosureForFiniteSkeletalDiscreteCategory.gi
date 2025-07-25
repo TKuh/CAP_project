@@ -23,9 +23,9 @@ InstallOtherMethod( LinearClosure,
     local rows;
     
     rows := CategoryOfRows( ring : FinalizeCategory := true
-            #= comment for Julia
-            , overhead := false
-            # =#
+                                   #= comment for Julia
+                                   , overhead := false
+                                   # =#
             );
     
     return LINEAR_CLOSURE_OF_FINITE_SKELETAL_DISCRETE_CATEGORY_CONSTRUCTOR( rows, discrete_category );
@@ -49,17 +49,15 @@ InstallGlobalFunction( LINEAR_CLOSURE_OF_FINITE_SKELETAL_DISCRETE_CATEGORY_CONST
     
     LC := CreateCapCategory( name,
                              IsLinearClosure,
-                             IsObjectInLinearClosureOfFiniteSkeletalDiscreteCategory,
-                             IsMorphismInLinearClosureOfFiniteSkeletalDiscreteCategory,
+                             IsObjectInLinearClosure,
+                             IsMorphismInLinearClosure,
                              IsCapCategoryTwoCell
                              : overhead := false );
     
     LC!.compiler_hints := rec(
         category_attribute_names := [
             "UnderlyingCategory",
-            "CommutativeRingOfLinearCategory",
-        ],
-    );
+            "CommutativeRingOfLinearCategory", ], );
     
     SetIsLinearClosureOfACategory( LC, true );
     
@@ -88,12 +86,13 @@ InstallGlobalFunction( LINEAR_CLOSURE_OF_FINITE_SKELETAL_DISCRETE_CATEGORY_CONST
     
     ##
     AddMorphismConstructor( LC,
-      function( LC, source, coefficient, target )
+      function( LC, source, pair, target )
         
         return CreateCapCategoryMorphismWithAttributes( LC,
                                                         source,
                                                         target,
-                                                        Coefficient, coefficient );
+                                                        CoefficientsList, pair[1],
+                                                        SupportMorphisms, pair[2] );
         
     end );
     
@@ -101,7 +100,7 @@ InstallGlobalFunction( LINEAR_CLOSURE_OF_FINITE_SKELETAL_DISCRETE_CATEGORY_CONST
     AddMorphismDatum( LC,
       function( LC, morphism )
         
-        return Coefficient( morphism );
+        return Pair( SupportMorphisms( morphism ), CoefficientsList( morphism ) );
         
     end );
     
@@ -109,18 +108,20 @@ InstallGlobalFunction( LINEAR_CLOSURE_OF_FINITE_SKELETAL_DISCRETE_CATEGORY_CONST
     AddIsEqualForObjects( LC,
       function( LC, obj_1, obj_2 )
         
-        return IsEqualForObjects( UnderlyingCategory( LC ),
-                                  UnderlyingOriginalObject( obj_1 ),
-                                  UnderlyingOriginalObject( obj_2 ) );
+        return IsEqualForObjects( UnderlyingCategory( LC ), UnderlyingOriginalObject( obj_1 ), UnderlyingOriginalObject( obj_2 ) );
         
     end );
     
     compare_function :=
       function( LC, alpha, beta )
+        local DC;
+        
+        DC := UnderlyingCategory( LC );
         
         return IsEqualForObjects( LC, Source( alpha ), Source( beta ) ) and
                IsEqualForObjects( LC, Target( alpha ), Target( beta ) ) and
-               Coefficient( alpha ) = Coefficient( beta );
+               CoefficientsList( alpha ) = CoefficientsList( beta ) and
+               SupportMorphisms( alpha ) = SupportMorphisms( beta );
         
     end;
     
@@ -138,49 +139,97 @@ InstallGlobalFunction( LINEAR_CLOSURE_OF_FINITE_SKELETAL_DISCRETE_CATEGORY_CONST
         
     end );
     
-    ##
+    #
     AddIsWellDefinedForMorphisms( LC,
       function( LC, alpha )
-        local coefficient, element_filter;
+        local coefficient, support, element_filter;
         
-        coefficient := Coefficient( alpha );
+        coefficient := CoefficientsList( alpha );
+        
+        support := SupportMorphisms( alpha );
         
         element_filter := RingElementFilter( CommutativeRingOfLinearCategory( LC ) );
         
-        if element_filter( coefficient ) then
+        if not IsList( coefficient ) then
+            
+            return false;
+            
+        elif not IsList( support ) then
+            
+            return false;
+            
+        elif 1 < Length( coefficient ) then
+            
+            return false;
+            
+        elif 1 < Length( support ) then
+            
+            return false;
+            
+        elif not IsEmpty( coefficient ) and not element_filter( coefficient[1] ) then
+            
+            return false;
+            
+        elif not IsEmpty( support ) and not IsMorphismInFiniteSkeletalDiscreteCategory( support[1] ) then
+            
+            return false;
+            
+        else
             
             return true;
             
         fi;
-        
-        return false;
         
     end );
     
     ##
     AddPreCompose( LC,
       function( LC, alpha, beta )
-        local DC, coefficient;
+        local DC, ring, source, target, coefficient_alpha, coefficient_beta, coefficient, support_morphism, coefficient_list;
         
         DC := UnderlyingCategory( LC );
         
-        coefficient := Coefficient( alpha ) * Coefficient( beta );
+        ring := CommutativeRingOfLinearCategory( LC );
         
-        return MorphismConstructor( LC, Source( alpha ), coefficient, Target( beta ) );
+        source := Source( alpha );
+        target := Target( beta );
+        
+        # If CoefficientsList( alpha ) is empty, the following returns 0.
+        # Otherwise returns the integer inside the coefficient list.
+        coefficient_alpha := Sum( CoefficientsList( alpha ) );
+        
+        coefficient_beta := Sum( CoefficientsList( beta ) );
+        
+        coefficient := coefficient_alpha * coefficient_beta;
+        
+        support_morphism := Concatenation( SupportMorphisms( alpha ), SupportMorphisms( beta ) );
+        
+        # If coefficient is 0, then the following becomes support_morphism := [], as required for a zero morphism.
+        # Otherwise it turns into support_morphism := [ support_morphism[1] ].
+        # Note: here we don't need to call a PreCompose in the underlying category.
+        support_morphism := support_morphism{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        # If coefficient is 0, then the following becomes coefficient = [], as required for a zero morphism.
+        # Otherwise it turns into coefficient := [ coefficient ].
+        coefficient_list := [ coefficient ]{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        return MorphismConstructor( LC, Source( alpha ), Pair( coefficient_list, support_morphism ), Target( alpha ) );
         
     end );
     
     ##
     AddIdentityMorphism( LC,
       function( LC, object )
-        local DC, coefficient;
+        local DC, coefficient, support_morphism;
         
         DC := UnderlyingCategory( LC );
         
-        # 1·id_object
-        coefficient := One( ring );
+        coefficient := [ One( ring ) ];
         
-        return MorphismConstructor( LC, object, coefficient, object );
+        support_morphism := [ IdentityMorphism( DC, UnderlyingOriginalObject( object ) ) ];
+        
+        # 1·id_object
+        return MorphismConstructor( LC, object, Pair( coefficient, support_morphism ), object );
         
     end );
     
@@ -189,9 +238,10 @@ InstallGlobalFunction( LINEAR_CLOSURE_OF_FINITE_SKELETAL_DISCRETE_CATEGORY_CONST
       function( LC, object_1, object_2 )
         
         return MorphismConstructor( LC,
-                    object_1,
-                    Zero( CommutativeRingOfLinearCategory( LC ) ),
-                    object_2 );
+                       object_1,
+                       Pair( CapJitTypedExpression( [ ], cat -> CapJitDataTypeOfListOf( CapJitDataTypeOfElementOfRing( CommutativeRingOfLinearCategory( cat ) ) ) ),
+                             CapJitTypedExpression( [ ], cat -> CapJitDataTypeOfListOf( CapJitDataTypeOfMorphismOfCategory( UnderlyingCategory( cat ) ) ) ) ),
+                       object_2 );
         
     end );
     
@@ -199,62 +249,131 @@ InstallGlobalFunction( LINEAR_CLOSURE_OF_FINITE_SKELETAL_DISCRETE_CATEGORY_CONST
     AddIsZeroForMorphisms( LC,
       function( LC, alpha )
         
-        return Coefficient( alpha ) = Zero( CommutativeRingOfLinearCategory( LC ) );
+        return IsEmpty( CoefficientsList( alpha ) ) and IsEmpty( SupportMorphisms( alpha ) );
         
     end );
     
     ##
     AddAdditionForMorphisms( LC,
       function( LC, alpha, beta )
+        local ring, coefficient, support_morphism, coefficient_list;
         
-        return MorphismConstructor( LC,
-                                    Source( alpha ),
-                                    Coefficient( alpha ) + Coefficient( beta ),
-                                    Target( alpha ) );
+        ring := CommutativeRingOfLinearCategory( LC );
+        
+        coefficient := Sum( Concatenation( CoefficientsList( alpha ), CoefficientsList( beta ) ), Zero( ring ) );
+        
+        support_morphism := Concatenation( SupportMorphisms( alpha ), SupportMorphisms( beta ) );
+        
+        # If coefficient is 0, then the following becomes support_morphism := [], as required for a zero morphism.
+        # Otherwise it turns into support_morphism := [ support_morphism[1] ].
+        support_morphism := support_morphism{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        # If coefficient is 0, then the following becomes coefficient = [], as required for a zero morphism.
+        # Otherwise it turns into coefficient := [ coefficient ].
+        coefficient_list := [ coefficient ]{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        return MorphismConstructor( LC, Source( alpha ), Pair( coefficient_list, support_morphism ), Target( alpha ) );
         
     end );
     
     ##
     AddSumOfMorphisms( LC,
       function( LC, source, morphisms, target )
-        local coefficient;
+        local ring, coefficient, support_morphism, coefficient_list;
         
-        coefficient := List( morphisms, mor -> Coefficient( mor ) );
+        ring := CommutativeRingOfLinearCategory( LC );
         
-        return MorphismConstructor( LC, source, Sum( coefficient ), target );
+        coefficient := Sum( Concatenation( List( morphisms, mor -> CoefficientsList( mor ) ) ), Zero( ring ) );
+        
+        support_morphism := Concatenation( List( morphisms, mor -> SupportMorphisms( mor ) ) );
+        
+        # If coefficient is 0, then the following becomes support_morphism := [], as required for a zero morphism.
+        # Otherwise it turns into support_morphism := [ support_morphism[1] ].
+        support_morphism := support_morphism{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        # If coefficient is 0, then the following becomes coefficient = [], as required for a zero morphism.
+        # Otherwise it turns into coefficient := [ coefficient ].
+        coefficient_list := [ coefficient ]{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        return MorphismConstructor( LC, source, Pair( coefficient_list, support_morphism ), target );
         
     end );
     
     ##
     AddAdditiveInverseForMorphisms( LC,
       function( LC, alpha )
+        local ring, source, target, coefficient, support_morphism, coefficient_list;
         
-        return MorphismConstructor( LC,
-                    Source( alpha ),
-                    Coefficient( alpha ) * MinusOne( CommutativeRingOfLinearCategory( LC ) ),
-                    Target( alpha ) );
+        ring := CommutativeRingOfLinearCategory( LC );
+        
+        source := Source( alpha );
+        target := Target( alpha );
+        
+        # If CoefficientsList( alpha ) is empty, the following returns 0.
+        # Otherwise returns the integer inside the coefficient list.
+        coefficient := Sum( CoefficientsList( alpha ) );
+        
+        coefficient := coefficient * MinusOne( CommutativeRingOfLinearCategory( LC ) );
+        
+        support_morphism := SupportMorphisms( alpha );
+        
+        # If coefficient is 0, then the following becomes support_morphism := [], as required for a zero morphism.
+        # Otherwise it turns into support_morphism := [ support_morphism[1] ].
+        support_morphism := support_morphism{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        # If coefficient is 0, then the following becomes coefficient = [], as required for a zero morphism.
+        # Otherwise it turns into coefficient := [ coefficient ].
+        coefficient_list := [ coefficient ]{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        return MorphismConstructor( LC, Source( alpha ), Pair( coefficient_list, support_morphism ), Target( alpha ) );
         
     end );
     
     ##
     AddSubtractionForMorphisms( LC,
       function( LC, alpha, beta )
-
-        return MorphismConstructor( LC,
-                                    Source( alpha ),
-                                    Coefficient( alpha ) - Coefficient( beta ),
-                                    Target( alpha ) );
+        local ring, coefficient, support_morphism, coefficient_list;
+        
+        ring := CommutativeRingOfLinearCategory( LC );
+        
+        # If the difference is empty, the following returns 0.
+        # Otherwise returns the integer inside the difference of coefficient lists.
+        coefficient := Sum( CoefficientsList( alpha ) - CoefficientsList( beta ) );
+        
+        support_morphism := Concatenation( SupportMorphisms( alpha ), SupportMorphisms( beta ) );
+        
+        # If coefficient is 0, then the following becomes support_morphism := [], as required for a zero morphism.
+        # Otherwise it turns into support_morphism := [ support_morphism[1] ].
+        support_morphism := support_morphism{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        # If coefficient is 0, then the following becomes coefficient = [], as required for a zero morphism.
+        # Otherwise it turns into coefficient := [ coefficient ].
+        coefficient_list := [ coefficient ]{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        return MorphismConstructor( LC, Source( alpha ), Pair( coefficient_list, support_morphism ), Target( alpha ) );
         
     end );
     
     ##
     AddMultiplyWithElementOfCommutativeRingForMorphisms( LC,
       function( LC, r, alpha )
+        local coefficient, support_morphism, coefficient_list;
         
-        return MorphismConstructor( LC,
-                                    Source( alpha ),
-                                    r * Coefficient( alpha ),
-                                    Target( alpha ) );
+        coefficient := Sum( CoefficientsList( alpha ) );
+        
+        coefficient := coefficient * r;
+        
+        support_morphism := SupportMorphisms( alpha );
+        
+        # If coefficient is 0, then the following becomes support_morphism := [], as required for a zero morphism.
+        # Otherwise it turns into support_morphism := [ support_morphism[1] ].
+        support_morphism := support_morphism{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        # If coefficient is 0, then the following becomes coefficient = [], as required for a zero morphism.
+        # Otherwise it turns into coefficient := [ coefficient ].
+        coefficient_list := [ coefficient ]{[ 1 .. BooleanToInteger( not IsZero( coefficient ) ) ]};
+        
+        return MorphismConstructor( LC, Source( alpha ), Pair( coefficient_list, support_morphism ), Target( alpha ) );
         
     end );
     
@@ -302,20 +421,20 @@ end );
 
 ##
 InstallMethod( ViewString,
-               [ IsMorphismInLinearClosureOfFiniteSkeletalDiscreteCategory ],
+               [ IsMorphismInLinearClosure ],
     
     function( alpha )
         local DC, coefficient, source, id_source;
         
-        DC := UnderlyingCategory( CapCategory( alpha ) );
-        
-        coefficient := Coefficient( alpha );
-        
-        if coefficient = 0 then
+        if IsZeroForMorphisms( alpha ) then
             
             return "0";
             
         fi;
+        
+        DC := UnderlyingCategory( CapCategory( alpha ) );
+        
+        coefficient := CoefficientsList( alpha )[1];
         
         source := Source( alpha );
         

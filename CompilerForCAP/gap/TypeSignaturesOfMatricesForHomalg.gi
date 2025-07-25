@@ -24,6 +24,8 @@ end );
 
 CapJitAddTypeSignature( "ZeroImmutable", [ IsHomalgRing ], input_types -> CapJitDataTypeOfElementOfRing( input_types[1].ring ) );
 CapJitAddTypeSignature( "OneImmutable", [ IsHomalgRing ], input_types -> CapJitDataTypeOfElementOfRing( input_types[1].ring ) );
+CapJitAddTypeSignature( "MinusOne", [ IsHomalgRing ], input_types -> CapJitDataTypeOfElementOfRing( input_types[1].ring ) );
+CapJitAddTypeSignature( "IsZero", [ IsHomalgRing ], input_types -> CapJitDataTypeOfElementOfRing( input_types[1].ring ) );
 
 CapJitAddTypeSignature( "HomalgMatrixListList", [ IsList, IsInt, IsInt, IsHomalgRing ], function ( input_types )
   local ring;

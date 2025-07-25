@@ -24,5 +24,7 @@ ReadPackage( "AdditiveClosuresForCAP", "gap/CategoryOfGradedRowsAndColumns/Tools
 
 ReadPackage( "AdditiveClosuresForCAP", "gap/AdditiveClosure.gi" );
 ReadPackage( "AdditiveClosuresForCAP", "gap/AdditiveClosureDerivedMethods.gi" );
+ReadPackage( "AdditiveClosuresForCAP", "gap/AdditiveClosureOfObjectFiniteCategory.gi" );
+ReadPackage( "AdditiveClosuresForCAP", "gap/AdditiveClosureOfObjectFiniteDisconnectedCategory.gi" );
 
 ReadPackage( "AdditiveClosuresForCAP", "gap/RingsAsAbCats.gi" );
