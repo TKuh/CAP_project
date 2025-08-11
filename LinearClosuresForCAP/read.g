@@ -6,6 +6,8 @@
 
 ReadPackage( "LinearClosuresForCAP", "gap/LinearClosure.gi" );
 
+ReadPackage( "LinearClosuresForCAP", "gap/TwistedLinearClosure.gi" );
+
 #= comment for Julia (Groups are not available in Julia)
 ReadPackage( "LinearClosuresForCAP", "gap/LinearClosureForGroupAsCategory.gi" );
 # =#

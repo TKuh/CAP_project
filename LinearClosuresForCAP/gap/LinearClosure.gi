@@ -10,6 +10,34 @@
 ##
 ####################################
 
+InstallGlobalFunction( SET_COMMON_ATTRIBUTES_FOR_LINEAR_CLOSURE,
+                       
+  function( category, underlying_category, ring )
+    
+    SetCommutativeRingOfLinearCategory( category, ring );
+    
+    SetUnderlyingRing( category, ring );
+    
+    SetUnderlyingCategory( category, underlying_category );
+    
+    SetIsLinearCategoryOverCommutativeRing( category, true );
+    
+    SetIsAbCategory( category, true );
+    
+    if HasIsObjectFiniteCategory( underlying_category ) and IsObjectFiniteCategory( underlying_category ) then
+        
+        SetIsObjectFiniteCategory( category, true );
+        
+    fi;
+    
+    if HasIsSkeletalCategory( underlying_category ) and IsSkeletalCategory( underlying_category ) then
+        
+        SetIsSkeletalCategory( category, true );
+        
+    fi;
+    
+end );
+
 ##
 InstallGlobalFunction( LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows,
   function( rows, underlying_category, arg... ) ## rows = CategoryOfRows( ... )
@@ -17,11 +45,7 @@ InstallGlobalFunction( LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows,
     
     ring := UnderlyingRing( rows );
     
-    if not ( HasIsCommutative( ring ) and IsCommutative( ring ) ) then
-        
-        Error( "only commutative rings are supported" );
-        
-    fi;
+    Assert( 0, HasIsCommutative( ring ) and IsCommutative( ring ) );
     
     sorting_function := fail;
     
@@ -79,7 +103,12 @@ InstallGlobalFunction( LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows,
         
     fi;
     
-    category := CreateCapCategory( name, IsLinearClosure, IsLinearClosureObject, IsLinearClosureMorphism, IsCapCategoryTwoCell : overhead := false );
+    category := CreateCapCategory( name,
+                                   IsLinearClosure,
+                                   IsObjectInLinearClosure,
+                                   IsMorphismInLinearClosure,
+                                   IsCapCategoryTwoCell
+                                   : overhead := false );
     
     category!.compiler_hints := rec(
         category_attribute_names := [
@@ -159,24 +188,6 @@ InstallMethod( LinearClosure,
                LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows );
 
 ##
-InstallMethod( TwistedLinearClosure,
-               [ IsCategoryOfRows, IsCapCategory, IsFunction ],
-  function( rows, category, cocycle )
-    
-    return LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows( rows, category, cocycle, false );
-    
-end );
-
-##
-InstallMethod( TwistedLinearClosure,
-               [ IsCategoryOfRows, IsCapCategory, IsFunction, IsFunction ],
-  function( rows, category, cocycle, sorting_function )
-    
-    return LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows( rows, category, cocycle, true, sorting_function );
-    
-end );
-
-##
 InstallGlobalFunction( LINEAR_CLOSURE_CONSTRUCTOR,
   function( ring, underlying_category, arg... )
     local rows;
@@ -203,24 +214,6 @@ InstallMethod( LinearClosure,
 InstallMethod( LinearClosure,
                [ IsHomalgRing, IsCapCategory ],
                LINEAR_CLOSURE_CONSTRUCTOR );
-
-##
-InstallMethod( TwistedLinearClosure,
-               [ IsHomalgRing, IsCapCategory, IsFunction ],
-  function( ring, category, cocycle )
-    
-    return LINEAR_CLOSURE_CONSTRUCTOR( ring, category, cocycle, false );
-    
-end );
-
-##
-InstallMethod( TwistedLinearClosure,
-               [ IsHomalgRing, IsCapCategory, IsFunction, IsFunction ],
-  function( ring, category, cocycle, sorting_function )
-    
-    return LINEAR_CLOSURE_CONSTRUCTOR( ring, category, cocycle, true, sorting_function );
-    
-end );
 
 ##
 InstallMethodForCompilerForCAP( LinearClosureObject,
@@ -263,7 +256,7 @@ end );
 ## no further restrictions
 ##
 InstallMethod( LinearClosureMorphism,
-               [ IsLinearClosure, IsLinearClosureObject, IsList, IsList, IsLinearClosureObject ],
+               [ IsLinearClosure, IsObjectInLinearClosure, IsList, IsList, IsObjectInLinearClosure ],
   function( category, source, coefficients, support_morphisms, range )
     local sorting_function, coefficients_copy, support_morphisms_copy,
           coefficients_NF, support_morphisms_NF, m, c, i, m_compare;
@@ -320,7 +313,7 @@ InstallMethod( LinearClosureMorphism,
     if not IsZero( c ) then
         
         Add( support_morphisms_NF, m );
-                
+        
         Add( coefficients_NF, c );
         
     fi;
@@ -331,7 +324,7 @@ end );
 
 ##
 InstallMethod( LinearClosureMorphism,
-               [ IsLinearClosureObject, IsList, IsList, IsLinearClosureObject ],
+               [ IsObjectInLinearClosure, IsList, IsList, IsObjectInLinearClosure ],
   function( source, coefficients, support_morphisms, range )
     
     return LinearClosureMorphism( CapCategory( source ), source, coefficients, support_morphisms, range );
@@ -340,7 +333,7 @@ end );
 
 ##
 InstallMethod( LinearClosureMorphismNC,
-               [ IsLinearClosureObject, IsList, IsList, IsLinearClosureObject ],
+               [ IsObjectInLinearClosure, IsList, IsList, IsObjectInLinearClosure ],
   function( source, coefficients, support_morphisms, range )
     local category;
     
@@ -352,7 +345,7 @@ end );
 
 ##
 InstallOtherMethodForCompilerForCAP( LinearClosureMorphismNC,
-                                     [ IsLinearClosure, IsLinearClosureObject, IsList, IsList, IsLinearClosureObject ],
+                                     [ IsLinearClosure, IsObjectInLinearClosure, IsList, IsList, IsObjectInLinearClosure ],
   function( category, source, coefficients, support_morphisms, range )
     local underlying_category;
     
@@ -445,7 +438,6 @@ end );
 ## Basic operations
 ##
 ####################################
-
 
 InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_LINEAR_CLOSURE,
   function( rows, category )
@@ -638,53 +630,12 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_LINEAR_CLOSURE,
         
         ##
         AddPreCompose( category,
-        function( cat, alpha, beta )
+          function( cat, alpha, beta )
             local coeffs, supp;
             
             coeffs := ListX( CoefficientsList( alpha ), CoefficientsList( beta ), { a,b } -> a * b );
             
             supp := ListX( SupportMorphisms( alpha ), SupportMorphisms( beta ), { a, b } -> PreCompose( underlying_category, a, b ) );
-            
-            return MorphismConstructor( cat, Source( alpha ), Pair( coeffs, supp ), Range( beta ) );
-            
-        end );
-        
-    else
-        
-        cocycle := category!.cocycle;
-        
-        ##
-        AddPreCompose( category,
-        function( cat, alpha, beta )
-            local coeffs_alpha, coeffs_beta, supp_alpha, supp_beta, coeffs, supp, a, b, gamma, coeff;
-            
-            coeffs_alpha := CoefficientsList( alpha );
-            
-            coeffs_beta := CoefficientsList( beta );
-            
-            supp_alpha := SupportMorphisms( alpha );
-            
-            supp_beta := SupportMorphisms( beta );
-            
-            coeffs := [];
-            
-            supp := [];
-            
-            for a in [ 1 .. Length( coeffs_alpha ) ] do
-                
-                for b in [ 1 .. Length( coeffs_beta ) ] do
-                    
-                    gamma := PreCompose( supp_alpha[a], supp_beta[b] );
-                    
-                    coeff := ( coeffs_alpha[a] * coeffs_beta[b] ) * cocycle( supp_alpha[a], supp_beta[b], gamma );
-                    
-                    Add( supp, gamma );
-                    
-                    Add( coeffs, coeff );
-                    
-                od;
-                
-            od;
             
             return MorphismConstructor( cat, Source( alpha ), Pair( coeffs, supp ), Range( beta ) );
             
@@ -907,7 +858,7 @@ InstallMethodWithCache( ExtendFunctorToLinearClosureOfSource,
 
 ##
 InstallMethod( ViewString,
-               [ IsLinearClosureMorphism ],
+               [ IsMorphismInLinearClosure ],
     
     function( alpha )
         local coeffs, support, list;
@@ -930,7 +881,7 @@ end );
 
 ##
 InstallMethod( ViewString,
-               [ IsLinearClosureObject ],
+               [ IsObjectInLinearClosure ],
 
   function( obj )
     
@@ -945,11 +896,11 @@ end );
 ####################################
 
 InstallMethod( \*,
-               [ IsLinearClosureMorphism, IsLinearClosureMorphism ],
+               [ IsMorphismInLinearClosure, IsMorphismInLinearClosure ],
                PreCompose );
 
 InstallMethod( \=,
-               [ IsLinearClosureMorphism, IsLinearClosureMorphism ],
+               [ IsMorphismInLinearClosure, IsMorphismInLinearClosure ],
                IsCongruentForMorphisms );
 
 InstallOtherMethod( \/,
@@ -958,10 +909,10 @@ InstallOtherMethod( \/,
     function( mor, cat )
         
         return LinearClosureMorphismNC(
-            LinearClosureObject( Source( mor ), cat ),
+            LinearClosureObject( cat, Source( mor ) ),
             [ One( UnderlyingRing( cat ) ) ],
             [ mor ],
-            LinearClosureObject( Range( mor ), cat )
+            LinearClosureObject( cat, Range( mor ) )
         );
         
 end );
@@ -974,7 +925,7 @@ end );
 
 ##
 InstallMethod( Down,
-               [ IsLinearClosureObject ],
+               [ IsObjectInLinearClosure ],
   function( obj )
     
     return UnderlyingOriginalObject( obj );
@@ -983,7 +934,7 @@ end );
 
 ##
 InstallMethod( DownOnlyMorphismData,
-               [ IsLinearClosureMorphism ],
+               [ IsMorphismInLinearClosure ],
   function( mor )
     
     return [ CoefficientsList( mor ), SupportMorphisms( mor ) ];

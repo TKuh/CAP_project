@@ -6,4 +6,6 @@
 
 ReadPackage( "LinearClosuresForCAP", "gap/LinearClosure.gd" );
 
+ReadPackage( "LinearClosuresForCAP", "gap/TwistedLinearClosure.gd" );
+
 ReadPackage( "LinearClosuresForCAP", "gap/HomomorphismStructure.gd" );

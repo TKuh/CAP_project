@@ -12,14 +12,16 @@
 ####################################
 
 ##
-DeclareCategory( "IsLinearClosureObject",
-                 IsCapCategoryObject );
-
-DeclareCategory( "IsLinearClosureMorphism",
-                 IsCapCategoryMorphism );
-
 DeclareCategory( "IsLinearClosure",
                  IsCapCategory );
+
+##
+DeclareCategory( "IsObjectInLinearClosure",
+                 IsCapCategoryObject );
+
+##
+DeclareCategory( "IsMorphismInLinearClosure",
+                 IsCapCategoryMorphism );
 
 #! @Description
 #!  The property of <A>C</A> being a linear closure of a category.
@@ -29,37 +31,17 @@ DeclareProperty( "IsLinearClosureOfACategory",
 
 AddCategoricalProperty( [ "IsLinearClosureOfACategory", "IsLinearClosureOfACategory" ] );
 
-DeclareGlobalFunction( "LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows" );
-
-DeclareGlobalFunction( "LINEAR_CLOSURE_CONSTRUCTOR" );
-
-DeclareGlobalFunction( "LINEAR_CLOSURE_MORPHISM_SIMPLIFY" );
-
-DeclareGlobalFunction( "INSTALL_FUNCTIONS_FOR_LINEAR_CLOSURE" );
-
 ####################################
 ##
 #! @Section Constructors
 ##
 ####################################
 
-DeclareOperation( "TwistedLinearClosure",
-                  [ IsCategoryOfRows, IsCapCategory, IsFunction, IsFunction ] );
-
-DeclareOperation( "TwistedLinearClosure",
-                  [ IsCategoryOfRows, IsCapCategory, IsFunction ] );
-
 DeclareOperation( "LinearClosure",
                   [ IsCategoryOfRows, IsCapCategory ] );
 
 DeclareOperation( "LinearClosure",
                   [ IsCategoryOfRows, IsCapCategory, IsFunction ] );
-
-DeclareOperation( "TwistedLinearClosure",
-                  [ IsHomalgRing, IsCapCategory, IsFunction, IsFunction ] );
-
-DeclareOperation( "TwistedLinearClosure",
-                  [ IsHomalgRing, IsCapCategory, IsFunction ] );
 
 DeclareOperation( "LinearClosure",
                   [ IsHomalgRing, IsCapCategory ] );
@@ -80,15 +62,15 @@ CapJitAddTypeSignature( "LinearClosureObject", [ IsLinearClosure, IsCapCategoryO
 end );
 
 DeclareOperation( "LinearClosureMorphism",
-                  [ IsLinearClosure, IsLinearClosureObject, IsList, IsList, IsLinearClosureObject ] );
+                  [ IsLinearClosure, IsObjectInLinearClosure, IsList, IsList, IsObjectInLinearClosure ] );
 
 DeclareOperation( "LinearClosureMorphism",
-                  [ IsLinearClosureObject, IsList, IsList, IsLinearClosureObject ] );
+                  [ IsObjectInLinearClosure, IsList, IsList, IsObjectInLinearClosure ] );
 
 DeclareOperation( "LinearClosureMorphismNC",
-                  [ IsLinearClosureObject, IsList, IsList, IsLinearClosureObject ] );
+                  [ IsObjectInLinearClosure, IsList, IsList, IsObjectInLinearClosure ] );
 
-CapJitAddTypeSignature( "LinearClosureMorphismNC", [ IsLinearClosure, IsLinearClosureObject, IsList, IsList, IsLinearClosureObject ], function ( input_types )
+CapJitAddTypeSignature( "LinearClosureMorphismNC", [ IsLinearClosure, IsObjectInLinearClosure, IsList, IsList, IsObjectInLinearClosure ], function ( input_types )
     
     return CapJitDataTypeOfMorphismOfCategory( input_types[1].category );
     
@@ -99,7 +81,6 @@ end );
 #! @Section Attributes
 ##
 ####################################
-
 
 DeclareAttribute( "UnderlyingCategory",
                    IsLinearClosure );
@@ -114,9 +95,9 @@ DeclareAttribute( "UnderlyingRing",
                    IsLinearClosure );
 
 DeclareAttribute( "UnderlyingOriginalObject",
-                   IsLinearClosureObject );
+                   IsObjectInLinearClosure );
 
-CapJitAddTypeSignature( "UnderlyingOriginalObject", [ IsLinearClosureObject ], function ( input_types )
+CapJitAddTypeSignature( "UnderlyingOriginalObject", [ IsObjectInLinearClosure ], function ( input_types )
     
     Assert( 0, IsLinearClosure( input_types[1].category ) );
     
@@ -125,14 +106,14 @@ CapJitAddTypeSignature( "UnderlyingOriginalObject", [ IsLinearClosureObject ], f
 end );
 
 DeclareAttribute( "CoefficientsList",
-                  IsLinearClosureMorphism );
+                  IsMorphismInLinearClosure );
 
-CapJitAddTypeSignature( "CoefficientsList", [ IsLinearClosureMorphism ], CapJitDataTypeOfListOf( IsHomalgRingElement ) );
+CapJitAddTypeSignature( "CoefficientsList", [ IsMorphismInLinearClosure ], CapJitDataTypeOfListOf( IsHomalgRingElement ) );
 
 DeclareAttribute( "SupportMorphisms",
-                  IsLinearClosureMorphism );
+                  IsMorphismInLinearClosure );
 
-CapJitAddTypeSignature( "SupportMorphisms", [ IsLinearClosureMorphism ], function ( input_types )
+CapJitAddTypeSignature( "SupportMorphisms", [ IsMorphismInLinearClosure ], function ( input_types )
     
     Assert( 0, IsLinearClosure( input_types[1].category ) );
     
@@ -173,7 +154,24 @@ DeclareOperation( "ExtendFunctorToLinearClosureOfSource",
 ####################################
 
 DeclareOperation( "*",
-                  [ IsLinearClosureMorphism, IsLinearClosureMorphism ] );
+                  [ IsMorphismInLinearClosure, IsMorphismInLinearClosure ] );
 
 DeclareOperation( "/",
                   [ IsCapCategoryMorphism, IsLinearClosure ] );
+
+####################################
+##
+#! @Section Global functions
+##
+####################################
+
+DeclareGlobalFunction( "SET_COMMON_ATTRIBUTES_FOR_LINEAR_CLOSURE" );
+
+DeclareGlobalFunction( "LINEAR_CLOSURE_CONSTRUCTOR" );
+
+DeclareGlobalFunction( "LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows" );
+
+DeclareGlobalFunction( "LINEAR_CLOSURE_MORPHISM_SIMPLIFY" );
+
+DeclareGlobalFunction( "INSTALL_FUNCTIONS_FOR_LINEAR_CLOSURE" );
+
