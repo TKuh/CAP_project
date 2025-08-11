@@ -41,15 +41,13 @@ end );
 ##
 InstallGlobalFunction( LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows,
   function( rows, underlying_category, arg... ) ## rows = CategoryOfRows( ... )
-    local ring, name, category, is_finite, sorting_function, with_nf, cocycle;
+    local ring, name, category, is_finite, sorting_function, with_nf;
     
     ring := UnderlyingRing( rows );
     
     Assert( 0, HasIsCommutative( ring ) and IsCommutative( ring ) );
     
     sorting_function := fail;
-    
-    cocycle := fail;
     
     if Length( arg ) = 0 then
         
@@ -79,29 +77,9 @@ InstallGlobalFunction( LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows,
         
         with_nf := true;
         
-    else
-        
-        cocycle := arg[1];
-        
-        with_nf := arg[2];
-        
-        if Length( arg ) >= 3 then
-            
-            sorting_function := arg[3];
-            
-        fi;
-        
     fi;
     
-    if cocycle <> fail then
-        
-        name := Concatenation( "TwistedLinearClosure( ", Name( underlying_category )," )" );
-        
-    else
-        
-        name := Concatenation( "LinearClosure( ", Name( underlying_category )," )" );
-        
-    fi;
+    name := Concatenation( "LinearClosure( ", Name( underlying_category )," )" );
     
     category := CreateCapCategory( name,
                                    IsLinearClosure,
@@ -125,37 +103,9 @@ InstallGlobalFunction( LINEAR_CLOSURE_CONSTRUCTOR_USING_CategoryOfRows,
         
     fi;
     
-    if cocycle <> fail then
-        
-        category!.cocycle := cocycle;
-        
-    fi;
+    SetIsLinearClosureOfACategory( category, true );
     
-    SetCommutativeRingOfLinearCategory( category, ring );
-    
-    SetUnderlyingRing( category, ring );
-    
-    SetUnderlyingCategory( category, underlying_category );
-    
-    if cocycle = fail then
-        SetIsLinearClosureOfACategory( category, true );
-    fi;
-    
-    SetIsLinearCategoryOverCommutativeRing( category, true );
-    
-    SetIsAbCategory( category, true );
-    
-    if HasIsObjectFiniteCategory( underlying_category ) and IsObjectFiniteCategory( underlying_category ) then
-        
-        SetIsObjectFiniteCategory( category, true );
-        
-    fi;
-    
-    if HasIsSkeletalCategory( underlying_category ) and IsSkeletalCategory( underlying_category ) then
-        
-        SetIsSkeletalCategory( category, true );
-        
-    fi;
+    SET_COMMON_ATTRIBUTES_FOR_LINEAR_CLOSURE( category, underlying_category, ring );
     
     if with_nf and
        HasIsEquippedWithHomomorphismStructure( underlying_category ) and
@@ -442,7 +392,7 @@ end );
 InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_LINEAR_CLOSURE,
   function( rows, category )
     local ring, underlying_category, sorting_function, with_nf,
-          equality_func, finsets, t_obj, t_finsets, FunctorMor, FunctorObj, cocycle;
+          equality_func, finsets, t_obj, t_finsets, FunctorMor, FunctorObj;
     
     if not IsCategoryOfRows( rows ) then
         Error( "the first argument `rows` must be a category of rows\n" );
@@ -626,7 +576,9 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_LINEAR_CLOSURE,
     end );
     
     ##
-    if not IsBound( category!.cocycle ) then
+    AddPreCompose( category,
+      function( cat, alpha, beta )
+        local coeffs, supp;
         
         ##
         AddPreCompose( category,
@@ -635,13 +587,19 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_LINEAR_CLOSURE,
             
             coeffs := ListX( CoefficientsList( alpha ), CoefficientsList( beta ), { a,b } -> a * b );
             
-            supp := ListX( SupportMorphisms( alpha ), SupportMorphisms( beta ), { a, b } -> PreCompose( underlying_category, a, b ) );
+            supp := ListX( SupportMorphisms( alpha ), SupportMorphisms( beta ), { alpha, beta } -> PreCompose( underlying_category, alpha, beta ) );
             
             return MorphismConstructor( cat, Source( alpha ), Pair( coeffs, supp ), Range( beta ) );
             
         end );
+       
+        coeffs := ListX( CoefficientsList( alpha ), CoefficientsList( beta ), { a, b } -> a * b );
         
-    fi;
+        supp := ListX( SupportMorphisms( alpha ), SupportMorphisms( beta ), { alpha, beta } -> PreCompose( underlying_category, alpha, beta ) );
+        
+        return MorphismConstructor( cat, Source( alpha ), Pair( coeffs, supp ), Range( beta ) );
+        
+    end );
     
     ##
     AddIdentityMorphism( category,
