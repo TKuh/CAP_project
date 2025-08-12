@@ -3,7 +3,7 @@
 #
 # Declarations
 #
-#! @Chapter Linear closure of a category
+#! @Chapter Twisted linear closure of a category
 
 ####################################
 ##
