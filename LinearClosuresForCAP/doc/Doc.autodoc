@@ -1,13 +1,29 @@
 @Chapter Linear closure of a category
 
-@Section GAP Categories
 @Section Constructors
 @Section Attributes
 @Section Functors
 @Section Operations
+@Section GAP Categories
+@Section Global functions
 
-@Chapter Examples and Tests
+@Section Examples and Tests
+@Subsection Linear closure of categories
+@Subsection Matrices over ZG
 
-@Section Linear closure of categories
-@Section Matrices over ZG
+@Chapter Twisted linear closure of a category
+@Section Constructors
+@Section Attributes
+@Section Operations
+@Section GAP Categories
+@Section Global functions
+
+@Chapter Linear closure of a finite skeletal discrete category
+@InsertChunk Intro_LinearClosureOfFiniteSkeletalDiscreteCategory
+
+@Section Constructors
+@Section Attributes
+@Section Operations
+@Section GAP Categories
+@Section Global functions
 
