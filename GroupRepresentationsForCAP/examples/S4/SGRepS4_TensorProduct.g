@@ -11,6 +11,67 @@ SGReps := SkeletalCategoryOfGroupRepresentations( S4, QQ : no_precompiled_code :
 DS := ModelingCategory( SGReps );;
 rows := UnderlyingAdditiveCategory( DS );;
 
+source := ObjectConstructor( SGReps, [ 2, [ 3, 4 ], [ 3, 1 ] ] );;
+target := ObjectConstructor( SGReps, [ 2, [ 3, 4 ], [ 3, 1 ] ] );;
+c := ObjectConstructor( SGReps, [ 2, [ 1, 4 ], [ 1, 2 ] ] );;
+source_c := TensorProductOnObjects( source, c );;
+Display( source_c );
+#! 9χ₂⊕5χ₃⊕8χ₄⊕2χ₅
+
+matrix_3 := HomalgMatrix( [ [ 1, 0, 0 ], [ 0, 1, 0 ], [ 0, 0, 1 ] ], 3, 3, QQ );;
+matrix_4 := HomalgMatrix( [ [ 1 ] ], 1, 1, QQ );;
+triple := [ 2, [ 3, 4 ], [ matrix_3, matrix_4 ] ];;
+morphism := MorphismConstructor( SGReps, source, triple, target );;
+id_c := IdentityMorphism( c );;
+
+IsWellDefinedForMorphisms( morphism );
+#! true
+IsWellDefinedForMorphisms( id_c );
+#! true
+
+morphism_id_c := TensorProductOnMorphisms( morphism, id_c );;
+Display( morphism_id_c );
+#! Component: (2)
+#!
+#! 1,0,0,0,0,0,0,0,0,
+#! 0,1,0,0,0,0,0,0,0,
+#! 0,0,1,0,0,0,0,0,0,
+#! 0,0,0,1,0,0,0,0,0,
+#! 0,0,0,0,1,0,0,0,0,
+#! 0,0,0,0,0,1,0,0,0,
+#! 0,0,0,0,0,0,1,0,0,
+#! 0,0,0,0,0,0,0,1,0,
+#! 0,0,0,0,0,0,0,0,1 
+#!
+#! ------------------------
+#! Component: (3)
+#!
+#! 1,0,0,0,0,
+#! 0,1,0,0,0,
+#! 0,0,1,0,0,
+#! 0,0,0,1,0,
+#! 0,0,0,0,1 
+#!
+#! ------------------------
+#! Component: (4)
+#!
+#! 1,0,0,0,0,0,0,0,
+#! 0,1,0,0,0,0,0,0,
+#! 0,0,1,0,0,0,0,0,
+#! 0,0,0,1,0,0,0,0,
+#! 0,0,0,0,1,0,0,0,
+#! 0,0,0,0,0,1,0,0,
+#! 0,0,0,0,0,0,1,0,
+#! 0,0,0,0,0,0,0,1 
+#!
+#! ------------------------
+#! Component: (5)
+#!
+#! 1,0,
+#! 0,1 
+#!
+#! ------------------------
+
 source := ObjectConstructor( SGReps, [ 3, [ 2, 3, 5 ], [ 2, 1, 1 ] ] );;
 target := ObjectConstructor( SGReps, [ 3, [ 1, 2, 3 ], [ 3, 1, 2 ] ] );;
 
@@ -24,10 +85,6 @@ matrices_triple := [ 4, [ 1, 2, 3, 5 ], [ matrix_1, matrix_2, matrix_3, matrix_5
 mor := MorphismConstructor( SGReps, source, matrices_triple, target );;
 IsWellDefinedForMorphisms( mor );
 #! true
-
-#########################################
-# Tensor Product
-#########################################
 
 unit := TensorUnit( SGReps );;
 

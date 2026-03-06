@@ -21,12 +21,10 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
   FunctionWithNamedArguments(
   [
     [ "no_precompiled_code", false ],
-    [ "product_ins_mat_no_precompiled_code", false ],
-    [ "ins_mat_no_precompiled_code", false ],
     [ "FinalizeCategory", true ],
   ],
   function( CAP_NAMED_ARGUMENTS, G, splitting_field )
-    local name, category_filter, category_object_filter, category_morphism_filter, character_table, irreducible_characters, nr_irreducible_characters, category_of_rows, direct_sum_category, decompose_product_of_characters, object_datum_type, object_datum, object_constructor, morphism_datum_type, morphism_datum, morphism_constructor, modeling_tower_object_datum, modeling_tower_object_constructor, modeling_tower_morphism_datum, modeling_tower_morphism_constructor, product_ins_mat, sgreps;
+    local name, category_filter, category_object_filter, category_morphism_filter, character_table, irreducible_characters, nr_irreducible_characters, category_of_rows, direct_sum_category, decompose_product_of_characters, object_datum_type, object_datum, object_constructor, morphism_datum_type, morphism_datum, morphism_constructor, modeling_tower_object_datum, modeling_tower_object_constructor, modeling_tower_morphism_datum, modeling_tower_morphism_constructor, product_insmat, embedding_product_insmat, product_permcat, embedding_product_permcat, sgreps;
     
     Assert( 0, HasCharacteristic( splitting_field ) and Characteristic( splitting_field ) = 0 );
     
@@ -325,14 +323,72 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
                  modeling_tower_morphism_datum := modeling_tower_morphism_datum,
                  only_primitive_operations := true, )
             : FinalizeCategory := false );
-            
-    product_ins_mat :=
+    
+    product_insmat :=
         SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations(
             irreducible_characters
-            : no_precompiled_code := CAP_NAMED_ARGUMENTS.product_ins_mat_no_precompiled_code,
-              ins_mat_no_precompiled_code := CAP_NAMED_ARGUMENTS.ins_mat_no_precompiled_code,
+            : no_precompiled_code := CAP_NAMED_ARGUMENTS.no_precompiled_code,
               FinalizeCategory := true );
-            
+    
+    embedding_product_insmat := CapFunctor( Concatenation( "Embedding of ",
+                                              Name( product_insmat ),
+                                              " ) into ",
+                                              Name( sgreps ) ),
+                                     product_insmat,
+                                     sgreps );
+    
+    # TODO: the object and morphism functions of a functor need to have the
+    #       source and target categories of the functor as arguments.
+    #       Right now, the following can't compile, because we need to
+    #       pull `sgreps` from the global variable.
+    #       It instead needs to be passed as an argument.
+    AddObjectFunction( embedding_product_insmat,
+      # function( source_cat, object, target_cat )
+      function( object )
+        
+        # return ObjectConstructor( target_cat,
+        return ObjectConstructor( sgreps,
+                                  TripleOfNrSupportListOfSupportListOfNumberElements( object ) );
+        
+    end );
+    
+    # AddMorphismFunction( embedding_product_insmat,
+    #   function( source_cat, source, morphism, target, target_cat )
+    #
+    #     # TODO: either `FunctorProdInsMatIntoSGRepsUsingUnionOfCols` or
+    #     #              `FunctorProdInsMatIntoSGRepsUsingCertainCols`.
+    #
+    # end );
+    
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
+    
+    embedding_product_permcat := CapFunctor( Concatenation( "Embedding of ",
+                                                            Name( product_permcat ),
+                                                            " ) into ",
+                                                            Name( sgreps ) ),
+                                             product_permcat,
+                                             sgreps );
+    
+    # TODO: the object and morphism functions of a functor need to have the
+    #       source and target categories of the functor as arguments.
+    #       Right now, the following can't compile, because we need to
+    #       pull `sgreps` from the global variable.
+    #       It instead needs to be passed as an argument.
+    # AddObjectFunction( embedding_product_permcat,
+    #   function( source_cat, object, target_cat )
+    #
+    #     return ObjectConstructor( target_cat,
+    #                               TripleOfNrSupportListOfSupportListOfCardinalitites( object ) );
+    #
+    # end );
+    
+    # AddMorphismFunction( embedding_product_permcat,
+    #   function( source_cat, source, morphism, target, target_cat )
+    #
+    #     # TODO
+    #
+    # end );
+    
     # DeactivateCachingOfCategory( sgreps );
     
     # CapCategorySwitchLogicOff( sgreps );
@@ -353,7 +409,11 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
     
     SetAssociatorData( sgreps, AssociatorsOnIrreduciblesFromDatabase( G ) );
     
-    SetUnderlyingProductCategoryOfInsertionMatrices( sgreps, product_ins_mat );
+    SetUnderlyingProductCategoryOfInsertionMatrices( sgreps, product_insmat );
+    
+    SetEmbeddingOfProductCategoryOfCategoryOfInsertionMatrices( sgreps, embedding_product_insmat );
+    
+    SetEmbeddingOfProductCategoryOfPermutationCategory( sgreps, embedding_product_permcat );
     
     Append( sgreps!.compiler_hints.category_attribute_names,
         [ "UnderlyingSplittingField",
@@ -362,8 +422,10 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
           "UnderlyingIrreducibleCharacters",
           "IndexOfTrivialCharacterInListOfIrreducibleCharacters",
           "NrIrreducibleCharacters",
-          "UnderlyingProductCategoryOfInsertionMatrices" ] );
-          
+          "UnderlyingProductCategoryOfInsertionMatrices",
+          "EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices",
+          "EmbeddingOfProductCategoryOfPermutationCategory" ] );
+    
     INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESENTATIONS(
         sgreps, irreducible_characters, nr_irreducible_characters );
     
@@ -429,7 +491,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
     # Sebastian's PhD. thesis construction I.3.12.
     AddTensorProductOnObjects( sgreps,
       function( sgreps, object_1, object_2 )
-        local direct_sum_category, category_of_rows, irreducible_characters, model_1, model_2, length_1, length_2, support_1, support_2, components_1, components_2, product;
+        local direct_sum_category, category_of_rows, irreducible_characters, model_1, model_2, nr_support_1, nr_support_2, support_1, support_2, components_1, components_2, product;
         
         direct_sum_category := ModelingCategory( sgreps );
         
@@ -438,15 +500,13 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
         irreducible_characters := UnderlyingIrreducibleCharacters( sgreps );
         
         model_1 := ModelingObject( sgreps, object_1 );
-        model_2 := ModelingObject( sgreps, object_2 );
-        
-        length_1 := NrSupport( model_1 );
-        length_2 := NrSupport( model_2 );
-        
+        nr_support_1 := NrSupport( model_1 );
         support_1 := Support( model_1 );
-        support_2 := Support( model_2 );
-        
         components_1 := Components( model_1 );
+        
+        model_2 := ModelingObject( sgreps, object_2 );
+        nr_support_2 := NrSupport( model_2 );
+        support_2 := Support( model_2 );
         components_2 := Components( model_2 );
         
         # Example in S4:
@@ -457,8 +517,8 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
         # = [ (χ₄)   ⊕   3(χ₃) ] ⊕ [2(χ₁⊕χ₂⊕χ₃⊕χ₄) ⊕ 6(χ₂⊕χ₄)]
         # = 2χ₁⊕8χ₂⊕5χ₃⊕9χ₄
         product :=
-            DirectSum( sgreps, List( [ 1 .. length_1 ], i ->
-                DirectSum( sgreps, List( [ 1 .. length_2 ], function( j )
+            DirectSum( sgreps, List( [ 1 .. nr_support_1 ], i ->
+                DirectSum( sgreps, List( [ 1 .. nr_support_2 ], function( j )
                     local multiplicity_of_product, decomposition, decomposition_nr_support, decomposition_support, decomposition_components, result;
                     
                     multiplicity_of_product :=
@@ -495,30 +555,27 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
     # (ɑ⊗ɣ)ₖ := ⊕ᵢ ⊕ⱼ (ɑᵢ⊗ɣⱼ⊗Iₙ₍ᵢⱼ₎ₖ)
     AddTensorProductOnMorphismsWithGivenTensorProducts( sgreps,
       function( sgreps, source, alpha, gamma, target )
-        local direct_sum_category, category_of_rows, irreducible_characters, nr_irreducible_characters, alpha_model, gamma_model, length_alpha, length_gamma, support_alpha, support_gamma, components_alpha, components_gamma, tensored_morphisms_matrix, support, length_support, indices_tensored_morphisms, tensored_morphisms, sums_of_morphisms, positions, matrices;
+        local direct_sum_category, category_of_rows, irreducible_characters, nr_irreducible_characters, alpha_model, gamma_model, alpha_nr_support, gamma_nr_support, alpha_support, gamma_support, alpha_components, gamma_components, tensored_morphisms_matrix, support, nr_support, indices_tensored_morphisms, tensored_morphisms, sums_of_morphisms, positions, matrices;
         
         direct_sum_category := ModelingCategory( sgreps );
-        
         category_of_rows := UnderlyingAdditiveCategory( direct_sum_category );
         
         irreducible_characters := UnderlyingIrreducibleCharacters( sgreps );
         nr_irreducible_characters := NrIrreducibleCharacters( sgreps );
         
         alpha_model := ModelingMorphism( sgreps, alpha );
+        alpha_nr_support := NrSupport( alpha_model );
+        alpha_support := Support( alpha_model );
+        alpha_components := Components( alpha_model );
+        
         gamma_model := ModelingMorphism( sgreps, gamma );
-        
-        length_alpha := NrSupport( alpha_model );
-        length_gamma := NrSupport( gamma_model );
-        
-        support_alpha := Support( alpha_model );
-        support_gamma := Support( gamma_model );
-        
-        components_alpha := Components( alpha_model );
-        components_gamma := Components( gamma_model );
+        gamma_nr_support := NrSupport( gamma_model );
+        gamma_support := Support( gamma_model );
+        gamma_components := Components( gamma_model );
         
         support := Union2( Support( source ), Support( target ) );
         
-        length_support := Length( support );
+        nr_support := Length( support );
         
         # A matrix with elements
         # [ [ ɑ₁⊗ɣ₁ ], ..., [ ɑ₁⊗ɣₗ ] ].
@@ -527,25 +584,25 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
         # [     .                .
         # [ [ ɑₙ⊗ɣ₁ ], ..., [ ɑₙ⊗ɣₗ ] ].
         tensored_morphisms :=
-            List( [ 1 .. length_alpha ], i ->
-                List( [ 1 .. length_gamma ], j ->
-                    TensorProductOnMorphisms( category_of_rows, components_alpha[i], components_gamma[j] ) ) );
+            List( [ 1 .. alpha_nr_support ], i ->
+                List( [ 1 .. gamma_nr_support ], j ->
+                    TensorProductOnMorphisms( category_of_rows, alpha_components[i], gamma_components[j] ) ) );
                     
         # (ɑ⊗ɣ)ₖ := ⊕ᵢ ⊕ⱼ (ɑᵢ⊗ɣⱼ⊗Iₙ₍ᵢⱼ₎ₖ)
         sums_of_morphisms :=
-            List( [ 1 .. length_support ],
+            List( [ 1 .. nr_support ],
               function( k )
-                local alpha_gamma_identity, nr_rows, nr_cols, list_of_sources, list_of_targets, inner_sums, outer_sum;
+                local alpha_gamma_identity, nr_rows, nr_cols, sources, targets, inner_sums, outer_sum;
                 
                 # Precompute the tensor products (ɑᵢ⊗ɣⱼ)⊗Iₙ₍ᵢⱼ₎ₖ
                 alpha_gamma_identity :=
-                    List( [ 1 .. length_alpha ], i ->
-                        List( [ 1 .. length_gamma ],
+                    List( [ 1 .. alpha_nr_support ], i ->
+                        List( [ 1 .. gamma_nr_support ],
                           function( j )
                             local n_ijk, alpha_gamma, identity_morphism, direct_sum;
                             
                             # n₍ᵢⱼ₎ₖ = ⟨χᵢ·χⱼ,χₖ⟩
-                            n_ijk := SGREPS_ScalarProduct( irreducible_characters, support[k], support_alpha[i], support_gamma[j] );
+                            n_ijk := SGREPS_ScalarProduct( irreducible_characters, support[k], alpha_support[i], gamma_support[j] );
                             
                             # If n₍ᵢⱼ₎ₖ = 0, then Iₙ₍ᵢⱼ₎ₖ = 0 so (ɑᵢ⊗ɣⱼ)⊗Iₙ₍ᵢⱼ₎ₖ = 0.
                             # 
@@ -572,12 +629,12 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
                 
                 # Compute the inner sums: ⊕ⱼ (ɑᵢ⊗ɣⱼ⊗Iₙ₍ᵢⱼ₎ₖ)
                 
-                list_of_sources :=
+                sources :=
                     List( [ 1 .. nr_rows ], i ->
                         List( [ 1 .. nr_cols ], j ->
                             Source( alpha_gamma_identity[i][j] ) ) );
                             
-                list_of_targets :=
+                targets :=
                     List( [ 1 .. nr_rows ], i ->
                         List( [ 1 .. nr_cols ], j ->
                             Target( alpha_gamma_identity[i][j] ) ) );
@@ -585,32 +642,32 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
                 inner_sums :=
                     List( [ 1 .. nr_rows ], i ->
                         DirectSumFunctorialWithGivenDirectSums( category_of_rows,
-                            DirectSum( category_of_rows, list_of_sources[i] ),
-                            list_of_sources[i],
+                            DirectSum( category_of_rows, sources[i] ),
+                            sources[i],
                             alpha_gamma_identity[i],
-                            list_of_targets[i],
-                            DirectSum( category_of_rows, list_of_targets[i] ) ) );
+                            targets[i],
+                            DirectSum( category_of_rows, targets[i] ) ) );
                             
                 # Compute the outer sum: ⊕ᵢ ⊕ⱼ (ɑᵢ⊗ɣⱼ⊗Iₙ₍ᵢⱼ₎ₖ).
                 
                 outer_sum :=
                     DirectSumFunctorialWithGivenDirectSums( category_of_rows,
-                        Component( ModelingObject( sgreps, source ), k ),
-                        List( [ 1 .. Length( inner_sums ) ], i -> Source( inner_sums[i] ) ),
+                        Component( ModelingObject( sgreps, source ), support[k] ),
+                        List( [ 1 .. nr_rows ], i -> Source( inner_sums[i] ) ),
                         inner_sums,
-                        List( [ 1 .. Length( inner_sums ) ], i -> Target( inner_sums[i] ) ),
-                        Component( ModelingObject( sgreps, target ), k ) );
+                        List( [ 1 .. nr_rows ], i -> Target( inner_sums[i] ) ),
+                        Component( ModelingObject( sgreps, target ), support[k] ) );
                 
                 return outer_sum;
                 
             end );
             
-        matrices := List( [ 1 .. length_support ], i -> UnderlyingMatrix( sums_of_morphisms[i] ) );;
+        matrices := List( [ 1 .. nr_support ], i -> UnderlyingMatrix( sums_of_morphisms[i] ) );;
         
         return MorphismConstructor( sgreps,
                     source,
                     NTuple(3,
-                        length_support,
+                        nr_support,
                         support,
                         matrices ),
                     target );
@@ -717,25 +774,37 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
     # end );
     
     # Compilation of RightDistributivityExpanding with 
-    # RightDistributivityExpandingWithGivenObjects( product_ins_mat, ... )
+    # RightDistributivityExpandingWithGivenObjects( product_insmat, ... )
     # given as most high level categorical code takes 1h2m
     # 
     # (l₁⊕...⊕lₙ)⊗a ⥲ (l₁⊗a)⊕...⊕(lₙ⊗a)
     AddRightDistributivityExpandingWithGivenObjects( sgreps,
       function( sgreps, source, L, a, target )
-        local product_ins_mat, morphism;
-
-        product_ins_mat := UnderlyingProductCategoryOfInsertionMatrices( sgreps );
-
-        morphism :=
-            RightDistributivityExpandingWithGivenObjects( product_ins_mat,
-                FunctorSGRepsIntoProdInsMatOnObject( product_ins_mat, source ),
-                List( L, object -> FunctorSGRepsIntoProdInsMatOnObject( product_ins_mat, object ) ),
-                FunctorSGRepsIntoProdInsMatOnObject( product_ins_mat, a ),
-                FunctorSGRepsIntoProdInsMatOnObject( product_ins_mat, target ) );
-
-        return FunctorProdInsMatIntoSGRepsOnIsomorphism( sgreps, morphism );
-
+        local product_insmat, F_product_permcat, morphism_product_insmat, morphism_product_perms;
+        
+        product_insmat := UnderlyingProductCategoryOfInsertionMatrices( sgreps );
+        F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+        
+        morphism_product_insmat :=
+            RightDistributivityExpandingWithGivenObjects( product_insmat,
+                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, source ),
+                List( L, object -> AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, object ) ),
+                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, a ),
+                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, target ) );
+        
+        # We need to invert the permutations, because EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism
+        # uses PermMat, which constructs a matrix from a permutation via rows,
+        # but we need to construct them via columns.
+        
+        # morphism_product_perms := ApplyFunctor( F_product_permcat, morphism_product_insmat );
+        # morphism_product_perms := InverseForMorphisms( morphism_product_perms );
+        
+        # TODO: is the following faster, which uses PermutationMat?
+        # return EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism( sgreps, morphism_product_perms );
+        
+        # TODO: or is the following code faster, which uses CertainColumns?
+        return FunctorProdInsMatIntoSGRepsUsingCertainCols( sgreps, morphism_product_insmat );
+        
     end );
     
     # (l₁⊗a)⊕...⊕(lₙ⊗a) ⥲ (l₁⊕...⊕lₙ)⊗a
@@ -750,13 +819,43 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
     end );
     
     # a⊗(l₁⊕...⊕lₙ) ⥲ (a⊗l₁)⊕...⊕(a⊗lₙ)
+    # AddLeftDistributivityExpandingWithGivenObjects( sgreps,
+    #   function( sgreps, source, a, L, target )
+    #     local morphism;
+    #
+    #     morphism := SGREPS_LeftDistributivityExpandingPermutation( sgreps, a, L, source );
+    #
+    #     return SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( sgreps, source, morphism, target );
+    #
+    # end );
+    
+    # a⊗(l₁⊕...⊕lₙ) ⥲ (a⊗l₁)⊕...⊕(a⊗lₙ)
     AddLeftDistributivityExpandingWithGivenObjects( sgreps,
       function( sgreps, source, a, L, target )
-        local morphism;
+        local product_insmat, F_product_permcat, morphism_product_insmat, morphism_product_perms;
         
-        morphism := SGREPS_LeftDistributivityExpandingPermutation( sgreps, a, L, source );
+        product_insmat := UnderlyingProductCategoryOfInsertionMatrices( sgreps );
+        F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
         
-        return SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( sgreps, source, morphism, target );
+        morphism_product_insmat :=
+            LeftDistributivityExpandingWithGivenObjects( product_insmat,
+                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, source ),
+                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, a ),
+                List( L, object -> AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, object ) ),
+                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, target ) );
+        
+        # We need to invert the permutations, because EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism
+        # uses PermMat, which constructs a matrix from a permutation via rows,
+        # but we need to construct them via columns.
+        
+        # morphism_product_perms := ApplyFunctor( F_product_permcat, morphism_product_insmat );
+        # morphism_product_perms := InverseForMorphisms( morphism_product_perms );
+        
+        # TODO: is the following faster, which uses PermutationMat?
+        # return EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism( sgreps, morphism_product_perms );
+        
+        # TODO: or is the following code faster, which uses CertainColumns?
+        return FunctorProdInsMatIntoSGRepsUsingCertainCols( sgreps, morphism_product_insmat );
         
     end );
     
@@ -1086,32 +1185,34 @@ end );
 #
 #########################################################
 
-InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsOnObject,
-                                [ IsSkeletalCategoryOfGroupRepresentations,
-                                  IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+InstallMethodForCompilerForCAP( AsObjectInUnderlyingProductCategoryOfInsertionMatrices,
+                                [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
+                                  IsObjectInSkeletalCategoryOfGroupRepresentations ],
                                 
-  function( sgreps, object )
-    local product_ins_mat;
+  function( product_insmat, object )
+    local sgreps;
     
-    product_ins_mat := CapCategory( object );
+    sgreps := CapCategory( object );
     
-    return ObjectConstructor( sgreps, ObjectDatum( product_ins_mat, object ) );
+    return ObjectConstructor( product_insmat, ObjectDatum( sgreps, object ) );
     
 end );
 
-
-InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsOnMorphism,
+# TODO: switch to the CapFunctor EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices
+InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsUsingUnionOfCols,
                                 [ IsSkeletalCategoryOfGroupRepresentations,
                                   IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
                                 
   function( sgreps, morphism )
-    local direct_sum_category, category_of_rows, homalg_field, source, target, nr_support_morphism, support_morphism, list_nr_blockcols_blockcols, matrices;
+    local direct_sum_category, category_of_rows, homalg_field, embedding_product_insmat, source, target, nr_support_morphism, support_morphism, list_nr_blockcols_blockcols, matrices;
     
     direct_sum_category := ModelingCategory( sgreps );
     
     category_of_rows := UnderlyingAdditiveCategory( direct_sum_category );
     
     homalg_field := UnderlyingRing( category_of_rows );
+    
+    embedding_product_insmat := EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices( sgreps );
     
     source := Source( morphism );
     target := Target( morphism );
@@ -1162,48 +1263,27 @@ InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsOnMorphism,
         end );
         
     return MorphismConstructor( sgreps,
-                FunctorProdInsMatIntoSGRepsOnObject( sgreps, source ),
+                ApplyFunctor( embedding_product_insmat, source ),
                 NTuple( 3, nr_support_morphism, support_morphism, matrices ),
-                FunctorProdInsMatIntoSGRepsOnObject( sgreps, target ) );
+                ApplyFunctor( embedding_product_insmat, target ) );
      
 end );
 
-InstallMethodForCompilerForCAP( FunctorSGRepsIntoProdInsMatOnObject,
-                                [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
-                                  IsObjectInSkeletalCategoryOfGroupRepresentations ],
-                                
-  function( product_ins_mat, object )
-    local sgreps;
-    
-    sgreps := CapCategory( object );
-    
-    return ObjectConstructor( product_ins_mat, ObjectDatum( sgreps, object ) );
-    
-end );
-
-InstallMethodForCompilerForCAP( FunctorSGRepsIntoProdInsMatOnMorphism,
-                                [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
-                                  IsMorphismInSkeletalCategoryOfGroupRepresentations ],
-                                
-  function( product_ins_mat, morphism )
-    
-    # COVERAGE_IGNORE_NEXT_LINE
-    Error( "Not yet implemented" );
-    
-end );
-
-InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsOnIsomorphism,
+# TODO: switch to the CapFunctor EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices
+InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsUsingCertainCols,
                                 [ IsSkeletalCategoryOfGroupRepresentations,
                                   IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
                                 
   function( sgreps, morphism )
-    local direct_sum_category, category_of_rows, splitting_field, source, target, source_components, nr_support_morphism, support_morphism, list_nr_blockcols_blockcols, matrices;
+    local direct_sum_category, category_of_rows, splitting_field, embedding_product_insmat, source, target, source_components, nr_support_morphism, support_morphism, list_nr_blockcols_blockcols, matrices;
     
     direct_sum_category := ModelingCategory( sgreps );
     
     category_of_rows := UnderlyingAdditiveCategory( direct_sum_category );
     
     splitting_field := UnderlyingSplittingField( sgreps );
+    
+    embedding_product_insmat := EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices( sgreps );
     
     source := Source( morphism );
     target := Target( morphism );
@@ -1239,21 +1319,22 @@ InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsOnIsomorphism,
     end );
     
     return MorphismConstructor( sgreps,
-                FunctorProdInsMatIntoSGRepsOnObject( sgreps, source ),
+                ApplyFunctor( embedding_product_insmat, source ),
                 NTuple( 3, nr_support_morphism, support_morphism, matrices ),
-                FunctorProdInsMatIntoSGRepsOnObject( sgreps, target ) );
+                ApplyFunctor( embedding_product_insmat, target ) );
     
 end );
 
 ####################################
 #
-# Functors: SGReps ⟷ ProdCatOfPerms
+# Functors: SGReps ⟷ ProdPermCat
 #
 ####################################
 
-InstallMethodForCompilerForCAP( FunctorProdCatOfPermsIntoSGRepsOnObject,
+# TODO: switch to the CapFunctor EmbeddingOfProductCategoryOfPermutationCategory
+InstallMethodForCompilerForCAP( EmbeddingProductCatOfPermutationCatIntoSGRepsOnObject,
                                 [ IsSkeletalCategoryOfGroupRepresentations,
-                                  IsObjectInSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations ],
+                                  IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
                                 
   function( sgreps, object )
     
@@ -1261,9 +1342,10 @@ InstallMethodForCompilerForCAP( FunctorProdCatOfPermsIntoSGRepsOnObject,
     
 end );
 
-InstallMethodForCompilerForCAP( FunctorProdCatOfPermsIntoSGRepsOnMorphism,
+# TODO: switch to the CapFunctor EmbeddingOfProductCategoryOfPermutationCategory
+InstallMethodForCompilerForCAP( EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism,
                                 [ IsSkeletalCategoryOfGroupRepresentations,
-                                  IsMorphismInSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations ],
+                                  IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
                                 
   function( sgreps, morphism )
     local splitting_field, nr_support, components, source, source_components, matrices;
@@ -1276,14 +1358,16 @@ InstallMethodForCompilerForCAP( FunctorProdCatOfPermsIntoSGRepsOnMorphism,
     source := Source( morphism );
     source_components := Components( source );
     
-    # TODO: is it faster to use CertainRows( IdentityMatrix( ListPerm( ... ) ), ... ) ?
+    # TODO: is CertainRows( HomalgIdentityMatrix( ListPerm( ... ) ), ... ) faster?
+    # TODO: should we use Source( components[i] ) instead?
     matrices := List( [ 1 .. nr_support ], i ->
-        HomalgMatrix( PermutationMat( components[i], source_components[i] ), splitting_field ) );
+        CertainColumns( HomalgIdentityMatrix( source_components[i], splitting_field ), ListPerm( components[i], source_components[i] ) ) );
+        # HomalgMatrix( PermutationMat( components[i], source_components[i] ), splitting_field ) ); # Too slow, don't activate! See Coevaluation tests.
     
     return MorphismConstructor( sgreps,
-                FunctorProdCatOfPermsIntoSGRepsOnObject( sgreps, source ),
+                EmbeddingProductCatOfPermutationCatIntoSGRepsOnObject( sgreps, source ),
                 NTuple( 3, nr_support, Support( morphism ), matrices ),
-                FunctorProdCatOfPermsIntoSGRepsOnObject( sgreps, source ) );
+                EmbeddingProductCatOfPermutationCatIntoSGRepsOnObject( sgreps, source ) );
     
 end );
 

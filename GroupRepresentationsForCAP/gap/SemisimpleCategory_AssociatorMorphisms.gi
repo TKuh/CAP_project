@@ -56,43 +56,40 @@ right_distributivity_expanding_permutation := FunctionWithCache(
                       height := height + rows;
                       
                     # if Position( support_tensor_product, k ) = 2 then
-                    #
-                    #     Print( "k:" );
-                    #     Display( k );
-                    #
-                    #     Print( "l:" );
-                    #     Display( l );
-                    #
-                    #     Print( "i:" );
-                    #     Display( i );
-                    #
-                    #     Print( "j:" );
-                    #     Display( j );
-                    #
-                    #     Print( "b_j_times_c_kij:" );
-                    #     Display( b_j_times_c_kij );
-                    #
-                    #     Print( "cols:" );
-                    #     Display( cols );
-                    #
-                    #     Print( "rows:" );
-                    #     Display( rows );
-                    #
-                    #     Print( "height_of_zeros:" );
-                    #     Display( height_of_zeros );
-                    #
-                    #     Print( "previous_height:" );
-                    #     Display( previous_height );
-                    #
-                    #     Print( "height:" );
-                    #     Display( height );
-                    #
-                        
-                        # Print( "result:" );
-                        # Display( result );
+
+                        # Print( "k:" );
+                        # Display( k );
+                        #
+                        # Print( "l:" );
+                        # Display( l );
+                        #
+                        # Print( "i:" );
+                        # Display( i );
+                        #
+                        # Print( "j:" );
+                        # Display( j );
+                        #
+                        # Print( "b_j_times_c_kij:" );
+                        # Display( b_j_times_c_kij );
+                        #
+                        # Print( "cols:" );
+                        # Display( cols );
+                        #
+                        # Print( "rows:" );
+                        # Display( rows );
+                        #
+                        # Print( "height_of_zeros:" );
+                        # Display( height_of_zeros );
+                        #
+                        # Print( "height:" );
+                        # Display( height );
+                        #
+                        #
+                        # Print( "k_permutation:" );
+                        # Display( k_permutation );
                         
                         # Error( "\033[31mDEBUGPRINT[57]\033[0m" );
-                    #
+
                     # fi;
                     
                   od;
@@ -111,7 +108,6 @@ right_distributivity_expanding_permutation := FunctionWithCache(
           
       od;
       
-      # Error( "\033[31mDEBUGPRINT[24]\033[0m" );
       return permutation_list;
       
     end
@@ -301,6 +297,8 @@ distributivity_expanding_for_triple := FunctionWithCache(
           
       od;
       
+      # Error( "\033[31m[147]\033[0m" );
+      
       return morphism_list;
       
     end
@@ -333,21 +331,6 @@ distributivity_factoring_for_triple := FunctionWithCache(
           permutation_list_1 :=
             CAP_INTERNAL_TensorProductOfPermutationListWithObjectFromLeft( permutation_list_1, object_1, support_tensor_product_all );
           
-          permutation_list_2 :=
-            left_distributivity_expanding_permutation(
-              object_1, tensored_object_list_with_actual_objects, direct_sum_2, support_tensor_product_all, false );
-          
-          # for i in [ 1 .. Size( permutation_list_1 ) ] do
-          #
-          #     perm := ListPerm( ( PermList( permutation_list_2[i][1] ) *
-          #                         PermList( permutation_list_1[i][1] ) )^(-1), 
-          #                       Size( permutation_list_2[i][1] ) );
-          #
-          #     Display( perm );
-          #
-          # od;
-          # Error( "\033[31mDEBUGPRINT[Permutations]\033[0m" );
-          
       else
           
           permutation_list_1 :=
@@ -371,34 +354,16 @@ distributivity_factoring_for_triple := FunctionWithCache(
           # od;
           # # Error( "\033[31mDEBUGPRINT[Tensor Product]\033[0m" );
           
-          permutation_list_2 :=
-            left_distributivity_expanding_permutation(
-              object_1, tensored_object_list_with_actual_objects, direct_sum_2, support_tensor_product_all, false );
-          
-          # for perm in permutation_list_2 do
-          #
-          #     Display( ListPerm( PermList( perm[1] )^(-1), Length( perm[1] ) ) );
-          #
-          # od;
-          # Error( "\033[31mDEBUGPRINT[Left factoring]\033[0m" );
-          
-          # for i in [ 1 .. Size( permutation_list_1 ) ] do
-          #
-          #     perm := ListPerm( ( PermList( permutation_list_2[i][1] ) *
-          #                         PermList( permutation_list_1[i][1] ) )^(-1), 
-          #                       Size( permutation_list_2[i][1] ) );
-          #
-          #     Display( perm );
-          #
-          # od;
-          # Error( "\033[31mDEBUGPRINT[Permutations]\033[0m" );
-          
       fi;
       
       # BUG: needs to be left_distributivity_expanding_permutation
       # permutation_list_2 :=
       #   right_distributivity_expanding_permutation(
       #     object_1, tensored_object_list_with_actual_objects, direct_sum_2, support_tensor_product_all, false );
+      permutation_list_2 :=
+        left_distributivity_expanding_permutation(
+          object_1, tensored_object_list_with_actual_objects, direct_sum_2, support_tensor_product_all, false );
+      
       
       morphism_list := [ ];
       
@@ -1035,6 +1000,8 @@ InstallGlobalFunction( SEMISIMPLECATEGORY_Associator_567_Morphism,
             dim := Multiplicity( new_source, chi );
             
             vector_space_object := MatrixCategoryObject( underlying_category, dim );
+            
+            # Error( "\033[31m[CertainRows]\033[0m" );
             
             homalg_matrix := CertainRows(
               HomalgIdentityMatrix( dim, field ),

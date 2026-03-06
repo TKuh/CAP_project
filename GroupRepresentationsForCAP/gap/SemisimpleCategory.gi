@@ -1444,17 +1444,17 @@ InstallGlobalFunction( CAP_INTERNAL_INSTALL_OPERATIONS_FOR_SEMISIMPLE_CATEGORY,
         morphism_list := [ ];
         
         for entry in permutation_list do
-            
+
             object := Component( new_source, entry[2] );
-            
+
             dim := Dimension( object );
-            
+
             homalg_matrix := CertainRows(
               HomalgIdentityMatrix( dim, field ),
               entry[1] );
-            
+
             Add( morphism_list, [ VectorSpaceMorphism( object, homalg_matrix, object ), entry[2] ] );
-            
+
         od;
         
         return SemisimpleCategoryMorphism( new_source, morphism_list, new_range );
@@ -2340,6 +2340,9 @@ InstallGlobalFunction( CAP_INTERNAL_INSTALL_OPERATIONS_FOR_SEMISIMPLE_CATEGORY,
                                TensorUnit( UnderlyingCategoryForSemisimpleCategory( CapCategory( unit ) ) ) );
         
         result_morphism := SemisimpleCategoryMorphismSparse( tensor_object, [ [ vector_space_morphism, trivial_chi ] ], unit );
+        
+        # Display( result_morphism );
+        # Error( "\033[31m[result_morphism]\033[0m" );
         
         ## morphism_1 and morphism_2
         if Size( object_expanded_list ) > 1 then

@@ -28,6 +28,27 @@ x3 := RepresentationCategoryObject( [ [ 2, irr[2] ], [ 3, irr[4] ], [ 5, irr[5] 
 TensorProductOnObjects( RepG, x1, x2 );
 #! 2*(x_1) + 8*(x_2) + 5*(x_3) + 9*(x_4)
 
+test_source := RepresentationCategoryObject( [ [ 3, irr[3] ], [ 1, irr[4] ] ], RepG );;
+test_target := RepresentationCategoryObject( [ [ 3, irr[3] ], [ 1, irr[4] ] ], RepG );;
+c := RepresentationCategoryObject( [ [ 1, irr[1] ], [ 2, irr[4] ] ], RepG );;
+test_source_c := TensorProductOnObjects( test_source, c );;
+Display( test_source_c );
+#! 9*(x_2) + 5*(x_3) + 8*(x_4) + 2*(x_5)
+
+matrix_3 := HomalgMatrix( [ [ 1, 0, 0 ], [ 0, 1, 0 ], [ 0, 0, 1 ] ], 3, 3, QQ );;
+matrix_4 := HomalgMatrix( [ [ 1 ] ], 1, 1, QQ );;
+test_pairs := [ 2, [ 3, 4 ], [ matrix_3, matrix_4 ] ];;
+test_pairs := [ [ matrix_3, irr[3] ], [ matrix_4, irr[4] ] ];;
+test_morphism := RepresentationCategoryMorphism( test_source, test_pairs, test_target );;
+id_c := IdentityMorphism( c );;
+
+IsWellDefinedForMorphisms( test_morphism );
+#! true
+IsWellDefinedForMorphisms( id_c );
+#! true
+
+test_tp := TensorProductOnMorphisms( test_morphism, id_c );;
+
 source := RepresentationCategoryObject( [                [ 2, irr[2] ], [ 1, irr[3] ], [ 1, irr[5] ] ], RepG );;
 target := RepresentationCategoryObject( [ [ 3, irr[1] ], [ 1, irr[2] ], [ 2, irr[3] ],               ], RepG );;
 

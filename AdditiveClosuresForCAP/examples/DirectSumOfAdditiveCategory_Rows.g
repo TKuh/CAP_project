@@ -797,10 +797,10 @@ Display( component3 );
 #! 
 
 ####################################################
-# MultiplyWithElementOfCommutativeRingForMorphisms
+# MultiplyWithElementOfCommutativeSemiringForMorphisms
 ####################################################
 
-morphism_x_5 := MultiplyWithElementOfCommutativeRingForMorphisms( rows_5, 5, morphism );;
+morphism_x_5 := MultiplyWithElementOfCommutativeSemiringForMorphisms( rows_5, 5, morphism );;
 Display( morphism_x_5 );
 #! Component 1: a 0 x 4 morphism in Rows( Q )
 #! 

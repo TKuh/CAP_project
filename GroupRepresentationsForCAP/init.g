@@ -6,9 +6,9 @@
 
 ############################ Experimental #############################
 
-ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_CategoryOfPermutations.gd" );
+ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_PermutationCategory.gd" );
 
-ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_CategoryOfPermutations_AsSubcategoryOfSkeletalGroupRepresentations.gd" );
+ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_PermutationCategory_AsSubcategoryOfSkeletalGroupRepresentations.gd" );
 
 ReadPackage( "GroupRepresentationsForCAP", "gap/CategoryOfInsertionMatrices.gd" );
 

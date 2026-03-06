@@ -869,9 +869,7 @@ BindGlobal( "SkeletalCategoryOfGroupRepresentations_S4_Q_precompiled", function 
         
         
         function ( group, homalg_field )
-    return SkeletalCategoryOfGroupRepresentations( group, homalg_field : no_precompiled_code := true,
-        product_ins_mat_no_precompiled_code := false,
-        ins_mat_no_precompiled_code := false );
+    return SkeletalCategoryOfGroupRepresentations( group, homalg_field : no_precompiled_code := true );
 end;
         
         

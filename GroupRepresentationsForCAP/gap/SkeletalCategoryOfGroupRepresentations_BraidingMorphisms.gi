@@ -194,6 +194,7 @@ InstallGlobalFunction( SGREPS_Braiding_12_Morphism,
     morphism_12 := SGREPS_PreComposeMorphismPermutationsWithSameSupport( SGReps, morphism_1, morphism_2 );
     
     return SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( SGReps, ab, morphism_12, ab );
+    # return morphism_12;
     
 end );
 
@@ -210,6 +211,7 @@ InstallGlobalFunction( SGREPS_Braiding_45_Morphism,
     morphism_45 := SGREPS_PreComposeMorphismPermutationsWithSameSupport( SGReps, morphism_4, morphism_5 );
     
     return SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( SGReps, ba, morphism_45, ba );
+    # return morphism_45;
     
 end );
 

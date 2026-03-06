@@ -1,4 +1,4 @@
-#! @Chapter Examples
+#  @Chapter Examples
 LoadPackage( "GroupRepresentationsForCAP" );
 
 #! @Example

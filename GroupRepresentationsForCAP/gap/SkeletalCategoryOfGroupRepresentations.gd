@@ -185,6 +185,20 @@ CapJitAddTypeSignature( "UnderlyingProductCategoryOfInsertionMatrices", [ IsSkel
 end );
 
 #! @Description
+#!  TODO
+#! @Arguments
+#! @Returns TODO
+DeclareAttribute( "EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices",
+                   IsSkeletalCategoryOfGroupRepresentations );
+
+#! @Description
+#!  TODO
+#! @Arguments
+#! @Returns TODO
+DeclareAttribute( "EmbeddingOfProductCategoryOfPermutationCategory",
+                   IsSkeletalCategoryOfGroupRepresentations );
+
+#! @Description
 #!  The argument is an object in a category $C = \bigoplus_{i \leq |\mathrm{Irr}(G)|} \mathrm{Rows}_k$.
 #!  It returns a list of pairs of the format $[ [ r_i, \chi_i ], \dots, [ r_j, \chi_j ] ]$
 #!  representing a direct sum $r_i \oplus \dots \oplus r_j in C$ where
@@ -512,27 +526,7 @@ end );
 #!  TODO
 #! @Returns TODO
 #! @Arguments TODO
-DeclareOperation( "FunctorProdInsMatIntoSGRepsOnObject",
-                  [ IsSkeletalCategoryOfGroupRepresentations,
-                    IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ] );
-
-CapJitAddTypeSignature( "FunctorProdInsMatIntoSGRepsOnObject",
-                        [ IsSkeletalCategoryOfGroupRepresentations,
-                          IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
-                        
-  function ( input_types )
-    
-    Assert( 0, IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( input_types[2].category ) );
-    
-    return CapJitDataTypeOfObjectOfCategory( input_types[1].category );
-    
-end );
-
-#! @Description
-#!  TODO
-#! @Returns TODO
-#! @Arguments TODO
-DeclareOperation( "FunctorProdInsMatIntoSGRepsOnMorphism",
+DeclareOperation( "FunctorProdInsMatIntoSGRepsUsingUnionOfCols",
                   [ IsSkeletalCategoryOfGroupRepresentations,
                     IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ] );
 
@@ -540,11 +534,11 @@ DeclareOperation( "FunctorProdInsMatIntoSGRepsOnMorphism",
 #!  TODO
 #! @Returns TODO
 #! @Arguments TODO
-DeclareOperation( "FunctorSGRepsIntoProdInsMatOnObject",
+DeclareOperation( "AsObjectInUnderlyingProductCategoryOfInsertionMatrices",
                   [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
                     IsObjectInSkeletalCategoryOfGroupRepresentations ] );
 
-CapJitAddTypeSignature( "FunctorSGRepsIntoProdInsMatOnObject",
+CapJitAddTypeSignature( "AsObjectInUnderlyingProductCategoryOfInsertionMatrices",
                         [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
                           IsObjectInSkeletalCategoryOfGroupRepresentations ],
                         
@@ -564,7 +558,7 @@ DeclareOperation( "FunctorSGRepsIntoProdInsMatOnMorphism",
                   [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
                     IsMorphismInSkeletalCategoryOfGroupRepresentations ] );
 
-CapJitAddTypeSignature( "FunctorSGRepsIntoProdInsMatOnObject",
+CapJitAddTypeSignature( "FunctorSGRepsIntoProdInsMatOnMorphism",
                         [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
                           IsMorphismInSkeletalCategoryOfGroupRepresentations ],
                         
@@ -580,11 +574,11 @@ end );
 #!  TODO
 #! @Returns TODO
 #! @Arguments TODO
-DeclareOperation( "FunctorProdInsMatIntoSGRepsOnIsomorphism",
+DeclareOperation( "FunctorProdInsMatIntoSGRepsUsingCertainCols",
                   [ IsSkeletalCategoryOfGroupRepresentations,
                     IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ] );
 
-CapJitAddTypeSignature( "FunctorProdInsMatIntoSGRepsOnIsomorphism",
+CapJitAddTypeSignature( "FunctorProdInsMatIntoSGRepsUsingCertainCols",
                         [ IsSkeletalCategoryOfGroupRepresentations,
                           IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
                         
@@ -597,24 +591,24 @@ CapJitAddTypeSignature( "FunctorProdInsMatIntoSGRepsOnIsomorphism",
 end );
 
 ###########################
-# SGReps ⟷ ProdCatOfPerms
+# SGReps ⟷ ProdPermCat
 ###########################
 
 #! @Description
 #!  TODO
 #! @Returns TODO
 #! @Arguments TODO
-DeclareOperation( "FunctorProdCatOfPermsIntoSGRepsOnObject",
+DeclareOperation( "EmbeddingProductCatOfPermutationCatIntoSGRepsOnObject",
                   [ IsSkeletalCategoryOfGroupRepresentations,
-                    IsObjectInSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations ] );
+                    IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ] );
 
-CapJitAddTypeSignature( "FunctorProdCatOfPermsIntoSGRepsOnObject",
+CapJitAddTypeSignature( "EmbeddingProductCatOfPermutationCatIntoSGRepsOnObject",
                         [ IsSkeletalCategoryOfGroupRepresentations,
-                          IsObjectInSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations ],
+                          IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
                         
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations( input_types[2].category ) );
+    Assert( 0, IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( input_types[2].category ) );
     
     return CapJitDataTypeOfObjectOfCategory( input_types[1].category );
     
@@ -624,17 +618,17 @@ end );
 #!  TODO
 #! @Returns TODO
 #! @Arguments TODO
-DeclareOperation( "FunctorProdCatOfPermsIntoSGRepsOnMorphism",
+DeclareOperation( "EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism",
                   [ IsSkeletalCategoryOfGroupRepresentations,
-                    IsMorphismInSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations ] );
+                    IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ] );
 
-CapJitAddTypeSignature( "FunctorProdCatOfPermsIntoSGRepsOnMorphism",
+CapJitAddTypeSignature( "EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism",
                         [ IsSkeletalCategoryOfGroupRepresentations,
-                          IsMorphismInSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations ],
+                          IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
                         
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations( input_types[2].category ) );
+    Assert( 0, IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( input_types[2].category ) );
     
     return CapJitDataTypeOfMorphismOfCategory( input_types[1].category );
     

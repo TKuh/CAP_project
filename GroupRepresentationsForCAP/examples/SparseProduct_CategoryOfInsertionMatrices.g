@@ -18,7 +18,7 @@ Display( prod_ins_mat );
 Q := HomalgFieldOfRationals();;
 rows := CategoryOfRows( Q );;
 
-F := Functorins_matToCategoryOfRows( ins_mat, rows );;
+F := FunctorInsertionMatricesToCategoryOfRows( InsertionMatrices, rows );;
 # SF := ExtendFunctorToSparseProduct( F, prod_ins_mat );
 
 o1 := ObjectConstructor( ins_mat, 1 );;

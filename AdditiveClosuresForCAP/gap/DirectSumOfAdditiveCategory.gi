@@ -71,10 +71,10 @@ InstallMethod( DirectSumOfAdditiveCategory,
         
         SetIsLinearCategoryOverCommutativeRing( DirectSum, true );
         
-        SetCommutativeRingOfLinearCategory( DirectSum, UnderlyingRing( A ) );
+        SetCommutativeSemiringOfLinearCategory( DirectSum, UnderlyingRing( A ) );
         
         Append( DirectSum!.compiler_hints.category_attribute_names,
-                [ "CommutativeRingOfLinearCategory" ] );
+                [ "CommutativeSemiringOfLinearCategory" ] );
         
     fi;
     
@@ -792,7 +792,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_DIRECT_SUM_OF_ADDITIVE_CATEGORY,
     then
       
       ##
-      AddMultiplyWithElementOfCommutativeRingForMorphisms( DirectSum,
+      AddMultiplyWithElementOfCommutativeSemiringForMorphisms( DirectSum,
         function( DirectSum, r, alpha )
           local A, nr_support, support, morphisms, multiplied_morphisms;
           
@@ -805,7 +805,7 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_DIRECT_SUM_OF_ADDITIVE_CATEGORY,
           morphisms := Components( alpha );
           
           multiplied_morphisms := List( [ 1 .. nr_support ], n ->
-              MultiplyWithElementOfCommutativeRingForMorphisms( A, r, morphisms[n] ) );
+              MultiplyWithElementOfCommutativeSemiringForMorphisms( A, r, morphisms[n] ) );
               
           return MorphismConstructor( DirectSum,
                     Source( alpha ),

@@ -451,10 +451,16 @@ InstallGlobalFunction( SGREPS_Associator_6_Morphism,
                                                                                     xi,
                                                                                     right_factoring,
                                                                                     xibc );
-                                                                                    
+        
+        # if i = 2 then
+        #   Error( "\033[31m[i = 2]\033[0m" );
+        # fi;
+        
         return SGREPS_PreComposeMorphismPermutationsWithSameSupport( SGReps, left_factoring, id_c_tensor_right_factoring );
         
     end );
+    
+    # Error( "\033[31m[sigmas]\033[0m" );
     
     # ɑᵢ·σᵢ: ɑᵢ·[⊕ⱼ bⱼ·[ χᵢ⊗(χⱼ⊗c) ]]  ⥲  ɑᵢ·[χᵢ⊗(b⊗c)]
     a_sigmas := Concatenation( List( [ 1 .. a_nr_support ], i ->
@@ -514,7 +520,7 @@ InstallGlobalFunction( SGREPS_Associator_123_Morphism,
     
     morphism_123 := SGREPS_PreComposeListOfMorphismPermutationsWithSameSupport( SGReps, [ morphism_1, morphism_2, morphism_3 ] );
     
-    morphism_123 := SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( SGReps, abc, morphism_123, abc );
+    # morphism_123 := SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( SGReps, abc, morphism_123, abc );
     
     return morphism_123;
     
@@ -537,7 +543,7 @@ InstallGlobalFunction( SGREPS_Associator_567_Morphism,
     
     morphism_567 := SGREPS_PreComposeListOfMorphismPermutationsWithSameSupport( SGReps, [ morphism_5, morphism_6, morphism_7 ] );
     
-    morphism_567 := SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( SGReps, abc, morphism_567, abc );
+    # morphism_567 := SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( SGReps, abc, morphism_567, abc );
     
     return morphism_567;
     

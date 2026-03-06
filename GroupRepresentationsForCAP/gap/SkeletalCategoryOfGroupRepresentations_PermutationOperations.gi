@@ -194,42 +194,35 @@ InstallGlobalFunction( SGREPS_RightDistributivityExpandingPermutation,
                     
                     # if k = 1 then
                     #
-                    #     Print( "k:" );
-                    #     Display( k );
-                    #
-                    #     Print( "l:" );
-                    #     Display( l );
-                    #
-                    #     Print( "i:" );
-                    #     Display( i );
-                    #
-                    #     Print( "j:" );
-                    #     Display( j );
-                    #
-                    #     Print( "a_j_times_n_ijk:" );
-                    #     Display( a_j_times_n_ijk );
-                    #
-                    #     Print( "cols:" );
-                    #     Display( cols );
-                    #
-                    #     Print( "rows:" );
-                    #     Display( rows );
-                    #
+                        # Print( "k:" );
+                        # Display( k );
+                        #
+                        # Print( "l:" );
+                        # Display( l );
+                        #
+                        # Print( "i:" );
+                        # Display( i );
+                        #
+                        # Print( "j:" );
+                        # Display( j );
+                        #
+                        # Print( "a_j_times_n_ijk:" );
+                        # Display( a_j_times_n_ijk );
+                        #
+                        # Print( "cols:" );
+                        # Display( cols );
+                        #
                         # Print( "height_of_zeros:" );
                         # Display( height_of_zeros );
-                    #
-                        # Print( "previous_height:" );
-                        # Display( previous_height );
-                        
+                        #
                         # Print( "prefix_sum_of_rows:" );
                         # Display( prefix_sum_of_rows );
-                        
-                    #
-                    #     Print( "height:" );
-                    #     Display( height );
-                    #
+                        #
+                        #
                         # Print( "result:" );
                         # Display( result );
+                        #
+                        # Error( "\033[31m[148]\033[0m" );
                     #
                     # fi;
                     

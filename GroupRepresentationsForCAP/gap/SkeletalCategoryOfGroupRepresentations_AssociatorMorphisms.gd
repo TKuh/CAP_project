@@ -46,14 +46,22 @@ end );
 
 DeclareGlobalFunction( "SGREPS_Associator_567_Morphism" );
 
-CapJitAddTypeSignature( "SGREPS_Associator_567_Morphism",
-                        [ IsSkeletalCategoryOfGroupRepresentations,
-                          IsObjectInSkeletalCategoryOfGroupRepresentations,
-                          IsObjectInSkeletalCategoryOfGroupRepresentations,
-                          IsObjectInSkeletalCategoryOfGroupRepresentations,
-                          IsObjectInSkeletalCategoryOfGroupRepresentations ],
-  function ( input_types )
-    
-    return CapJitDataTypeOfMorphismOfCategory( input_types[1].category );
-    
-end );
+# New morphisms
+
+DeclareGlobalFunction( "SGREPS_Associator_1_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Associator_2_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Associator_3_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Associator_4_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Associator_5_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Associator_6_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Associator_7_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Associator_123_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Associator_567_Morphism_multiplicity" );

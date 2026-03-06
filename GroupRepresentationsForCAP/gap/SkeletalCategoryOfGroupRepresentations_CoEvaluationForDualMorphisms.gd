@@ -48,3 +48,14 @@ end );
 
 DeclareGlobalFunction( "SGREPS_EvaluationForDual_12_Morphism" );
 
+DeclareGlobalFunction( "SGREPS_CoevaluationForDual_1_Morphism_multiplicity" );
+DeclareGlobalFunction( "SGREPS_CoevaluationForDual_2_Morphism_multiplicity" );
+DeclareGlobalFunction( "SGREPS_CoevaluationForDual_3_Morphism_multiplicity" );
+DeclareGlobalFunction( "SGREPS_CoevaluationForDual_23_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_EvaluationForDual_1_Morphism_multiplicity" );
+DeclareGlobalFunction( "SGREPS_EvaluationForDual_2_Morphism_multiplicity" );
+DeclareGlobalFunction( "SGREPS_EvaluationForDual_3_Morphism_multiplicity" );
+DeclareGlobalFunction( "SGREPS_EvaluationForDual_12_Morphism_multiplicity" );
+DeclareGlobalFunction( "SGREPS_ExtractScalarForEvaluationFromCoevaluation" );
+

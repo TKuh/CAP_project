@@ -229,7 +229,7 @@ function ( cat_1, a_1 )
     deduped_6_1 := deduped_7_1[3];
     deduped_5_1 := deduped_7_1[1];
     hoisted_4_1 := UnderlyingAdditiveCategory( cat_1 );
-    hoisted_3_1 := CommutativeRingOfLinearCategory( cat_1 );
+    hoisted_3_1 := CommutativeSemiringOfLinearCategory( cat_1 );
     hoisted_2_1 := List( deduped_6_1, RankOfObject );
     return CreateCapCategoryMorphismWithAttributes( cat_1, a_1, a_1, TripleOfNrSupportListOfSupportListOfMorphisms, NTuple( 3, deduped_5_1, deduped_7_1[2], List( [ 1 .. deduped_5_1 ], function ( n_2 )
                 local deduped_1_2;
@@ -257,7 +257,7 @@ function ( cat_1, alpha_1, beta_1 )
     deduped_14_1 := Union2( deduped_15_1, deduped_16_1 );
     deduped_13_1 := Length( deduped_14_1 );
     hoisted_11_1 := List( deduped_18_1, UnderlyingMatrix );
-    deduped_10_1 := [ HomalgZeroMatrix( 0, 0, CommutativeRingOfLinearCategory( cat_1 ) ) ];
+    deduped_10_1 := [ HomalgZeroMatrix( 0, 0, CommutativeSemiringOfLinearCategory( cat_1 ) ) ];
     hoisted_9_1 := List( deduped_17_1, UnderlyingMatrix );
     hoisted_8_1 := List( deduped_18_1, Range );
     deduped_6_1 := [ CreateCapCategoryObjectWithAttributes( deduped_21_1, RankOfObject, 0 ) ];
@@ -290,7 +290,7 @@ function ( cat_1, a_1, b_1 )
     deduped_13_1 := deduped_17_1[2];
     deduped_12_1 := deduped_16_1[2];
     deduped_11_1 := Union2( deduped_12_1, deduped_13_1 );
-    hoisted_9_1 := CommutativeRingOfLinearCategory( cat_1 );
+    hoisted_9_1 := CommutativeSemiringOfLinearCategory( cat_1 );
     hoisted_8_1 := List( deduped_15_1, RankOfObject );
     deduped_7_1 := [ 0 ];
     hoisted_6_1 := List( deduped_14_1, RankOfObject );
@@ -341,7 +341,7 @@ function ( cat_1, alpha_1, beta_1 )
     deduped_14_1 := Union2( deduped_15_1, deduped_16_1 );
     deduped_13_1 := Length( deduped_14_1 );
     hoisted_11_1 := List( deduped_19_1[3], UnderlyingMatrix );
-    deduped_9_1 := [ HomalgZeroMatrix( 0, 0, CommutativeRingOfLinearCategory( cat_1 ) ) ];
+    deduped_9_1 := [ HomalgZeroMatrix( 0, 0, CommutativeSemiringOfLinearCategory( cat_1 ) ) ];
     hoisted_8_1 := List( deduped_17_1, UnderlyingMatrix );
     hoisted_7_1 := List( deduped_17_1, Range );
     deduped_6_1 := [ CreateCapCategoryObjectWithAttributes( deduped_20_1, RankOfObject, 0 ) ];
@@ -401,7 +401,7 @@ function ( cat_1, alpha_1, beta_1 )
     hoisted_10_1 := List( [ 1 .. deduped_18_1[1] ], function ( n_2 )
             return hoisted_8_1[n_2];
         end );
-    deduped_7_1 := [ HomalgZeroMatrix( 0, 0, CommutativeRingOfLinearCategory( cat_1 ) ) ];
+    deduped_7_1 := [ HomalgZeroMatrix( 0, 0, CommutativeSemiringOfLinearCategory( cat_1 ) ) ];
     hoisted_6_1 := List( deduped_16_1, UnderlyingMatrix );
     hoisted_5_1 := List( deduped_16_1, Range );
     deduped_4_1 := [ CreateCapCategoryObjectWithAttributes( deduped_19_1, RankOfObject, 0 ) ];
@@ -467,7 +467,7 @@ end
 ########
 function ( cat_1, P_1, objects_1, L_1, objectsp_1, Pp_1 )
     local deduped_2_1, hoisted_3_1, deduped_4_1, deduped_5_1, hoisted_6_1, hoisted_7_1, deduped_10_1, deduped_11_1, deduped_12_1, deduped_13_1, deduped_14_1, deduped_15_1;
-    deduped_15_1 := CommutativeRingOfLinearCategory( cat_1 );
+    deduped_15_1 := CommutativeSemiringOfLinearCategory( cat_1 );
     deduped_14_1 := TripleOfNrSupportListOfSupportListOfObjects( Pp_1 );
     deduped_13_1 := UnderlyingAdditiveCategory( cat_1 );
     deduped_12_1 := TripleOfNrSupportListOfSupportListOfObjects( P_1 );
@@ -508,7 +508,7 @@ function ( cat_1, objects_1, k_1, P_1 )
     deduped_12_1 := deduped_14_1[2];
     deduped_11_1 := TripleOfNrSupportListOfSupportListOfObjects( CAP_JIT_INCOMPLETE_LOGIC( deduped_13_1 ) );
     hoisted_9_1 := [ k_1 + 1 .. Length( objects_1 ) ];
-    deduped_8_1 := CommutativeRingOfLinearCategory( cat_1 );
+    deduped_8_1 := CommutativeSemiringOfLinearCategory( cat_1 );
     hoisted_7_1 := [ 1 .. k_1 - 1 ];
     hoisted_6_1 := [ 0 ];
     hoisted_5_1 := deduped_11_1[3];
@@ -541,7 +541,7 @@ function ( cat_1, objects_1, k_1, P_1 )
     deduped_10_1 := TripleOfNrSupportListOfSupportListOfObjects( P_1 );
     deduped_9_1 := deduped_10_1[2];
     hoisted_7_1 := [ k_1 + 1 .. Length( objects_1 ) ];
-    deduped_6_1 := CommutativeRingOfLinearCategory( cat_1 );
+    deduped_6_1 := CommutativeSemiringOfLinearCategory( cat_1 );
     hoisted_5_1 := [ 1 .. k_1 - 1 ];
     hoisted_4_1 := [ 0 ];
     deduped_3_1 := [ CreateCapCategoryObjectWithAttributes( deduped_11_1, RankOfObject, 0 ) ];
@@ -579,7 +579,7 @@ function ( cat_1, objects_1, k_1, P_1 )
     deduped_12_1 := deduped_14_1[2];
     deduped_11_1 := TripleOfNrSupportListOfSupportListOfObjects( CAP_JIT_INCOMPLETE_LOGIC( deduped_13_1 ) );
     hoisted_9_1 := [ k_1 + 1 .. Length( objects_1 ) ];
-    deduped_8_1 := CommutativeRingOfLinearCategory( cat_1 );
+    deduped_8_1 := CommutativeSemiringOfLinearCategory( cat_1 );
     hoisted_7_1 := [ 1 .. k_1 - 1 ];
     hoisted_6_1 := [ 0 ];
     hoisted_5_1 := deduped_14_1[3];
@@ -612,7 +612,7 @@ function ( cat_1, objects_1, k_1, P_1 )
     deduped_10_1 := TripleOfNrSupportListOfSupportListOfObjects( P_1 );
     deduped_9_1 := deduped_10_1[2];
     hoisted_7_1 := [ k_1 + 1 .. Length( objects_1 ) ];
-    deduped_6_1 := CommutativeRingOfLinearCategory( cat_1 );
+    deduped_6_1 := CommutativeSemiringOfLinearCategory( cat_1 );
     hoisted_5_1 := [ 1 .. k_1 - 1 ];
     hoisted_4_1 := [ 0 ];
     hoisted_3_1 := deduped_10_1[3];
@@ -644,7 +644,7 @@ end
 ########
 function ( cat_1, objects_1, T_1, tau_1, P_1 )
     local deduped_4_1, hoisted_6_1, hoisted_7_1, hoisted_8_1, hoisted_9_1, deduped_12_1, deduped_13_1, deduped_14_1, deduped_15_1, deduped_16_1, deduped_17_1, deduped_18_1, deduped_19_1, deduped_20_1;
-    deduped_20_1 := CommutativeRingOfLinearCategory( cat_1 );
+    deduped_20_1 := CommutativeSemiringOfLinearCategory( cat_1 );
     deduped_19_1 := UnderlyingAdditiveCategory( cat_1 );
     deduped_18_1 := TripleOfNrSupportListOfSupportListOfObjects( P_1 );
     deduped_17_1 := TripleOfNrSupportListOfSupportListOfObjects( T_1 );
@@ -681,7 +681,7 @@ end
 ########
 function ( cat_1, objects_1, T_1, tau_1, P_1 )
     local hoisted_3_1, deduped_4_1, hoisted_7_1, hoisted_8_1, hoisted_9_1, deduped_12_1, deduped_13_1, deduped_14_1, deduped_15_1, deduped_16_1, deduped_17_1, deduped_18_1, deduped_19_1, deduped_20_1;
-    deduped_20_1 := CommutativeRingOfLinearCategory( cat_1 );
+    deduped_20_1 := CommutativeSemiringOfLinearCategory( cat_1 );
     deduped_19_1 := UnderlyingAdditiveCategory( cat_1 );
     deduped_18_1 := TripleOfNrSupportListOfSupportListOfObjects( P_1 );
     deduped_17_1 := TripleOfNrSupportListOfSupportListOfObjects( T_1 );
@@ -713,7 +713,7 @@ end
     , 100 );
     
     ##
-    AddMultiplyWithElementOfCommutativeRingForMorphisms( cat,
+    AddMultiplyWithElementOfCommutativeSemiringForMorphisms( cat,
         
 ########
 function ( cat_1, r_1, alpha_1 )
@@ -880,7 +880,7 @@ function ( cat_1, alpha_1, beta_1 )
     deduped_12_1 := Union2( TripleOfNrSupportListOfSupportListOfObjects( deduped_15_1 )[2], TripleOfNrSupportListOfSupportListOfObjects( deduped_16_1 )[2] );
     deduped_11_1 := Length( deduped_12_1 );
     hoisted_9_1 := List( deduped_14_1, UnderlyingMatrix );
-    deduped_8_1 := [ HomalgZeroMatrix( 0, 0, CommutativeRingOfLinearCategory( cat_1 ) ) ];
+    deduped_8_1 := [ HomalgZeroMatrix( 0, 0, CommutativeSemiringOfLinearCategory( cat_1 ) ) ];
     hoisted_7_1 := List( deduped_13_1, UnderlyingMatrix );
     hoisted_6_1 := List( deduped_14_1, Source );
     deduped_5_1 := deduped_19_1[2];
@@ -1048,7 +1048,7 @@ function ( cat_1, alpha_1, beta_1 )
     deduped_12_1 := Union2( TripleOfNrSupportListOfSupportListOfObjects( deduped_15_1 )[2], TripleOfNrSupportListOfSupportListOfObjects( deduped_16_1 )[2] );
     deduped_11_1 := Length( deduped_12_1 );
     hoisted_9_1 := List( deduped_14_1, UnderlyingMatrix );
-    deduped_8_1 := [ HomalgZeroMatrix( 0, 0, CommutativeRingOfLinearCategory( cat_1 ) ) ];
+    deduped_8_1 := [ HomalgZeroMatrix( 0, 0, CommutativeSemiringOfLinearCategory( cat_1 ) ) ];
     hoisted_7_1 := List( deduped_13_1, UnderlyingMatrix );
     hoisted_6_1 := List( deduped_14_1, Range );
     deduped_5_1 := deduped_19_1[2];

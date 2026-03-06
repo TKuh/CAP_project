@@ -107,6 +107,20 @@ CapJitAddTypeSignature( "UnderlyingIrreducibleCharacters", [ IsSparseProductOfCa
 end );
 
 #! @Description
+#!  TODO
+#! @Arguments
+#! @Returns TODO
+DeclareAttribute( "UnderlyingProductCategoryOfPermutationCategory",
+                   IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+
+#! @Description
+#!  TODO
+#! @Arguments
+#! @Returns TODO
+DeclareAttribute( "IsomorphismFromCoreToProductCategoryOfPermutationCategory",
+                   IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+
+#! @Description
 #!  The argument is an object in a category $C = \bigoplus_{i \leq |\mathrm{Irr}(G)|} \mathrm{Rows}_k$.
 #!  It returns a list of pairs of the format $[ [ r_i, \chi_i ], \dots, [ r_j, \chi_j ] ]$
 #!  representing a direct sum $r_i \oplus \dots \oplus r_j in C$ where
@@ -243,6 +257,9 @@ CapJitAddTypeSignature( "Components", [ IsMorphismInSparseProductOfCategoryOfIns
                             
 end );
 
+DeclareAttribute( "DecompositionIntoSimpleObjects",
+                  IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+
 ####################################
 ##
 #! @Section Operations
@@ -338,37 +355,36 @@ CapJitAddTypeSignature( "Component", [ IsMorphismInSparseProductOfCategoryOfInse
                     
 end );
 
-#########################################################
+#######################################
 ##
-#! @Section Functors
+#! @Section Global functions
 ##
-#########################################################
+#######################################
+
+DeclareGlobalFunction( "PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_TensorProductOfMorphismWithIdentityWithGivenTensorProducts" );
+
+DeclareGlobalFunction( "PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_TensorProductOfIdentityWithMorphismWithGivenTensorProducts" );
 
 #! @Description
-#!  TODO
-#! @Returns TODO
-#! @Arguments TODO
-DeclareOperation( "FunctorProdInsMatIntoProdCatOfPermsOnObject",
-                  [ IsSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations,
-                    IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ] );
+#!  The arguments are the same as for RightDistributivityExpandingWithGivenObjects
+#!  except that this function also gets a list of integer multiplicities and
+#!  TODO: the list of objects <C>L</C> must consist of objects who are only
+#!  supported at a single factor of the product category.
+#!  The output is the same as that of RightDistributivityExpandingWithGivenObjects
+#!  with the objects of <C>L</C> being decomposed into simple objects.
+#!  The advantage of this function is, that it can handle the multiplicities
+#!  in this special case of objects in <C>L</C> (contrary to the general RightDistributivityExpanding).
+#!  Example: let $A := [ 1, [1], [3] ], B := [ 1, [2], [5] ]$.
+#!           Then $A$ and $B$ are supported at only one factor and computing
+#!           <C>RightDistributivityExpandingForUniquelySupportedObjectsWithGivenObjects</C>
+#!           with the argument <C>L</C> = $[ A, B ]$ is the same as decomposing $A$ and $B$ into
+#!           $A = A' \times A' \times A', B = B' \times B' \times B' \times B' \times B'$ with
+#!           $A' := [ 1, [1], [1] ], B' := [ 1, [2], [1] ]$ and calling
+#!           <C>RightDistributivityExpandingWithGivenObjects</C>
+#!           with <C>L</C> = $[ A', A', A', B', B', B', B', B' ]$.
+#! @Returns morphism
+#! @Arguments category, source, L, mulitplicities, object, target
+DeclareGlobalFunction( "RightDistributivityExpandingWithGivenMultiplicitiesAndObjects" );
 
-CapJitAddTypeSignature( "FunctorProdInsMatIntoProdCatOfPermsOnObject",
-                        [ IsSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations,
-                          IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
-                        
-  function ( input_types )
-    
-    Assert( 0, IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( input_types[2].category ) );
-    
-    return CapJitDataTypeOfObjectOfCategory( input_types[1].category );
-    
-end );
-
-#! @Description
-#!  TODO
-#! @Returns TODO
-#! @Arguments TODO
-DeclareOperation( "FunctorProdInsMatIntoProdCatOfPermsOnMorphism",
-                  [ IsSparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations,
-                    IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ] );
+DeclareGlobalFunction( "LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects" );
 

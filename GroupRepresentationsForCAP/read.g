@@ -6,9 +6,9 @@
 
 ############################ Experimental #############################
 
-ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_CategoryOfPermutations.gi" );
+ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_PermutationCategory.gi" );
 
-ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_CategoryOfPermutations_AsSubcategoryOfSkeletalGroupRepresentations.gi" );
+ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_PermutationCategory_AsSubcategoryOfSkeletalGroupRepresentations.gi" );
 
 ReadPackage( "GroupRepresentationsForCAP", "gap/CategoryOfInsertionMatrices.gi" );
 
@@ -34,13 +34,17 @@ ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresent
 
 ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_PermutationOperations.gi" );
 
-# ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_AssociatorMorphisms.gi" );
+ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_AssociatorMorphisms.gi" );
 
-ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_AssociatorMorphisms_new.gi" );
+ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_AssociatorMorphisms_multiplicity.gi" );
 
 ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_BraidingMorphisms.gi" );
 
+ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_BraidingMorphisms_multiplicity.gi" );
+
 ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_CoEvaluationForDualMorphisms.gi" );
+
+ReadPackage( "GroupRepresentationsForCAP", "gap/SkeletalCategoryOfGroupRepresentations_CoEvaluationForDualMorphisms_multiplicity.gi" );
 
 ReadPackage( "GroupRepresentationsForCAP", "gap/AssociatorsForRepresentationCategoryOfGroup.gi" );
 

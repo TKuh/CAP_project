@@ -312,8 +312,7 @@ BindGlobal( "SparseProduct_CategoryOfInsertionMatrices_AsSubcategoryOfSkeletalGr
         
         
         function ( irreducible_characters )
-    return SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters : no_precompiled_code := true,
-        ins_mat_no_precompiled_code := false );
+    return SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters : no_precompiled_code := true );
 end;
         
         

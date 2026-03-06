@@ -61,7 +61,7 @@ Component( mor, 3 );;
 Component( mor, 4 );;
 Component( mor, 5 );;
 
-mor_embedded := FunctorProdInsMatIntoSGRepsOnMorphism( SGReps, mor );;
+mor_embedded := FunctorProdInsMatIntoSGRepsUsingUnionOfCols( SGReps, mor );;
 Display( mor_embedded );
 #! Component: (1)
 #! 
@@ -101,7 +101,7 @@ mor := MorphismConstructor( Productins_mat, source, matrices_triple, target );;
 IsWellDefinedForMorphisms( mor );
 #! true
 
-mor_embedded := FunctorProdInsMatIntoSGRepsOnMorphism( SGReps, mor );;
+mor_embedded := FunctorProdInsMatIntoSGRepsUsingUnionOfCols( SGReps, mor );;
 Display( mor_embedded );
 #! Component: (1)
 #! 

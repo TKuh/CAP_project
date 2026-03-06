@@ -59,6 +59,18 @@ DeclareOperation( "CategoryOfInsertionMatrices", [ ] );
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
+DeclareAttribute( "UnderlyingPermutationCategory", IsCategoryOfInsertionMatrices );
+
+#! @Description
+#!  TODO
+#! @Arguments TODO
+#! @Returns TODO
+DeclareAttribute( "IsomorphismFromCoreToPermutationCategory", IsCategoryOfInsertionMatrices );
+
+#! @Description
+#!  TODO
+#! @Arguments TODO
+#! @Returns TODO
 DeclareAttribute( "NumberElements", IsObjectInCategoryOfInsertionMatrices );
 
 CapJitAddTypeSignature( "NumberElements", [ IsObjectInCategoryOfInsertionMatrices ], IsBigInt );
@@ -112,6 +124,43 @@ end );
 #######################################
 
 ##
-DeclareOperation( "Functorins_matToCategoryOfRows",
+DeclareOperation( "FunctorInsertionMatricesToCategoryOfRows",
                   [ IsCapCategory, IsCapCategory ] );
+
+#######################################
+##
+#! @Section Global functions
+##
+#######################################
+
+#! @Description
+#!  The arguments are
+#!  * a category of insertion matrices,
+#!  * a source object,
+#!  * a morphism $m$,
+#!  * an identity morphism $id$,
+#!  * a target object.
+#!  The output is the tensor product on morphisms $m \otimes id$.
+#!  Warning: We assume that the identity morphism $id$ is normalized, i.e.,
+#!           it must consist of at most a single block column.
+DeclareGlobalFunction( "CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts" );
+
+DeclareGlobalFunction( "CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts" );
+
+#! @Description
+#!  The inputs are
+#!  * a category of insertion matrices,
+#!  * a morphism in the given category,
+#!  * an integer <C>s</C>.
+#!  The output is a morphism with block columns,
+#!  which are shifted downwards <C>s</C>-many times.
+#!  Warning: the source and target of the morphism must be large enough
+#!           so that the shifed blocks are still in its boundaries.
+#!  Example: Let m := [ 1, [ 2, 6 ] ].
+#!           Shifting m by 1 becomes [ 1, [ 7, 11 ] ];
+#!           shifting m by 2 becomes [ 1, [ 12, 16 ] ];
+#!           shifting m by 3 becomes [ 1, [ 17, 21 ] ].
+#! @Arguments category, morphism, int
+#! @Returns morphism
+DeclareGlobalFunction( "CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift" );
 

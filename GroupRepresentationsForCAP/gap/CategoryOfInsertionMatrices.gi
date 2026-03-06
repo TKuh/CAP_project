@@ -24,7 +24,7 @@ InstallMethod( CategoryOfInsertionMatrices,
     [ "FinalizeCategory", true ],
   ],
   function( CAP_NAMED_ARGUMENTS )
-    local object_datum_type, morphism_datum_type, name, ins_mat, compare_morphisms, object_datum, object_constructor, morphism_datum, morphism_constructor, SubscriptDigits, ToSubscript;
+    local object_datum_type, morphism_datum_type, name, ins_mat, permcat, compare_morphisms, object_datum, object_constructor, morphism_datum, morphism_constructor, F_perms, SubscriptDigits, ToSubscript;
     
     ##
     name := "CategoryOfInsertionMatrices";
@@ -53,12 +53,23 @@ InstallMethod( CategoryOfInsertionMatrices,
             morphism_datum_type,
             fail
             : overhead := CAP_NAMED_ARGUMENTS.overhead );
-            
+    
     ins_mat!.supports_empty_limits := true;
     
     SetIsSkeletalCategory( ins_mat, true );
     
     SetIsCartesianCategory( ins_mat, true );
+    
+    permcat := PermutationCategory(
+                        : overhead := CAP_NAMED_ARGUMENTS.overhead,
+                          no_precompiled_code := CAP_NAMED_ARGUMENTS.no_precompiled_code );
+    
+    SetUnderlyingPermutationCategory( ins_mat, permcat );
+    
+    ins_mat!.compiler_hints :=
+        rec( category_attribute_names :=
+            [ "PermutationCategory",
+              "IsomorphismFromCoreToPermutationCategory" ] );
     
     # This is a workhorse category -> no logic and caching only via IsIdenticalObj
     CapCategorySwitchLogicOff( ins_mat );
@@ -447,30 +458,6 @@ InstallMethod( CategoryOfInsertionMatrices,
         beta_blockcols := ListOfBlockColumns( beta );
         beta_nr_rows := NumberElements( Source( beta ) );
         
-        # if beta_nr_blockcols = 1 and beta_blockcols[1][2] - beta_blockcols[1][1] + 1 = beta_nr_rows then
-            
-            # Example: alpha_blockcols = [[5,7]]
-            #          beta_blockcols  = [[1,2]]
-            #
-            # So we return
-            #
-            # [ 9, 14 ] = [ 1 + (2*(5-1)), 2 + (2*(7-1)) ]
-            #
-            # instead of the following separate ranges:
-            #
-            # [1,2] + 2*4 = [ 9, 10 ]
-            # [1,2] + 2*5 = [ 11, 12 ]
-            # [1,2] + 2*6 = [ 13, 14 ]
-            #
-            # optimized_tensored_columns :=
-            #     List( [ 1 .. alpha_nr_blockcols ], i ->
-            #         Pair( beta_blockcols[1][1] + ( beta_nr_rows * ( alpha_blockcols[i][1] - 1 ) ),
-            #               beta_blockcols[1][2] + ( beta_nr_rows * ( alpha_blockcols[i][2] - 1 ) ) ) );
-            #
-            # return MorphismConstructor( ins_mat, source, optimized_tensored_columns, target );
-            
-        # else
-         
         # TODO: example
         nr_blockcols :=
             Sum( List( [ 1 .. alpha_nr_blockcols ], i ->
@@ -486,9 +473,52 @@ InstallMethod( CategoryOfInsertionMatrices,
         
         return MorphismConstructor( ins_mat, source, Pair( nr_blockcols, tensored_blockcols ), target );
         
-        # fi;
+    end );
+    
+    F_perms := CapFunctor( Concatenation( "Functor from ", Name( ins_mat ), " to ", Name( permcat ) ),
+                           ins_mat,
+                           permcat );
+    
+    AddObjectFunction( F_perms,
+      function( object )
+        local permcat;
+        
+        permcat := UnderlyingPermutationCategory( CapCategory( object ) );
+        
+        return ObjectConstructor( permcat, NumberElements( object ) );
         
     end );
+    
+    AddMorphismFunction( F_perms,
+      function( source, morphism, target )
+        local permcat, nr_blockcols, blockcols, list_perm, permutation;
+        
+        permcat := UnderlyingPermutationCategory( CapCategory( morphism ) );
+        
+        # `morphism` must be an isomorphism.
+        Assert( 0, IsEqualForObjects( permcat, source, target ) );
+        
+        nr_blockcols := NrBlockColumns( morphism );
+        blockcols := ListOfBlockColumns( morphism );
+        
+        list_perm := List( [ 1 .. nr_blockcols ], function( i )
+            local blockcol;
+            
+            blockcol := blockcols[i];
+            
+            # Example: if blockcol[i] = [ a, a ] then return [ a ],
+            #          if blockcol[i] = [ a, b ] then return [ a .. b ].
+            return [ [ blockcol[1] .. blockcol[2] ], [ blockcol[1] ] ][ BooleanToInteger( blockcol[1] = blockcol[2] ) + 1 ];
+            
+        end );
+        
+        permutation := PermList( Concatenation( list_perm ) );
+        
+        return MorphismConstructor( permcat, source, permutation, target );
+        
+    end );
+    
+    SetIsomorphismFromCoreToPermutationCategory( ins_mat, F_perms );
     
     if CAP_NAMED_ARGUMENTS.no_precompiled_code <> true then
         
@@ -537,7 +567,7 @@ end );
 ####################################
 
 ##
-InstallMethod( Functorins_matToCategoryOfRows,
+InstallMethod( FunctorInsertionMatricesToCategoryOfRows,
                [ IsCapCategory, IsCapCategory ],
                
   function( ins_mat, rows )
@@ -590,6 +620,176 @@ InstallMethod( Functorins_matToCategoryOfRows,
     end );
     
     return functor;
+    
+end );
+
+####################################
+##
+## Global functions
+##
+####################################
+
+## TODO: turn this into a CAP operation?
+InstallGlobalFunction( CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts,
+  function( ins_mat, source, morphism, id, target )
+    local morphism_nr_blockcols, morphism_nr_cols, morphism_blockcols, id_nr_blockcols, id_blockcols, id_nr_rows, nr_blockcols, tensored_blockcols;
+    
+    #% CAP_JIT_RESOLVE_FUNCTION
+    
+    morphism_nr_blockcols := NrBlockColumns( morphism );
+    morphism_nr_cols := NumberElements( Target( morphism ) );
+    morphism_blockcols := ListOfBlockColumns( morphism );
+    
+    id_nr_blockcols := NrBlockColumns( id );
+    id_blockcols := ListOfBlockColumns( id );
+    id_nr_rows := NumberElements( Source( id ) );
+    
+    # We assume that the identity morphism <id> is normalized.
+    Assert( 0, id_nr_blockcols <= 1 );
+    
+    
+    # The Kronecker product of a matrix `m` with an identity matrix
+    # diagonally duplicates the block-columns of `m`.
+    #
+    #                         ┌                          ┐
+    #                         │             ┌────┐       │
+    #                         │  0·I₃  0·I₃ │1·I₃│ 0·I₃  │
+    #                         │             └────┘       │
+    #  ┌       ┐              │                   ┌────┐ │
+    #  │0 0 1 0│   ┌     ┐    │  0·I₃  0·I₃  0·I₃ │1·I₃│ │
+    #  │0 0 0 1│   │1 0 0│    │                   └────┘ │
+    #  │1 0 0 0│ ⨂ │0 1 0│  = │ ┌────┐                   │
+    #  │0 1 0 0│   │0 0 1│    │ │1·I₃│ 0·I₃  0·I₃ 0·I₃   │
+    #  │0 0 0 0│   └     ┘    │ └────┘                   │
+    #  └       ┘              │       ┌────┐             │
+    #                         │ 0·I₃  │1·I₃│ 0·I₃ 0·I₃   │
+    #                         │       └────┘             │
+    #                         │ 0·I₃   0·I₃  0·I₃ 0·I₃   │
+    #                         └                          ┘
+    #
+    #                         ┌                                                ┐
+    #                         │  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0 │
+    #                         │  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0,  0 │
+    #                         │  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0,  0 │
+    #                         │  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0,  0 │
+    #                         │  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0 │
+    #                         │  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1 │
+    #                      =  │  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 │
+    #                         │  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 │
+    #                         │  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 │
+    #                         │  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0 │
+    #                         │  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0 │
+    #                         │  0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0 │
+    #                         │  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 │
+    #                         │  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 │
+    #                         │  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 │
+    #                         └                                                ┘
+    #
+    # Example: morphism_blockcols = [ [ 3, 4 ], [ 1, 2 ] ]
+    #                id_blockcols = [ [ 1, 3 ] ]
+    #
+    # So we return
+    #
+    # [ [ 7, 12 ]   = [ [ 1 + (3*(3-1)), 3 + (3*(4-1)) ],
+    #   [ 1, 6  ] ] =   [ 1 + (3*(1-1)), 3 + (3*(2-1)) ] ]
+    tensored_blockcols :=
+        Concatenation( List( [ 1 .. id_nr_blockcols ], n ->
+            List( [ 1 .. morphism_nr_blockcols ], i ->
+                Pair( id_blockcols[n][1] + ( id_nr_rows * ( morphism_blockcols[i][1] - 1 ) ),
+                      id_blockcols[n][2] + ( id_nr_rows * ( morphism_blockcols[i][2] - 1 ) ) ) ) ) );
+    
+    return MorphismConstructor( ins_mat,
+                source,
+                Pair( morphism_nr_blockcols * id_nr_blockcols, tensored_blockcols ),
+                target );
+    
+end );
+
+## TODO: turn this into a CAP operation?
+InstallGlobalFunction( CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts,
+  function( ins_mat, source, id, morphism, target )
+    local morphism_nr_blockcols, morphism_nr_rows, morphism_nr_cols, morphism_blockcols, id_nr_blockcols, id_blockcols, id_nr_rows, nr_blockcols, blockcols;
+    
+    #% CAP_JIT_RESOLVE_FUNCTION
+    
+    morphism_nr_blockcols := NrBlockColumns( morphism );
+    morphism_nr_rows := NumberElements( Source( morphism ) );
+    morphism_nr_cols := NumberElements( Target( morphism ) );
+    morphism_blockcols := ListOfBlockColumns( morphism );
+    
+    id_nr_blockcols := NrBlockColumns( id );
+    id_blockcols := ListOfBlockColumns( id );
+    id_nr_rows := NumberElements( Source( id ) );
+    
+    # We assume that the identity morphism <id> is normalized.
+    Assert( 0, id_nr_blockcols <= 1 );
+    
+    # The Kronecker product of an identity matrix with a matrix `m`
+    # yields a block-diagonal matrix whose blocks are `m`
+    # and whose number of blocks is equal to the number of
+    # rows of the identity matrix.
+    # I.e., it is a specialized DirectProductFunctorial.
+    #
+    #                        ┌                        ┐
+    #                        │0 0 1 0                 │
+    #                        │0 0 0 1                 │
+    #                        │1 0 0 0                 │
+    #            ┌       ┐   │0 1 0 0                 │
+    #  ┌     ┐   │0 0 1 0│   │0 0 0 0                 │
+    #  │1 0 0│   │0 0 0 1│   │        0 0 1 0         │
+    #  │0 1 0│ ⨂ │1 0 0 0│ = │        0 0 0 1         │
+    #  │0 0 1│   │0 1 0 0│   │        1 0 0 0         │
+    #  └     ┘   │0 0 0 0│   │        0 1 0 0         │
+    #            └       ┘   │        0 0 0 0         │
+    #                        │                0 0 1 0 │
+    #                        │                0 0 0 1 │
+    #                        │                1 0 0 0 │
+    #                        │                0 1 0 0 │
+    #                        │                0 0 0 0 │
+    #                        └                        ┘
+    
+    blockcols := Concatenation( List( [ 1 .. id_nr_rows ], function( i )
+        local offset;
+        
+        offset := Sum( List( [ 1 .. i - 1 ], j -> morphism_nr_rows ) );
+        
+        return List( morphism_blockcols, col ->
+                    Pair( col[1] + offset, col[2] + offset ) );
+        
+    end ) );
+
+    nr_blockcols := id_nr_rows * morphism_nr_blockcols;
+    
+    return MorphismConstructor( ins_mat, source, Pair( nr_blockcols, blockcols ), target );
+    
+end );
+
+InstallGlobalFunction( CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift,
+  function( ins_mat, morphism, shift_size )
+    local nr_blockcols, block_cols, shifted_blocks;
+    
+    #% CAP_JIT_RESOLVE_FUNCTION
+    
+    nr_blockcols := NrBlockColumns( morphism );
+    block_cols := ListOfBlockColumns( morphism );
+    
+    shifted_blocks := List( [ 1 .. nr_blockcols ], function( i )
+        local block_size, shifted_block_start, shifted_block;
+        
+        block_size := block_cols[i][2] - block_cols[i][1] + 1;
+        
+        shifted_block_start := block_cols[i][1] + block_size + ( block_size * ( shift_size - 1 ) );
+        
+        shifted_block := Pair( shifted_block_start, shifted_block_start + block_size - 1 );
+        
+        return shifted_block;
+        
+    end );
+    
+    return MorphismConstructor( ins_mat,
+                                Source( morphism ),
+                                Pair( nr_blockcols, shifted_blocks ),
+                                Target( morphism ) );
     
 end );
 

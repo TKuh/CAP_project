@@ -19,16 +19,15 @@ CapJitAddTypeSignature( "Union", [ IsList ], function ( input_types )
     
 end );
 
-precompile_SparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations := function( irreducible_characters, name )
+precompile_SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations := function( irreducible_characters, name )
     
     CapJitPrecompileCategoryAndCompareResult(
         { irreducible_characters } ->
-            SparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters
-               : no_precompiled_code := true,
-                 cat_of_perms_no_precompiled_code := false ),
+            SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters
+               : no_precompiled_code := true ),
         [ irreducible_characters ],
         "GroupRepresentationsForCAP",
-        Concatenation( "SparseProduct_CategoryOfPermutations_AsSubcategoryOfSkeletalGroupRepresentations_", name, "_precompiled" )
+        Concatenation( "SparseProduct_PermutationCategory_AsSubcategoryOfSkeletalGroupRepresentations_", name, "_precompiled" )
         : operations := [
               "IsEqualForObjects",
               "IsEqualForMorphisms",
@@ -42,9 +41,9 @@ precompile_SparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepr
               "IdentityMorphism",
               "PreCompose",
               "InverseForMorphisms", #x
-              "DirectProduct",
-              "DirectProductFunctorialWithGivenDirectProducts",
-              "TensorProductOnObjects",
+              "Coproduct",
+              "CoproductFunctorialWithGivenCoproducts",
+              # "TensorProductOnObjects",
           ],
           # : operations := "",
           number_of_objectified_objects_in_data_structure_of_object := 1,
@@ -61,11 +60,11 @@ end;;
 character_table_S4 := CharacterTable( SymmetricGroup( 4 ) );
 irreducible_characters_S4 := Irr( character_table_S4 );
 
-precompile_SparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters_S4, "S4" );;
+precompile_SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters_S4, "S4" );;
 
 # CapJitCompiledFunction( PRODUCT_OF_CATEGORY_OF_PERMUTATIONS_AS_SUBCAT_TensorProductProductOfMorphismWithIdentityWithGivenTensorProducts );;
 
-SparseProductOfCategoryOfPermutationsAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters_S4 )!.precompiled_functions_added;
+SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters_S4 )!.precompiled_functions_added;
 #! true
 
 #! #@fi

@@ -54,7 +54,7 @@ InstallGlobalFunction( SEMISIMPLECATEGORY_Braiding_3_Morphism,
         
         for elem_b in object_b_list do
             
-            morphism := CAP_INTERNAL_Braiding_On_Irreducibles( elem_a[2], elem_b[2] );
+            morphism := SEMISIMPLECATEGORY_BraidingOnIrreducibles( elem_a[2], elem_b[2] );
             
             Append( inner_summand_list, List( [ 1 .. elem_b[1] ], i -> morphism ) );
             

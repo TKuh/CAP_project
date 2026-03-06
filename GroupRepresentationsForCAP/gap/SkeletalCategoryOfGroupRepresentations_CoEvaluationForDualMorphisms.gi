@@ -25,7 +25,7 @@
 # the coevaluations for duals in the category of rows.
 InstallGlobalFunction( SGREPS_CoevaluationForDual_1_Morphism,
   function( SGReps, unit, a, aav )
-    local DS, Rows, unit_support, unit_character_nr, unit_rows, a_nr_support, a_support, a_components, aav_nr_support, aav_support, aav_components, diagonal, coevalutions, diagonal_sum, morphism_unit, morphisms, matrices, morphism;
+    local DS, Rows, unit_support, unit_character_nr, unit_rows, a_nr_support, a_support, a_components, aav_nr_support, aav_support, aav_components, diagonal, coevalutions, aav_support_unit_position, diagonal_sum, morphism_unit, morphisms, matrices, morphism;
     
     #% TODO CAP_JIT_RESOLVE_FUNCTION
     
@@ -63,7 +63,8 @@ InstallGlobalFunction( SGREPS_CoevaluationForDual_1_Morphism,
     #           = 𝚺ᵢ𝚺ⱼ aᵢ·aⱼ·⟨χᵢ⊗χⱼᵛ,χᵤ⟩
     #           = 𝚺ᵢ𝚺ⱼ aᵢ·aⱼ·⟨χᵢ,χⱼ⟩
     #           = 𝚺ᵢ aᵢ·aᵢ
-    diagonal_sum := aav_components[ unit_character_nr ];
+    aav_support_unit_position := SafeUniquePosition( aav_support, unit_character_nr );
+    diagonal_sum := aav_components[ aav_support_unit_position ];
     
     #                  1
     #                 ╱⏐╲
@@ -91,7 +92,7 @@ InstallGlobalFunction( SGREPS_CoevaluationForDual_1_Morphism,
         
     # Replace the zero morphism at component χᵤ.
     # χᵤ is guaranteed to exist in a⊗aᵛ (see the above computation).
-    morphisms[ SafeUniquePosition( aav_support, unit_character_nr ) ] := morphism_unit;
+    morphisms[ aav_support_unit_position ] := morphism_unit;
     
     matrices := List( [ 1 .. aav_nr_support ], i -> UnderlyingMatrix( morphisms[i] ) );
     
@@ -273,7 +274,7 @@ end );
 # the evaluations for duals in the category of rows.
 InstallGlobalFunction( SGREPS_EvaluationForDual_3_Morphism,
   function( SGReps, ava, a, unit )
-    local DS, Rows, unit_support, unit_character_nr, unit_rows, a_nr_support, a_support, a_components, ava_nr_support, ava_support, ava_components, diagonal, coevalutions, diagonal_sum, morphism_unit, morphisms, matrices, morphism;
+    local DS, Rows, unit_support, unit_character_nr, unit_rows, a_nr_support, a_support, a_components, ava_nr_support, ava_support, ava_components, diagonal, coevalutions, ava_support_unit_position, diagonal_sum, morphism_unit, morphisms, matrices, morphism;
     
     #% TODO CAP_JIT_RESOLVE_FUNCTION
     
@@ -311,7 +312,8 @@ InstallGlobalFunction( SGREPS_EvaluationForDual_3_Morphism,
     #           = 𝚺ᵢ𝚺ⱼ aᵢ·aⱼ·⟨χᵢᵛ⊗χⱼ,χᵤ⟩
     #           = 𝚺ᵢ𝚺ⱼ aᵢ·aⱼ·⟨χᵢ,χⱼ⟩
     #           = 𝚺ᵢ aᵢ·aᵢ
-    diagonal_sum := ava_components[ unit_character_nr ];
+    ava_support_unit_position := SafeUniquePosition( ava_support, unit_character_nr );
+    diagonal_sum := ava_components[ ava_support_unit_position ];
     
     #                  1
     #                 ↗↑↖
@@ -338,7 +340,7 @@ InstallGlobalFunction( SGREPS_EvaluationForDual_3_Morphism,
         
     # Replace the zero morphism at component χᵤ.
     # χᵤ is guaranteed to exist in a⊗aᵛ (see the above computation).
-    morphisms[ SafeUniquePosition( ava_support, unit_character_nr ) ] := morphism_unit;
+    morphisms[ ava_support_unit_position ] := morphism_unit;
     
     matrices := List( [ 1 .. ava_nr_support ], i -> UnderlyingMatrix( morphisms[i] ) );
     

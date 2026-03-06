@@ -21,3 +21,22 @@ DeclareGlobalFunction( "SGREPS_Braiding_45_Morphism" );
 # TODO: Description
 DeclareGlobalFunction( "SGREPS_BraidingOnIrreducibles" );
 
+
+
+DeclareGlobalFunction( "SGREPS_Braiding_1_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Braiding_2_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Braiding_3_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Braiding_4_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Braiding_5_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Braiding_12_Morphism_multiplicity" );
+
+DeclareGlobalFunction( "SGREPS_Braiding_45_Morphism_multiplicity" );
+
+# TODO: Description
+DeclareGlobalFunction( "SGREPS_BraidingOnIrreducibles_new" );
+
