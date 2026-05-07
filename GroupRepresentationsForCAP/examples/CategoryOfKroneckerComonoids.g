@@ -5,10 +5,10 @@
 LoadPackage( "GroupRepresentationsForCAP", false );
 #! true
 
-ins_mat := CategoryOfInsertionMatrices( );;
+kron_comon := CategoryOfKroneckerComonoids( );;
 
-Display( ins_mat );
-#! A CAP category with name CategoryOfInsertionMatrices:
+Display( kron_comon );
+#! A CAP category with name KroneckerComonoids:
 #! 
 #! 19 primitive operations were used to derive 56 operations for this categor\
 #! y which algorithmically
@@ -16,24 +16,24 @@ Display( ins_mat );
 #! and furthermore mathematically
 #! * IsSkeletalCategory
 
-F_perms := IsomorphismFromCoreToPermutationCategory( ins_mat );;
+F_perms := IsomorphismFromCoreToPermutationCategory( kron_comon );;
 
 Q := HomalgFieldOfRationals();;
 rows := CategoryOfRows( Q );;
-F_rows := FunctorInsertionMatricesToCategoryOfRows( ins_mat, rows );;
+F_rows := EmbeddingOfKroneckerComonoidsIntoCategoryOfRows( kron_comon, rows );;
 
-o0 := ObjectConstructor( ins_mat, 0 );;
-o1 := ObjectConstructor( ins_mat, 1 );;
-o2 := ObjectConstructor( ins_mat, 2 );;
-o3 := ObjectConstructor( ins_mat, 3 );;
-o4 := ObjectConstructor( ins_mat, 4 );;
-o5 := ObjectConstructor( ins_mat, 5 );;
-o9 := ObjectConstructor( ins_mat, 9 );;
+o0 := ObjectConstructor( kron_comon, 0 );;
+o1 := ObjectConstructor( kron_comon, 1 );;
+o2 := ObjectConstructor( kron_comon, 2 );;
+o3 := ObjectConstructor( kron_comon, 3 );;
+o4 := ObjectConstructor( kron_comon, 4 );;
+o5 := ObjectConstructor( kron_comon, 5 );;
+o9 := ObjectConstructor( kron_comon, 9 );;
 
-m52_12 := MorphismConstructor( ins_mat, o5, [ 1, [ [1,2] ] ], o2 );;
-m52_34 := MorphismConstructor( ins_mat, o5, [ 1, [ [3,4] ] ], o2 );;
-m54_25 := MorphismConstructor( ins_mat, o5, [ 1, [ [2,5] ] ], o4 );;
-m55_21435 := MorphismConstructor( ins_mat,
+m52_12 := MorphismConstructor( kron_comon, o5, [ 1, [ [1,2] ] ], o2 );;
+m52_34 := MorphismConstructor( kron_comon, o5, [ 1, [ [3,4] ] ], o2 );;
+m54_25 := MorphismConstructor( kron_comon, o5, [ 1, [ [2,5] ] ], o4 );;
+m55_21435 := MorphismConstructor( kron_comon,
                 o5,
                 [ 5, [ [ 2, 2 ], [ 1, 1 ], [ 4, 4 ], [ 3, 3 ], [ 5, 5 ] ] ],
                 o5 );;
@@ -62,7 +62,7 @@ IsWellDefinedForMorphisms( id_o1 );
 IsWellDefinedForMorphisms( id_o2 );
 #! true
 
-terminal_object := TerminalObject( ins_mat );;
+terminal_object := TerminalObject( kron_comon );;
 Display( terminal_object );
 #! 0
 
@@ -171,11 +171,11 @@ Display( ApplyFunctor( F_rows, m54_25 ) );
 # IsEqualForMorphisms
 ##############################################################
 
-id_5 := MorphismConstructor( ins_mat, o5, [ 2, [ [1,3], [4,5] ] ], o5 );;
-id_5_alternate := MorphismConstructor( ins_mat, o5, [ 3, [ [1,2], [3,3], [4,5] ] ], o5 );;
+id_5 := MorphismConstructor( kron_comon, o5, [ 2, [ [1,3], [4,5] ] ], o5 );;
+id_5_alternate := MorphismConstructor( kron_comon, o5, [ 3, [ [1,2], [3,3], [4,5] ] ], o5 );;
 
-m55 := MorphismConstructor( ins_mat, o5, [ 2, [ [2,2], [2,5] ] ], o5 );;
-m55_54 := MorphismConstructor( ins_mat, o5, [ 3, [ [2,2], [3,3], [4,5] ] ], o4 );;
+m55 := MorphismConstructor( kron_comon, o5, [ 2, [ [2,2], [2,5] ] ], o5 );;
+m55_54 := MorphismConstructor( kron_comon, o5, [ 3, [ [2,2], [3,3], [4,5] ] ], o4 );;
 
 IsEqualForMorphisms( m52_12, m52_12 );
 #! true
@@ -205,7 +205,7 @@ IsEqualForMorphisms( id_5, id_5_alternate );
 # SimplifyMorphism
 ##############################################################
 
-SimplifyMorphism( UniversalMorphismIntoTerminalObject( TerminalObject( ins_mat ) ), 2 );
+SimplifyMorphism( UniversalMorphismIntoTerminalObject( TerminalObject( kron_comon ) ), 2 );
 
 ##############################################################
 # IsCongruentForMorphisms
@@ -541,8 +541,8 @@ m2 := HomalgIdentityMatrix( 2, Q );;
 m1m2 = KroneckerMat( m1, m2 );
 #! true
 
-m93 := MorphismConstructor( ins_mat, o9, [ 1, [ [5,7] ] ], o3 );;
-m54 := MorphismConstructor( ins_mat, o5, [ 2, [ [2,3], [1,2] ] ], o4 );;
+m93 := MorphismConstructor( kron_comon, o9, [ 1, [ [5,7] ] ], o3 );;
+m54 := MorphismConstructor( kron_comon, o5, [ 2, [ [2,3], [1,2] ] ], o4 );;
 
 tp_mor := TensorProductOnMorphisms( m93, m54 );;
 NrBlockColumnsAndListOfBlockColumns( tp_mor );
@@ -601,8 +601,8 @@ Display( m93_times_m54 );
 #!   [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ],
 #!   [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 ] ]
 
-m95 := MorphismConstructor( ins_mat, o9, [ 2, [ [4,5], [5,7] ] ], o5 );;
-m55 := MorphismConstructor( ins_mat, o5, [ 2, [ [2,3], [1,3] ] ], o5 );;
+m95 := MorphismConstructor( kron_comon, o9, [ 2, [ [4,5], [5,7] ] ], o5 );;
+m55 := MorphismConstructor( kron_comon, o5, [ 2, [ [2,3], [1,3] ] ], o5 );;
 
 tp_mor := TensorProductOnMorphisms( m95, m55 );;
 NrBlockColumnsAndListOfBlockColumns( tp_mor );
@@ -710,7 +710,7 @@ Display( m95_times_m55 );
 # TensorProductOfMorphismWithIdentityWithGivenTensorProducts
 ##############################################################
 
-tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat,
+tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon,
             TensorProductOnObjects( o5, o3 ),
             m52_34,
             id_o3,
@@ -721,7 +721,7 @@ matrix = KroneckerMat( UnderlyingMatrix( ApplyFunctor( F_rows, m52_34 ) ),
                        UnderlyingMatrix( ApplyFunctor( F_rows, id_o3 ) ) );
 #! true
 
-tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat,
+tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon,
             TensorProductOnObjects( o5, o5 ),
             m54_25,
             id_o5,
@@ -732,7 +732,7 @@ matrix = KroneckerMat( UnderlyingMatrix( ApplyFunctor( F_rows, m54_25 ) ),
                        UnderlyingMatrix( ApplyFunctor( F_rows, id_o5 ) ) );
 #! true
 
-tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat,
+tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon,
             TensorProductOnObjects( o5, o4 ),
             m55_54,
             id_o4,
@@ -743,7 +743,7 @@ matrix = KroneckerMat( UnderlyingMatrix( ApplyFunctor( F_rows, m55_54 ) ),
                        UnderlyingMatrix( ApplyFunctor( F_rows, id_o4 ) ) );
 #! true
 
-tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat,
+tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon,
             TensorProductOnObjects( o5, o0 ),
             m52_34,
             id_o0,
@@ -758,7 +758,7 @@ matrix = KroneckerMat( UnderlyingMatrix( ApplyFunctor( F_rows, m52_34 ) ),
 # TensorProductOfIdentityWithMorphismWithGivenTensorProducts
 ##############################################################
 
-tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( ins_mat,
+tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( kron_comon,
             TensorProductOnObjects( o3, o5 ),
             id_o3,
             m52_34,
@@ -769,7 +769,7 @@ matrix = KroneckerMat( UnderlyingMatrix( ApplyFunctor( F_rows, id_o3 ) ),
                        UnderlyingMatrix( ApplyFunctor( F_rows, m52_34 ) ) );
 #! true
 
-tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( ins_mat,
+tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( kron_comon,
             TensorProductOnObjects( o5, o5 ),
             id_o5,
             m54_25,
@@ -780,7 +780,7 @@ matrix = KroneckerMat( UnderlyingMatrix( ApplyFunctor( F_rows, id_o5 ) ),
                        UnderlyingMatrix( ApplyFunctor( F_rows, m54_25 ) ) );
 #! true
 
-tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( ins_mat,
+tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( kron_comon,
             TensorProductOnObjects( o4, o5 ),
             id_o4,
             m55_54,
@@ -791,7 +791,7 @@ matrix = KroneckerMat( UnderlyingMatrix( ApplyFunctor( F_rows, id_o4 ) ),
                        UnderlyingMatrix( ApplyFunctor( F_rows, m55_54 ) ) );
 #! true
 
-tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( ins_mat,
+tp_mor := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( kron_comon,
             TensorProductOnObjects( o0, o5 ),
             id_o0,
             m52_34,
@@ -806,19 +806,19 @@ matrix = KroneckerMat( UnderlyingMatrix( ApplyFunctor( F_rows, id_o0 ) ),
 # RowRotation
 ##############################################################
 
-source := ObjectConstructor( ins_mat, 56 );;
-target := ObjectConstructor( ins_mat, 6 );;
+source := ObjectConstructor( kron_comon, 56 );;
+target := ObjectConstructor( kron_comon, 6 );;
 
-mor := MorphismConstructor( ins_mat, source, [ 2, [ [ 1, 4 ], [ 25, 26 ] ] ], target );;
+mor := MorphismConstructor( kron_comon, source, [ 2, [ [ 1, 4 ], [ 25, 26 ] ] ], target );;
 IsWellDefinedForMorphisms( mor );
 #! true
 
-mor_shift_1 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( ins_mat, mor, 1 );;
-mor_shift_2 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( ins_mat, mor, 2 );;
-mor_shift_3 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( ins_mat, mor, 3 );;
-mor_shift_4 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( ins_mat, mor, 4 );;
-mor_shift_5 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( ins_mat, mor, 5 );;
-mor_shift_6 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( ins_mat, mor, 6 );;
+mor_shift_1 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( kron_comon, mor, 1 );;
+mor_shift_2 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( kron_comon, mor, 2 );;
+mor_shift_3 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( kron_comon, mor, 3 );;
+mor_shift_4 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( kron_comon, mor, 4 );;
+mor_shift_5 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( kron_comon, mor, 5 );;
+mor_shift_6 := CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( kron_comon, mor, 6 );;
 
 IsWellDefinedForMorphisms( mor_shift_1 );
 #! true

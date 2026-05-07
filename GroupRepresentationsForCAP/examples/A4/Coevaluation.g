@@ -10,7 +10,7 @@ RepG := RepresentationCategory( G );;
 underlying_category := UnderlyingCategoryForSemisimpleCategory( RepG );;
 field := underlying_category!.field_for_matrix_category;;
 sgreps := SkeletalCategoryOfGroupRepresentations( G, field : no_precompiled_code := true );;
-product_insmat := UnderlyingProductCategoryOfInsertionMatrices( sgreps );
+product_kron_comon := SubcategoryOfSparseProductOfKroneckerComonoids( sgreps );;
 
 irr := Irr( G );;
 
@@ -33,11 +33,11 @@ ABC := TensorProductOnObjects( TensorProductOnObjects( A, B ), C);;
 BAC := TensorProductOnObjects( TensorProductOnObjects( B, A ), C);;
 BCBAC := TensorProductOnObjects( BC, BAC );;
 
-ConvertObjectToProductInsmat :=
+ConvertObjectToProductKronComon :=
   function( object )
     local nr_support, support, matrices, l;
     
-    return ObjectConstructor( product_insmat, ObjectDatum( object ) );
+    return ObjectConstructor( product_kron_comon, ObjectDatum( object ) );
     
 end;;
 
@@ -79,10 +79,10 @@ CompareCoevalutionMorphisms :=
     fi;
     
     morphism_1_multiplicity := SGREPS_CoevaluationForDual_1_Morphism_multiplicity( sgreps, unit, A, AAV );
-    morphism_23_multiplicity := SGREPS_CoevaluationForDual_23_Morphism_multiplicity( product_insmat,
-                                    ConvertObjectToProductInsmat( A ),
-                                    ConvertObjectToProductInsmat( AV ),
-                                    ConvertObjectToProductInsmat( AAV ) );
+    morphism_23_multiplicity := SGREPS_CoevaluationForDual_23_Morphism_multiplicity( product_kron_comon,
+                                    ConvertObjectToProductKronComon( A ),
+                                    ConvertObjectToProductKronComon( AV ),
+                                    ConvertObjectToProductKronComon( AAV ) );
     morphism_23_multiplicity := EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism( sgreps, morphism_23_multiplicity );
     morphism_multiplicity := PreCompose(  morphism_1_multiplicity, morphism_23_multiplicity );
     

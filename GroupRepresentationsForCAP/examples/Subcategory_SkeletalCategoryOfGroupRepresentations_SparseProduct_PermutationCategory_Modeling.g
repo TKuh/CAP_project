@@ -9,17 +9,17 @@ S4 := SymmetricGroup( 4 );;
 character_table := CharacterTable( S4 );
 irreducible_characters := Irr( character_table );
 
-Reinterp := SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters : no_precompiled_code := true );;
+Reinterp := SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory( irreducible_characters : no_precompiled_code := true );;
 Modeling := ModelingCategory( Reinterp );
 permcat := UnderlyingPermutationCategory( Modeling );
 
 Q := HomalgFieldOfRationals();
 rows := CategoryOfRows( Q );
 
-F := FunctorInsertionMatricesToCategoryOfRows( permcat, rows );
+F := EmbeddingOfKroneckerComonoidsIntoCategoryOfRows( permcat, rows );
 
 Display( Reinterp );
-#! A CAP category with name 𝚷( 5, CategoryOfInsertionMatrices ):
+#! A CAP category with name 𝚷( 5, PermutationCategory ):
 #! 
 #! 18 primitive operations were used to derive 52 operations for this categor\
 #! y which mathematically

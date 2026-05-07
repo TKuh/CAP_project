@@ -6,7 +6,7 @@
 
 #! @Chapter Skeletal Group Representations
 
-#! @BeginChunk ProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations
+#! @BeginChunk SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids
 
 # TODO: Copy and adjust the introduction from SparseProductOfCartesianCategory
 
@@ -22,21 +22,21 @@
 #!  The &GAP; category of skeletal categories of group representations.
 #! @Arguments object
 #! @Returns true or false
-DeclareCategory( "IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations",
+DeclareCategory( "IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids",
                  IsCapCategory );
 
 #! @Description
 #!  The &GAP; category of objects in a skeletal category of group representations.
 #! @Arguments object
 #! @Returns true or false
-DeclareCategory( "IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations",
+DeclareCategory( "IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids",
                  IsCapCategoryObject );
 
 #! @Description
 #!  The &GAP; category of morphisms in a skeletal category of group representations.
 #! @Arguments object
 #! @Returns true or false
-DeclareCategory( "IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations",
+DeclareCategory( "IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids",
                  IsCapCategoryMorphism );
 
 ####################################
@@ -48,26 +48,26 @@ DeclareCategory( "IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcat
 #! @Description
 #! @Arguments category
 #! @Returns a category
-DeclareOperation( "SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations",
+DeclareOperation( "SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids",
                   [ IsList ] );
 
 if false then
 #! @Description
 #!  The input is a category
-#!  <A>C</A><C> := ProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations(</C> $G, F$ <C>)</C> and
+#!  <A>C</A><C> := SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids(</C> $G, F$ <C>)</C> and
 #!  a triple consisting of
 #!    * an integer $0 \leq i \leq |\mathrm{Irr}(G)|$,
 #!    * a list $l_1$ of strictly increasing integers with $\texttt{Length}(l_1) = i$,
 #!    * a list $l_2$ of integers with $\texttt{Length}(l_2) = i$.
 #! @Arguments C, list
 #! @Returns an object
-DeclareOperation( "ObjectConstructor", [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsList ] );
+DeclareOperation( "ObjectConstructor", [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsList ] );
 fi;
 
 if false then
 #! @Description
 #!  The input is a category
-#!  <A>C</A><C> := ProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations(</C> $G, F$ <C>)</C>,
+#!  <A>C</A><C> := SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids(</C> $G, F$ <C>)</C>,
 #!  a source object <A>S</A>,
 #!  a triple consisting of
 #!    * an integer $0 \leq i \leq |\mathrm{Irr}(G)|$,
@@ -76,7 +76,7 @@ if false then
 #!  and a target object <A>T</A>.
 #! @Arguments C, S, list, T
 #! @Returns an morphism
-DeclareOperation( "MorphismConstructor", [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsList ] );
+DeclareOperation( "MorphismConstructor", [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsList ] );
 fi;
 
 ####################################
@@ -89,17 +89,17 @@ fi;
 #!  Return the number of irreducible characters of the group $G$.
 #! @Arguments a CAP category
 #! @Returns an integer
-DeclareAttribute( "NrIrreducibleCharacters", IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "NrIrreducibleCharacters", IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "NrIrreducibleCharacters", [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ], IsBigInt );
+CapJitAddTypeSignature( "NrIrreducibleCharacters", [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ], IsBigInt );
 
 #! @Description
 #!  Return the list of irreducible characters of $G$.
 #! @Arguments C
 #! @Returns list of irreducible characters
-DeclareAttribute( "UnderlyingIrreducibleCharacters", IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "UnderlyingIrreducibleCharacters", IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "UnderlyingIrreducibleCharacters", [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "UnderlyingIrreducibleCharacters", [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
   function ( input_types )
     
     return CapJitDataTypeOfListOf( IsIrreducibleCharacter );
@@ -111,14 +111,14 @@ end );
 #! @Arguments
 #! @Returns TODO
 DeclareAttribute( "UnderlyingProductCategoryOfPermutationCategory",
-                   IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+                   IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
 #! @Description
 #!  TODO
 #! @Arguments
 #! @Returns TODO
 DeclareAttribute( "IsomorphismFromCoreToProductCategoryOfPermutationCategory",
-                   IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+                   IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
 #! @Description
 #!  The argument is an object in a category $C = \bigoplus_{i \leq |\mathrm{Irr}(G)|} \mathrm{Rows}_k$.
@@ -128,12 +128,12 @@ DeclareAttribute( "IsomorphismFromCoreToProductCategoryOfPermutationCategory",
 #!  * $chi_i, \dots, chi_j$ are the indices of irreducible characters of $G$.
 #! @Arguments object
 #! @Returns a list
-DeclareAttribute( "TripleOfNrSupportListOfSupportListOfNumberElements", IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "TripleOfNrSupportListOfSupportListOfNumberElements", IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "TripleOfNrSupportListOfSupportListOfNumberElements", [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "TripleOfNrSupportListOfSupportListOfNumberElements", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids( input_types[1].category ) );
     
     return CapJitDataTypeOfNTupleOf( 3,
             IsBigInt,
@@ -149,12 +149,12 @@ end );
 #!  * $chi_i, \dots, chi_j$ are the indices of irreducible characters of $G$.
 #! @Arguments object
 #! @Returns a list
-DeclareAttribute( "TripleOfNrSupportListOfSupportListOfNrBlockColumnsAndListOfBlockColumns", IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "TripleOfNrSupportListOfSupportListOfNrBlockColumnsAndListOfBlockColumns", IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "TripleOfNrSupportListOfSupportListOfNrBlockColumnsAndListOfBlockColumns", [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "TripleOfNrSupportListOfSupportListOfNrBlockColumnsAndListOfBlockColumns", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids( input_types[1].category ) );
     
     return CapJitDataTypeOfNTupleOf( 3,
             IsBigInt,
@@ -174,30 +174,30 @@ end );
 #!  with datum $[ n, l_1, l_2 ]$, return the integer $n$.
 #! @Arguments object
 #! @Returns an integer
-DeclareAttribute( "NrSupport", IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "NrSupport", IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "NrSupport", [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ], IsBigInt );
+CapJitAddTypeSignature( "NrSupport", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ], IsBigInt );
 
 #! @Description
 #!  Given a morphism
 #!  with datum $[ n, l_1, l_2 ]$, return the integer $n$.
 #! @Arguments morphism
 #! @Returns an integer
-DeclareAttribute( "NrSupport", IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "NrSupport", IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "NrSupport", [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ], IsBigInt );
+CapJitAddTypeSignature( "NrSupport", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ], IsBigInt );
 
 #! @Description
 #!  For an object with datum $[ n, l_1, l_2 ]$,
 #!  return the list of integers $l_1$.
 #! @Arguments object
 #! @Returns a list of integers
-DeclareAttribute( "Support", IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "Support", IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "Support", [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "Support", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids( input_types[1].category ) );
     
     return CapJitDataTypeOfListOf( IsBigInt );
     
@@ -208,12 +208,12 @@ end );
 #!  return the list of integers $l_1$.
 #! @Arguments morphism
 #! @Returns a list of integers
-DeclareAttribute( "Support", IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "Support", IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "Support", [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "Support", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids( input_types[1].category ) );
     
     return CapJitDataTypeOfListOf( IsBigInt );
     
@@ -224,12 +224,12 @@ end );
 #!  return the list of integers $l_2$.
 #! @Arguments object
 #! @Returns a list of intgers
-DeclareAttribute( "Components", IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "Components", IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "Components", [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "Components", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids( input_types[1].category ) );
     
     return CapJitDataTypeOfListOf( IsBigInt );
     
@@ -240,12 +240,12 @@ end );
 #!  return the list of Homalg matrices $l_2$.
 #! @Arguments morphism
 #! @Returns a list of Homalg matrices
-DeclareAttribute( "Components", IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "Components", IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "Components", [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "Components", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids( input_types[1].category ) );
     
     return CapJitDataTypeOfListOf(
                 CapJitDataTypeOfNTupleOf( 2,
@@ -258,7 +258,7 @@ CapJitAddTypeSignature( "Components", [ IsMorphismInSparseProductOfCategoryOfIns
 end );
 
 DeclareAttribute( "DecompositionIntoSimpleObjects",
-                  IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations );
+                  IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids );
 
 ####################################
 ##
@@ -280,10 +280,10 @@ DeclareAttribute( "DecompositionIntoSimpleObjects",
 #! @Arguments a category, integer, integer
 #! @Returns object
 DeclareOperation( "ProductOfCharactersAsObjectInModelingProductCategory",
-                  [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt, IsBigInt ] );
+                  [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsBigInt, IsBigInt ] );
 
 CapJitAddTypeSignature( "ProductOfCharactersAsObjectInModelingProductCategory",
-                        [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt, IsBigInt ],
+                        [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsBigInt, IsBigInt ],
                         
   function ( input_types )
     local direct_product_category;
@@ -300,7 +300,7 @@ end );
 #!  The output is the rank of the $i$'th summand of $O$.
 #! @Arguments O, i
 #! @Returns integer
-DeclareOperation( "[]", [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsInt ] );
+DeclareOperation( "[]", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsInt ] );
 
 #! @Description
 #!  TODO:
@@ -310,7 +310,7 @@ DeclareOperation( "[]", [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAs
 #!  the morphism matrix for the $i$'th object of the underlying category.
 #! @Arguments alpha, i, j
 #! @Returns a morphism $C$
-DeclareOperation( "[]", [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsInt ] );
+DeclareOperation( "[]", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsInt ] );
 
 #! @Description
 #!  Given an object in <A>C</A> $\coloneqq \bigoplus_{i=1}^n \mathrm{Rows}_R$ with
@@ -320,12 +320,12 @@ DeclareOperation( "[]", [ IsMorphismInSparseProductOfCategoryOfInsertionMatrices
 #!  If $k$ is not a supporting summand then return 0.
 #! @Arguments object, integer
 #! @Returns an integer
-DeclareOperation( "Component", [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt ] );
+DeclareOperation( "Component", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsBigInt ] );
 
-CapJitAddTypeSignature( "Component", [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt ],
+CapJitAddTypeSignature( "Component", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsBigInt ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids( input_types[1].category ) );
     
     return rec( filter := IsBigInt );
     
@@ -340,12 +340,12 @@ end );
 #!  a zero matrix of dimensions <C>Component( Source</C>( $m$ ), $k$ ) $times$ <C>Component( Target</C>( $m$ ), $k$ ) ).
 #! @Arguments morphism, integer
 #! @Returns a Homalg matrix
-DeclareOperation( "Component", [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt ] );
+DeclareOperation( "Component", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsBigInt ] );
 
-CapJitAddTypeSignature( "Component", [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt ],
+CapJitAddTypeSignature( "Component", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsBigInt ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids( input_types[1].category ) );
     
     return CapJitDataTypeOfNTupleOf( 2,
                 IsBigInt,
@@ -361,9 +361,9 @@ end );
 ##
 #######################################
 
-DeclareGlobalFunction( "PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_TensorProductOfMorphismWithIdentityWithGivenTensorProducts" );
+DeclareGlobalFunction( "PRODUCT_OF_CATEGORY_OF_KRONECKER_COMONOIDS_AS_SUBCAT_TensorProductOfMorphismWithIdentityWithGivenTensorProducts" );
 
-DeclareGlobalFunction( "PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_TensorProductOfIdentityWithMorphismWithGivenTensorProducts" );
+DeclareGlobalFunction( "PRODUCT_OF_CATEGORY_OF_KRONECKER_COMONOIDS_AS_SUBCAT_TensorProductOfIdentityWithMorphismWithGivenTensorProducts" );
 
 #! @Description
 #!  The arguments are the same as for RightDistributivityExpandingWithGivenObjects

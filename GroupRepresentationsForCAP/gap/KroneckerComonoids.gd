@@ -20,21 +20,21 @@
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
-DeclareCategory( "IsCategoryOfInsertionMatrices",
+DeclareCategory( "IsCategoryOfKroneckerComonoids",
                  IsCapCategory );
 
 #! @Description
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
-DeclareCategory( "IsObjectInCategoryOfInsertionMatrices",
+DeclareCategory( "IsObjectInCategoryOfKroneckerComonoids",
                  IsCapCategoryObject );
 
 #! @Description
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
-DeclareCategory( "IsMorphismInCategoryOfInsertionMatrices",
+DeclareCategory( "IsMorphismInCategoryOfKroneckerComonoids",
                  IsCapCategoryMorphism );
 
 ####################################
@@ -47,7 +47,7 @@ DeclareCategory( "IsMorphismInCategoryOfInsertionMatrices",
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
-DeclareOperation( "CategoryOfInsertionMatrices", [ ] );
+DeclareOperation( "CategoryOfKroneckerComonoids", [ ] );
 
 ####################################
 #
@@ -59,33 +59,33 @@ DeclareOperation( "CategoryOfInsertionMatrices", [ ] );
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
-DeclareAttribute( "UnderlyingPermutationCategory", IsCategoryOfInsertionMatrices );
+DeclareAttribute( "UnderlyingPermutationCategory", IsCategoryOfKroneckerComonoids );
 
 #! @Description
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
-DeclareAttribute( "IsomorphismFromCoreToPermutationCategory", IsCategoryOfInsertionMatrices );
+DeclareAttribute( "IsomorphismFromCoreToPermutationCategory", IsCategoryOfKroneckerComonoids );
 
 #! @Description
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
-DeclareAttribute( "NumberElements", IsObjectInCategoryOfInsertionMatrices );
+DeclareAttribute( "NumberElements", IsObjectInCategoryOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "NumberElements", [ IsObjectInCategoryOfInsertionMatrices ], IsBigInt );
+CapJitAddTypeSignature( "NumberElements", [ IsObjectInCategoryOfKroneckerComonoids ], IsBigInt );
 
 #! @Description
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
-DeclareAttribute( "NrBlockColumnsAndListOfBlockColumns", IsMorphismInCategoryOfInsertionMatrices );
+DeclareAttribute( "NrBlockColumnsAndListOfBlockColumns", IsMorphismInCategoryOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "NrBlockColumnsAndListOfBlockColumns", [ IsMorphismInCategoryOfInsertionMatrices ],
+CapJitAddTypeSignature( "NrBlockColumnsAndListOfBlockColumns", [ IsMorphismInCategoryOfKroneckerComonoids ],
                                             
   function ( input_types )
     
-    Assert( 0, IsCategoryOfInsertionMatrices( input_types[1].category ) );
+    Assert( 0, IsCategoryOfKroneckerComonoids( input_types[1].category ) );
     
     return CapJitDataTypeOfNTupleOf( 2,
                 IsBigInt,
@@ -97,21 +97,21 @@ end );
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
-DeclareAttribute( "NrBlockColumns", IsMorphismInCategoryOfInsertionMatrices );
+DeclareAttribute( "NrBlockColumns", IsMorphismInCategoryOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "NrBlockColumns", [ IsMorphismInCategoryOfInsertionMatrices ], IsBigInt );
+CapJitAddTypeSignature( "NrBlockColumns", [ IsMorphismInCategoryOfKroneckerComonoids ], IsBigInt );
 
 #! @Description
 #!  TODO
 #! @Arguments TODO
 #! @Returns TODO
-DeclareAttribute( "ListOfBlockColumns", IsMorphismInCategoryOfInsertionMatrices );
+DeclareAttribute( "ListOfBlockColumns", IsMorphismInCategoryOfKroneckerComonoids );
 
-CapJitAddTypeSignature( "ListOfBlockColumns", [ IsMorphismInCategoryOfInsertionMatrices ],
+CapJitAddTypeSignature( "ListOfBlockColumns", [ IsMorphismInCategoryOfKroneckerComonoids ],
                                             
   function ( input_types )
     
-    Assert( 0, IsCategoryOfInsertionMatrices( input_types[1].category ) );
+    Assert( 0, IsCategoryOfKroneckerComonoids( input_types[1].category ) );
     
     return CapJitDataTypeOfListOf( CapJitDataTypeOfNTupleOf( 2, IsBigInt, IsBigInt ) );
     
@@ -124,7 +124,7 @@ end );
 #######################################
 
 ##
-DeclareOperation( "FunctorInsertionMatricesToCategoryOfRows",
+DeclareOperation( "EmbeddingOfKroneckerComonoidsIntoCategoryOfRows",
                   [ IsCapCategory, IsCapCategory ] );
 
 #######################################
@@ -135,7 +135,7 @@ DeclareOperation( "FunctorInsertionMatricesToCategoryOfRows",
 
 #! @Description
 #!  The arguments are
-#!  * a category of insertion matrices,
+#!  * a category of Kronecker comonoids,
 #!  * a source object,
 #!  * a morphism $m$,
 #!  * an identity morphism $id$,
@@ -143,9 +143,9 @@ DeclareOperation( "FunctorInsertionMatricesToCategoryOfRows",
 #!  The output is the tensor product on morphisms $m \otimes id$.
 #!  Warning: We assume that the identity morphism $id$ is normalized, i.e.,
 #!           it must consist of at most a single block column.
-DeclareGlobalFunction( "CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts" );
+DeclareGlobalFunction( "CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfMorphismWithIdentityWithGivenTensorProducts" );
 
-DeclareGlobalFunction( "CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts" );
+DeclareGlobalFunction( "CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfIdentityWithMorphismWithGivenTensorProducts" );
 
 #! @Description
 #!  The inputs are
@@ -162,5 +162,5 @@ DeclareGlobalFunction( "CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWi
 #!           shifting m by 3 becomes [ 1, [ 17, 21 ] ].
 #! @Arguments category, morphism, int
 #! @Returns morphism
-DeclareGlobalFunction( "CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift" );
+DeclareGlobalFunction( "CATEGORY_OF_KRONECKER_COMONOIDS_RowDownwardShift" );
 

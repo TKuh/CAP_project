@@ -10,21 +10,21 @@ RepG := RepresentationCategory( S4 );;
 underlying_category := UnderlyingCategoryForSemisimpleCategory( RepG );;
 field := underlying_category!.field_for_matrix_category;;
 sgreps := SkeletalCategoryOfGroupRepresentations( S4, field : no_precompiled_code := true );;
-product_insmat := UnderlyingProductCategoryOfInsertionMatrices( sgreps );
+product_kron_comon := SubcategoryOfSparseProductOfKroneckerComonoids( sgreps );;
 
 irr := Irr( S4 );;
 
-# A := ObjectConstructor( product_insmat, [ 2, [1,4], [1,2] ] );;
-# B := ObjectConstructor( product_insmat, [ 2, [2,3], [1,3] ] );;
-# C := ObjectConstructor( product_insmat, [ 3, [2,4,5], [2,3,5] ] );;
+# A := ObjectConstructor( product_kron_comon, [ 2, [1,4], [1,2] ] );;
+# B := ObjectConstructor( product_kron_comon, [ 2, [2,3], [1,3] ] );;
+# C := ObjectConstructor( product_kron_comon, [ 3, [2,4,5], [2,3,5] ] );;
 
-A := ObjectConstructor( product_insmat, [ 4, [1,2,4,5], [7,8,7,4] ] );;
-B := ObjectConstructor( product_insmat, [ 4, [2,3,4,5], [3,2,7,4] ] );;
-C := ObjectConstructor( product_insmat, [ 3, [2,4,5], [3,5,3] ] );;
+A := ObjectConstructor( product_kron_comon, [ 4, [1,2,4,5], [7,8,7,4] ] );;
+B := ObjectConstructor( product_kron_comon, [ 4, [2,3,4,5], [3,2,7,4] ] );;
+C := ObjectConstructor( product_kron_comon, [ 3, [2,4,5], [3,5,3] ] );;
 
-# A := ObjectConstructor( product_insmat, [ 4, [1,2,4,5], [17,8,7,14] ] );;
-# B := ObjectConstructor( product_insmat, [ 4, [2,3,4,5], [3,20,17,24] ] );;
-# C := ObjectConstructor( product_insmat, [ 3, [2,4,5], [3,15,13] ] );;
+# A := ObjectConstructor( product_kron_comon, [ 4, [1,2,4,5], [17,8,7,14] ] );;
+# B := ObjectConstructor( product_kron_comon, [ 4, [2,3,4,5], [3,20,17,24] ] );;
+# C := ObjectConstructor( product_kron_comon, [ 3, [2,4,5], [3,15,13] ] );;
 
 BC := TensorProductOnObjects( B, C);;
 BA := TensorProductOnObjects( B, A);;
@@ -67,7 +67,7 @@ CompareAssociatorMorphisms :=
         StartTimer( "SGREPS_Associator_1_Morphism_multiplicity" );
     fi;
     
-    permutations_product_permcat := SGREPS_Associator_1_Morphism_multiplicity( product_insmat, A, B, C, ABC );
+    permutations_product_permcat := SGREPS_Associator_1_Morphism_multiplicity( product_kron_comon, A, B, C, ABC );
     
     if timing_statistics then
         StopTimer( "SGREPS_Associator_1_Morphism_multiplicity" );

@@ -5,7 +5,7 @@
 #
 
 # Read precompiled categories
-ReadPackage( "GroupRepresentationsForCAP", "gap/precompiled_categories/CategoryOfInsertionMatrices_precompiled.gi" );
+ReadPackage( "GroupRepresentationsForCAP", "gap/precompiled_categories/KroneckerComonoids_precompiled.gi" );
 
 ####################################
 ##
@@ -14,7 +14,7 @@ ReadPackage( "GroupRepresentationsForCAP", "gap/precompiled_categories/CategoryO
 ####################################
 
 ##
-InstallMethod( CategoryOfInsertionMatrices,
+InstallMethod( CategoryOfKroneckerComonoids,
                [],
                
   FunctionWithNamedArguments(
@@ -24,10 +24,10 @@ InstallMethod( CategoryOfInsertionMatrices,
     [ "FinalizeCategory", true ],
   ],
   function( CAP_NAMED_ARGUMENTS )
-    local object_datum_type, morphism_datum_type, name, ins_mat, permcat, compare_morphisms, object_datum, object_constructor, morphism_datum, morphism_constructor, F_perms, SubscriptDigits, ToSubscript;
+    local object_datum_type, morphism_datum_type, name, kron_comon, permcat, compare_morphisms, object_datum, object_constructor, morphism_datum, morphism_constructor, F_perms, SubscriptDigits, ToSubscript;
     
     ##
-    name := "CategoryOfInsertionMatrices";
+    name := "KroneckerComonoids";
     
     ##
     object_datum_type := IsBigInt;
@@ -42,69 +42,69 @@ InstallMethod( CategoryOfInsertionMatrices,
                     IsBigInt ) ) );
     
     ##
-    ins_mat :=
+    kron_comon :=
         CreateCapCategoryWithDataTypes(
             name,
-            IsCategoryOfInsertionMatrices,
-            IsObjectInCategoryOfInsertionMatrices,
-            IsMorphismInCategoryOfInsertionMatrices,
+            IsCategoryOfKroneckerComonoids,
+            IsObjectInCategoryOfKroneckerComonoids,
+            IsMorphismInCategoryOfKroneckerComonoids,
             IsCapCategoryTwoCell,
             object_datum_type,
             morphism_datum_type,
             fail
             : overhead := CAP_NAMED_ARGUMENTS.overhead );
     
-    ins_mat!.supports_empty_limits := true;
+    kron_comon!.supports_empty_limits := true;
     
-    SetIsSkeletalCategory( ins_mat, true );
+    SetIsSkeletalCategory( kron_comon, true );
     
-    SetIsCartesianCategory( ins_mat, true );
+    SetIsCartesianCategory( kron_comon, true );
     
     permcat := PermutationCategory(
                         : overhead := CAP_NAMED_ARGUMENTS.overhead,
                           no_precompiled_code := CAP_NAMED_ARGUMENTS.no_precompiled_code );
     
-    SetUnderlyingPermutationCategory( ins_mat, permcat );
+    SetUnderlyingPermutationCategory( kron_comon, permcat );
     
-    ins_mat!.compiler_hints :=
+    kron_comon!.compiler_hints :=
         rec( category_attribute_names :=
             [ "PermutationCategory",
               "IsomorphismFromCoreToPermutationCategory" ] );
     
     # This is a workhorse category -> no logic and caching only via IsIdenticalObj
-    CapCategorySwitchLogicOff( ins_mat );
+    CapCategorySwitchLogicOff( kron_comon );
     
     ##
-    AddObjectDatum( ins_mat,
-      function( ins_mat, object )
+    AddObjectDatum( kron_comon,
+      function( kron_comon, object )
         
         return NumberElements( object );
         
     end );
     
     ##
-    AddObjectConstructor( ins_mat,
-      function( ins_mat, nr_elements )
+    AddObjectConstructor( kron_comon,
+      function( kron_comon, nr_elements )
         
         #% CAP_JIT_DROP_NEXT_STATEMENT
         Assert( 0, 0 <= nr_elements );
         
-        return CreateCapCategoryObjectWithAttributes( ins_mat,
+        return CreateCapCategoryObjectWithAttributes( kron_comon,
                        NumberElements, nr_elements );
                        
     end );
     
     ##
-    AddMorphismDatum( ins_mat,
-      function( ins_mat, morphism )
+    AddMorphismDatum( kron_comon,
+      function( kron_comon, morphism )
         
         return NrBlockColumnsAndListOfBlockColumns( morphism );
         
     end );
     
     ##
-    AddMorphismConstructor( ins_mat,
-      function( ins_mat, S, nr_blockcols_list_of_blockcolumns, T )
+    AddMorphismConstructor( kron_comon,
+      function( kron_comon, S, nr_blockcols_list_of_blockcolumns, T )
         
         #% CAP_JIT_DROP_NEXT_STATEMENT
         Assert( 0, nr_blockcols_list_of_blockcolumns[1] = Length( nr_blockcols_list_of_blockcolumns[2] ) );
@@ -125,7 +125,7 @@ InstallMethod( CategoryOfInsertionMatrices,
         #                                       │0 0 0 ┆ 0 0│
         #                                       └           ┘
         #
-        # So S must be greater or equal to 4 = Max( 1, 3, 4 ).
+        # So S must be greater or equal to 4 = Max{1, 3, 4}.
         #
         #% CAP_JIT_DROP_NEXT_STATEMENT
         Assert( 0,
@@ -150,7 +150,7 @@ InstallMethod( CategoryOfInsertionMatrices,
         Assert( 0, NumberElements( T ) = Sum( List( nr_blockcols_list_of_blockcolumns[2], col -> col[2] - col[1] + 1 ) ) );
         
         return CreateCapCategoryMorphismWithAttributes(
-                    ins_mat,
+                    kron_comon,
                     S,
                     T,
                     NrBlockColumnsAndListOfBlockColumns, nr_blockcols_list_of_blockcolumns );
@@ -158,18 +158,18 @@ InstallMethod( CategoryOfInsertionMatrices,
     end );
     
     ##
-    AddIsWellDefinedForObjects( ins_mat,
-      function( ins_mat, object )
+    AddIsWellDefinedForObjects( kron_comon,
+      function( kron_comon, object )
         
         return 0 <= NumberElements( object );
         
     end );
     
     ##
-    # AddIsWellDefinedForMorphismsWithGivenSourceAndRange( ins_mat,
-      # function( ins_mat, source, morphism, target )
-    AddIsWellDefinedForMorphisms( ins_mat,
-      function( ins_mat, morphism )
+    # AddIsWellDefinedForMorphismsWithGivenSourceAndRange( kron_comon,
+      # function( kron_comon, source, morphism, target )
+    AddIsWellDefinedForMorphisms( kron_comon,
+      function( kron_comon, morphism )
         local nr_blockcols, blockcols, source, target, nr_elements_source;
         
         nr_blockcols := NrBlockColumns( morphism );
@@ -212,24 +212,24 @@ InstallMethod( CategoryOfInsertionMatrices,
     end );
     
     ##
-    AddIsEqualForObjects( ins_mat,
-      function( ins_mat, object_1, object_2 )
+    AddIsEqualForObjects( kron_comon,
+      function( kron_comon, object_1, object_2 )
         
         return NumberElements( object_1 ) = NumberElements( object_2 );
         
     end );
     
     ##
-    AddIsEqualForMorphisms( ins_mat,
-      function( ins_mat, morphism_1, morphism_2 )
+    AddIsEqualForMorphisms( kron_comon,
+      function( kron_comon, morphism_1, morphism_2 )
         
         return NrBlockColumnsAndListOfBlockColumns( morphism_1 ) = NrBlockColumnsAndListOfBlockColumns( morphism_2 );
         
     end );
     
     ##
-    AddIsCongruentForMorphisms( ins_mat,
-      function( ins_mat, morphism_1, morphism_2 )
+    AddIsCongruentForMorphisms( kron_comon,
+      function( kron_comon, morphism_1, morphism_2 )
         local simplified_morphism_1, simplified_morphism_2;
         
         simplified_morphism_1 := SimplifyMorphism( morphism_1, 2 );
@@ -239,8 +239,8 @@ InstallMethod( CategoryOfInsertionMatrices,
         
     end );
     
-    AddSimplifyMorphism( ins_mat,
-      function( ins_mat, phi, i )
+    AddSimplifyMorphism( kron_comon,
+      function( kron_comon, phi, i )
         local nr_blockcols, blockcols, merge_consecutive_pairs, simplified_list_of_columns;
         
         nr_blockcols := NrBlockColumns( phi );
@@ -278,7 +278,7 @@ InstallMethod( CategoryOfInsertionMatrices,
                     merge_consecutive_pairs,
                     [ blockcols[1] ] );
             
-            return MorphismConstructor( ins_mat,
+            return MorphismConstructor( kron_comon,
                         Source( phi ),
                         Pair( Length( simplified_list_of_columns ), simplified_list_of_columns ),
                         Target( phi ) );
@@ -288,8 +288,8 @@ InstallMethod( CategoryOfInsertionMatrices,
     end );
     
     ##
-    AddIdentityMorphism( ins_mat,
-      function( ins_mat, object )
+    AddIdentityMorphism( kron_comon,
+      function( kron_comon, object )
         local nr_elements, datum;
         
         nr_elements := NumberElements( object );
@@ -301,39 +301,39 @@ InstallMethod( CategoryOfInsertionMatrices,
                 
         datum := datum[ 1 + BooleanToInteger( nr_elements = 0 ) ];
         
-        return MorphismConstructor( ins_mat, object, datum, object );
+        return MorphismConstructor( kron_comon, object, datum, object );
         
     end );
     
     ##
-    AddPreCompose( ins_mat,
-      function( ins_mat, morphism_1, morphism_2 )
+    AddPreCompose( kron_comon,
+      function( kron_comon, morphism_1, morphism_2 )
         
         
         
     end );
     
     ##
-    AddTerminalObject( ins_mat,
-      function( ins_mat )
+    AddTerminalObject( kron_comon,
+      function( kron_comon )
         
-        return ObjectConstructor( ins_mat, BigInt( 0 ) );
+        return ObjectConstructor( kron_comon, BigInt( 0 ) );
         
     end );
     
     ##
-    AddIsTerminal( ins_mat,
-      function( ins_mat, object )
+    AddIsTerminal( kron_comon,
+      function( kron_comon, object )
         
         return NumberElements( object ) = BigInt( 0 );
         
     end );
     
     ##
-    AddUniversalMorphismIntoTerminalObjectWithGivenTerminalObject( ins_mat,
-      function( ins_mat, object, t )
+    AddUniversalMorphismIntoTerminalObjectWithGivenTerminalObject( kron_comon,
+      function( kron_comon, object, t )
         
-        return MorphismConstructor( ins_mat,
+        return MorphismConstructor( kron_comon,
                     object,
                     Pair( BigInt( 0 ), CapJitTypedExpression( [ ], { } -> CapJitDataTypeOfListOf( CapJitDataTypeOfNTupleOf( 2, IsBigInt, IsBigInt ) ) ) ),
                     t );
@@ -341,21 +341,21 @@ InstallMethod( CategoryOfInsertionMatrices,
     end );
     
     ##
-    AddDirectProduct( ins_mat,
-      function( ins_mat, objects )
+    AddDirectProduct( kron_comon,
+      function( kron_comon, objects )
         local nr_objects, sum;
         
         nr_objects := Length( objects );
         
         sum := Sum( List( [ 1 .. nr_objects ], i -> NumberElements( objects[i] ) ) );
         
-        return ObjectConstructor( ins_mat, sum );
+        return ObjectConstructor( kron_comon, sum );
         
     end );
     
     ##
-    AddProjectionInFactorOfDirectProductWithGivenDirectProduct( ins_mat,
-      function( ins_mat, objects, projection_number, direct_product )
+    AddProjectionInFactorOfDirectProductWithGivenDirectProduct( kron_comon,
+      function( kron_comon, objects, projection_number, direct_product )
         local dim_pre, dim_post, dim_factor, datum;
         
         dim_pre := Sum( List( objects{ [ 1 .. projection_number - 1 ] }, c -> NumberElements( c ) ) );
@@ -369,13 +369,13 @@ InstallMethod( CategoryOfInsertionMatrices,
         
         datum := datum[ 1 + BooleanToInteger( dim_factor = 0 ) ];
         
-        return MorphismConstructor( ins_mat, direct_product, datum, objects[ projection_number ] );
+        return MorphismConstructor( kron_comon, direct_product, datum, objects[ projection_number ] );
         
     end );
     
     ##
-    AddUniversalMorphismIntoDirectProductWithGivenDirectProduct( ins_mat,
-      function( ins_mat, target_diagram, test_object, morphisms, product )
+    AddUniversalMorphismIntoDirectProductWithGivenDirectProduct( kron_comon,
+      function( kron_comon, target_diagram, test_object, morphisms, product )
         local nr_morphisms, nr_blockcols, blockcols;
         
         nr_morphisms := Length( morphisms );
@@ -384,13 +384,13 @@ InstallMethod( CategoryOfInsertionMatrices,
         
         blockcols := Concatenation( List( [ 1 .. nr_morphisms ], i -> ListOfBlockColumns( morphisms[i] ) ) );
         
-        return MorphismConstructor( ins_mat, test_object, Pair( nr_blockcols, blockcols ), product );
+        return MorphismConstructor( kron_comon, test_object, Pair( nr_blockcols, blockcols ), product );
         
     end );
     
     ##
-    AddDirectProductFunctorialWithGivenDirectProducts( ins_mat,
-      function( ins_mat, source, source_diagram, morphisms, target_diagram, target )
+    AddDirectProductFunctorialWithGivenDirectProducts( kron_comon,
+      function( kron_comon, source, source_diagram, morphisms, target_diagram, target )
         local nr_morphisms, nr_blockcols, blockcols;
         
         nr_morphisms := Length( morphisms );
@@ -409,45 +409,45 @@ InstallMethod( CategoryOfInsertionMatrices,
                 
             end ) );
             
-        return MorphismConstructor( ins_mat, source, Pair( nr_blockcols, blockcols ), target );
+        return MorphismConstructor( kron_comon, source, Pair( nr_blockcols, blockcols ), target );
         
     end );
     
-    AddTensorUnit( ins_mat,
-      function( ins_mat )
+    AddTensorUnit( kron_comon,
+      function( kron_comon )
         
-        return ObjectConstructor( ins_mat, BigInt( 1 ) );
-        
-    end );
-    
-    AddLeftUnitorWithGivenTensorProduct( ins_mat,
-      function( ins_mat, object, tensor_product )
-        
-        return IdentityMorphism( ins_mat, object );
+        return ObjectConstructor( kron_comon, BigInt( 1 ) );
         
     end );
     
-    AddRightUnitorWithGivenTensorProduct( ins_mat,
-      function( ins_mat, object, tensor_product )
+    AddLeftUnitorWithGivenTensorProduct( kron_comon,
+      function( kron_comon, object, tensor_product )
         
-        return IdentityMorphism( ins_mat, object );
+        return IdentityMorphism( kron_comon, object );
+        
+    end );
+    
+    AddRightUnitorWithGivenTensorProduct( kron_comon,
+      function( kron_comon, object, tensor_product )
+        
+        return IdentityMorphism( kron_comon, object );
         
     end );
     
     ##
-    AddTensorProductOnObjects( ins_mat,
-      function( ins_mat, a, b )
+    AddTensorProductOnObjects( kron_comon,
+      function( kron_comon, a, b )
         local product;
         
         product :=  NumberElements( a ) * NumberElements( b );
         
-        return ObjectConstructor( ins_mat, product );
+        return ObjectConstructor( kron_comon, product );
         
     end );
     
     ##
-    AddTensorProductOnMorphismsWithGivenTensorProducts( ins_mat,
-      function( ins_mat, source, alpha, beta, target )
+    AddTensorProductOnMorphismsWithGivenTensorProducts( kron_comon,
+      function( kron_comon, source, alpha, beta, target )
         local alpha_blockcols, alpha_nr_cols, alpha_nr_blockcols, beta_blockcols, beta_nr_blockcols, beta_nr_rows, nr_blockcols, tensored_blockcols;
         
         alpha_nr_blockcols := NrBlockColumns( alpha );
@@ -471,12 +471,12 @@ InstallMethod( CategoryOfInsertionMatrices,
                         Pair( beta_blockcols[k][1] + ( beta_nr_rows * (j-1) ),
                               beta_blockcols[k][2] + ( beta_nr_rows * (j-1) ) ) ) ) ) ) );
         
-        return MorphismConstructor( ins_mat, source, Pair( nr_blockcols, tensored_blockcols ), target );
+        return MorphismConstructor( kron_comon, source, Pair( nr_blockcols, tensored_blockcols ), target );
         
     end );
     
-    F_perms := CapFunctor( Concatenation( "Functor from ", Name( ins_mat ), " to ", Name( permcat ) ),
-                           ins_mat,
+    F_perms := CapFunctor( Concatenation( "Functor from ", Name( kron_comon ), " to ", Name( permcat ) ),
+                           kron_comon,
                            permcat );
     
     AddObjectFunction( F_perms,
@@ -518,21 +518,21 @@ InstallMethod( CategoryOfInsertionMatrices,
         
     end );
     
-    SetIsomorphismFromCoreToPermutationCategory( ins_mat, F_perms );
+    SetIsomorphismFromCoreToPermutationCategory( kron_comon, F_perms );
     
     if CAP_NAMED_ARGUMENTS.no_precompiled_code <> true then
         
-        ADD_FUNCTIONS_FOR_CategoryOfInsertionMatrices_precompiled( ins_mat );
+        ADD_FUNCTIONS_FOR_CategoryOfKroneckerComonoids_precompiled( kron_comon );
         
     fi;
     
     if CAP_NAMED_ARGUMENTS.FinalizeCategory then
         
-        Finalize( ins_mat );
+        Finalize( kron_comon );
         
     fi;
     
-    return ins_mat;
+    return kron_comon;
     
 end ) );
 
@@ -543,7 +543,7 @@ end ) );
 ####################################
 
 InstallMethodForCompilerForCAP( NrBlockColumns,
-                                [ IsMorphismInCategoryOfInsertionMatrices ],
+                                [ IsMorphismInCategoryOfKroneckerComonoids ],
                                 
   function( morphism )
     
@@ -552,7 +552,7 @@ InstallMethodForCompilerForCAP( NrBlockColumns,
 end );
 
 InstallMethodForCompilerForCAP( ListOfBlockColumns,
-                                [ IsMorphismInCategoryOfInsertionMatrices ],
+                                [ IsMorphismInCategoryOfKroneckerComonoids ],
                                 
   function( morphism )
     
@@ -567,17 +567,17 @@ end );
 ####################################
 
 ##
-InstallMethod( FunctorInsertionMatricesToCategoryOfRows,
+InstallMethod( EmbeddingOfKroneckerComonoidsIntoCategoryOfRows,
                [ IsCapCategory, IsCapCategory ],
                
-  function( ins_mat, rows )
+  function( kron_comon, rows )
     local homalg_ring, functor;
     
     Assert( 0, IsCategoryOfRows( rows) );
     
     homalg_ring := UnderlyingRing( rows );
     
-    functor := CapFunctor( Concatenation( "Functor from ", Name( ins_mat ), " to ", Name( rows ) ), ins_mat, rows );
+    functor := CapFunctor( Concatenation( "Functor from ", Name( kron_comon ), " to ", Name( rows ) ), kron_comon, rows );
     
     AddObjectFunction( functor,
       function( object )
@@ -630,8 +630,8 @@ end );
 ####################################
 
 ## TODO: turn this into a CAP operation?
-InstallGlobalFunction( CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts,
-  function( ins_mat, source, morphism, id, target )
+InstallGlobalFunction( CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfMorphismWithIdentityWithGivenTensorProducts,
+  function( kron_comon, source, morphism, id, target )
     local morphism_nr_blockcols, morphism_nr_cols, morphism_blockcols, id_nr_blockcols, id_blockcols, id_nr_rows, nr_blockcols, tensored_blockcols;
     
     #% CAP_JIT_RESOLVE_FUNCTION
@@ -698,7 +698,7 @@ InstallGlobalFunction( CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWit
                 Pair( id_blockcols[n][1] + ( id_nr_rows * ( morphism_blockcols[i][1] - 1 ) ),
                       id_blockcols[n][2] + ( id_nr_rows * ( morphism_blockcols[i][2] - 1 ) ) ) ) ) );
     
-    return MorphismConstructor( ins_mat,
+    return MorphismConstructor( kron_comon,
                 source,
                 Pair( morphism_nr_blockcols * id_nr_blockcols, tensored_blockcols ),
                 target );
@@ -706,8 +706,8 @@ InstallGlobalFunction( CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWit
 end );
 
 ## TODO: turn this into a CAP operation?
-InstallGlobalFunction( CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts,
-  function( ins_mat, source, id, morphism, target )
+InstallGlobalFunction( CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfIdentityWithMorphismWithGivenTensorProducts,
+  function( kron_comon, source, id, morphism, target )
     local morphism_nr_blockcols, morphism_nr_rows, morphism_nr_cols, morphism_blockcols, id_nr_blockcols, id_blockcols, id_nr_rows, nr_blockcols, blockcols;
     
     #% CAP_JIT_RESOLVE_FUNCTION
@@ -760,12 +760,12 @@ InstallGlobalFunction( CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWit
 
     nr_blockcols := id_nr_rows * morphism_nr_blockcols;
     
-    return MorphismConstructor( ins_mat, source, Pair( nr_blockcols, blockcols ), target );
+    return MorphismConstructor( kron_comon, source, Pair( nr_blockcols, blockcols ), target );
     
 end );
 
-InstallGlobalFunction( CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift,
-  function( ins_mat, morphism, shift_size )
+InstallGlobalFunction( CATEGORY_OF_KRONECKER_COMONOIDS_RowDownwardShift,
+  function( kron_comon, morphism, shift_size )
     local nr_blockcols, block_cols, shifted_blocks;
     
     #% CAP_JIT_RESOLVE_FUNCTION
@@ -786,7 +786,7 @@ InstallGlobalFunction( CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift,
         
     end );
     
-    return MorphismConstructor( ins_mat,
+    return MorphismConstructor( kron_comon,
                                 Source( morphism ),
                                 Pair( nr_blockcols, shifted_blocks ),
                                 Target( morphism ) );
@@ -800,14 +800,14 @@ end );
 ####################################
 
 InstallMethod( DisplayString,
-               [ IsObjectInCategoryOfInsertionMatrices ],
+               [ IsObjectInCategoryOfKroneckerComonoids ],
                
   object -> String( NumberElements( object ) )
   
 );
 
 InstallMethod( DisplayString,
-               [ IsMorphismInCategoryOfInsertionMatrices ],
+               [ IsMorphismInCategoryOfKroneckerComonoids ],
                
   object -> String( NrBlockColumnsAndListOfBlockColumns( object ) )
   

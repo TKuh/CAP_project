@@ -5,11 +5,11 @@
 LoadPackage( "GroupRepresentationsForCAP", false );
 #! true
 
-ins_mat := CategoryOfInsertionMatrices( );;
-prod_ins_mat := SparseProductOfCartesianCategory( 5, ins_mat );;
+kron_comon := CategoryOfKroneckerComonoids( );;
+prod_kron_comon := SparseProductOfCartesianCategory( 5, kron_comon );;
 
-Display( prod_ins_mat );
-#! A CAP category with name 𝚷( 5, CategoryOfInsertionMatrices ):
+Display( prod_kron_comon );
+#! A CAP category with name 𝚷( 5, KroneckerComonoids ):
 #! 
 #! 18 primitive operations were used to derive 52 operations for this catego\
 #! ry which mathematically
@@ -18,63 +18,61 @@ Display( prod_ins_mat );
 Q := HomalgFieldOfRationals();;
 rows := CategoryOfRows( Q );;
 
-F := FunctorInsertionMatricesToCategoryOfRows( InsertionMatrices, rows );;
-# SF := ExtendFunctorToSparseProduct( F, prod_ins_mat );
+F := EmbeddingOfKroneckerComonoidsIntoCategoryOfRows( kron_comon, rows );;
+# SF := ExtendFunctorToSparseProduct( F, prod_kron_comon );
 
-o1 := ObjectConstructor( ins_mat, 1 );;
-o2 := ObjectConstructor( ins_mat, 2 );;
-o3 := ObjectConstructor( ins_mat, 3 );;
-o4 := ObjectConstructor( ins_mat, 4 );;
-o5 := ObjectConstructor( ins_mat, 5 );;
+o1 := ObjectConstructor( kron_comon, 1 );;
+o2 := ObjectConstructor( kron_comon, 2 );;
+o3 := ObjectConstructor( kron_comon, 3 );;
+o4 := ObjectConstructor( kron_comon, 4 );;
+o5 := ObjectConstructor( kron_comon, 5 );;
 
-terminal_object := TerminalObject( ins_mat );;
+terminal_object := TerminalObject( kron_comon );;
 
-source := ObjectConstructor( prod_ins_mat, [ 4, [ 1, 2, 3, 5 ], [ o1, o4, o1, o1 ] ] );;
-target := ObjectConstructor( prod_ins_mat, [ 2, [    2, 3    ], [     o5, o2     ] ] );;
+source := ObjectConstructor( prod_kron_comon, [ 4, [ 1, 2, 3, 5 ], [ o1, o4, o1, o1 ] ] );;
+target := ObjectConstructor( prod_kron_comon, [ 2, [    2, 3    ], [     o5, o2     ] ] );;
 
 IsWellDefinedForObjects( source );
 #! true
 IsWellDefinedForObjects( target );
 #! true
 
-morphism_1 := MorphismConstructor( ins_mat, o1, [ 0, [] ], terminal_object );;
-morphism_2 := MorphismConstructor( ins_mat, o4, [ 2, [ [1,3], [3,4] ] ], o5 );;
-morphism_3 := MorphismConstructor( ins_mat, o1, [ 2, [ [1,1], [1,1] ] ], o2 );;
-morphism_4 := MorphismConstructor( ins_mat, terminal_object, [ 0, [] ], terminal_object );;
-morphism_5 := MorphismConstructor( ins_mat, o1, [ 0, [] ], terminal_object );;
+morphism_1 := MorphismConstructor( kron_comon, o1, [ 0, [] ], terminal_object );;
+morphism_2 := MorphismConstructor( kron_comon, o4, [ 2, [ [1,3], [3,4] ] ], o5 );;
+morphism_3 := MorphismConstructor( kron_comon, o1, [ 2, [ [1,1], [1,1] ] ], o2 );;
+morphism_4 := MorphismConstructor( kron_comon, terminal_object, [ 0, [] ], terminal_object );;
+morphism_5 := MorphismConstructor( kron_comon, o1, [ 0, [] ], terminal_object );;
 triple := [ 4, [ 1, 2, 3, 5 ], [ morphism_1, morphism_2, morphism_3, morphism_5 ] ];;
 
-mor := MorphismConstructor( prod_ins_mat, source, triple, target );;
+mor := MorphismConstructor( prod_kron_comon, source, triple, target );;
 IsWellDefinedForMorphisms( mor );
 #! true
 
 ObjectDatum( source );
 #! [ 4, [ 1, 2, 3, 5 ], 
-#!   [ <An object in CategoryOfInsertionMatrices>, 
-#!       <An object in CategoryOfInsertionMatrices>, 
-#!       <An object in CategoryOfInsertionMatrices>, 
-#!       <An object in CategoryOfInsertionMatrices> ] ]
+#!  [ <An object in KroneckerComonoids>, <An object in KroneckerComonoids>, 
+#!      <An object in KroneckerComonoids>, 
+#!      <An object in KroneckerComonoids> ] ]
 
 MorphismDatum( mor );
 #! [ 4, [ 1, 2, 3, 5 ], 
-#!   [ <A morphism in CategoryOfInsertionMatrices>, 
-#!       <A morphism in CategoryOfInsertionMatrices>, 
-#!       <A morphism in CategoryOfInsertionMatrices>, 
-#!       <A morphism in CategoryOfInsertionMatrices> ] ]
+#!   [ <A morphism in KroneckerComonoids>, <A morphism in KroneckerComonoids>
+#!         , <A morphism in KroneckerComonoids>, 
+#!       <A morphism in KroneckerComonoids> ] ]
 
-z := ObjectConstructor( prod_ins_mat, [ 0, [ ], [ ] ] );;
+z := ObjectConstructor( prod_kron_comon, [ 0, [ ], [ ] ] );;
 Display( z );
 #! [ 0, [  ], [  ] ]
 
-o := ObjectConstructor( prod_ins_mat, [ 1, [ 1 ], [ o1 ] ] );;
+o := ObjectConstructor( prod_kron_comon, [ 1, [ 1 ], [ o1 ] ] );;
 Display( o );
-#! [ 1, [ 1 ], [ An object in CategoryOfInsertionMatrices ] ]
+#! [ 1, [ 1 ], [ An object in KroneckerComonoids ] ]
 
 #########################################
 # IsEqualForObjects
 #########################################
 
-terminal_object_prod := TerminalObject( prod_ins_mat );
+terminal_object_prod := TerminalObject( prod_kron_comon );;
 
 IsEqualForObjects( source, source );
 #! true
@@ -251,7 +249,7 @@ proj_5_rows =
 # UniversalMorphismIntoDirectProduct
 #########################################
 
-univ := UniversalMorphismIntoDirectProduct( prod_ins_mat, [ mor, mor, mor ] );;
+univ := UniversalMorphismIntoDirectProduct( prod_kron_comon, [ mor, mor, mor ] );;
 
 univ_1_rows := ApplyFunctor( F, univ[1] );;
 univ_2_rows := ApplyFunctor( F, univ[2] );;

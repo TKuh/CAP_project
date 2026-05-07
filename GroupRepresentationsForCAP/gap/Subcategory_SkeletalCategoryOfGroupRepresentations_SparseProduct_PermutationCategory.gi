@@ -8,7 +8,7 @@
 
 ReadPackage(
     "GroupRepresentationsForCAP",
-    "gap/precompiled_categories/SparseProduct_PermutationCategory_AsSubcategoryOfSkeletalGroupRepresentations_S4_precompiled.gi" );
+    "gap/precompiled_categories/Subcategory_SkeletalCategoryOfGroupRepresentations_S4_SparseProduct_PermutationCategory_precompiled.gi" );
 
 ####################################
 ##
@@ -17,7 +17,7 @@ ReadPackage(
 ####################################
 
 ##
-InstallMethod( SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations,
+InstallMethod( SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory,
                [ IsList ],
                
   FunctionWithNamedArguments(
@@ -32,9 +32,9 @@ InstallMethod( SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRep
     name := Concatenation( "Reinterp( 𝚷( ", String( Length( irreducible_characters ) ), ", PermutationCategory ) )" );
     
     ##
-    category_filter := IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations;
-    category_object_filter := IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations;
-    category_morphism_filter := IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations;
+    category_filter := IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory;
+    category_object_filter := IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory;
+    category_morphism_filter := IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory;
     
     ##
     object_datum_type :=
@@ -335,7 +335,7 @@ InstallMethod( SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRep
     
     if CAP_NAMED_ARGUMENTS.no_precompiled_code <> true then
         
-        ADD_FUNCTIONS_FOR_SparseProduct_PermutationCategory_AsSubcategoryOfSkeletalGroupRepresentations_S4_precompiled( subcat );
+        ADD_FUNCTIONS_FOR_Subcategory_SkeletalCategoryOfGroupRepresentations_S4_SparseProduct_PermutationCategory_precompiled( subcat );
         
     fi;
     
@@ -356,7 +356,7 @@ end ) );
 ####################################
 
 InstallMethodForCompilerForCAP( NrSupport,
-                                [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
                                 
   function( object )
     
@@ -365,7 +365,7 @@ InstallMethodForCompilerForCAP( NrSupport,
 end );
 
 InstallMethodForCompilerForCAP( NrSupport,
-                                [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
                                 
   function( morphism )
     
@@ -374,7 +374,7 @@ InstallMethodForCompilerForCAP( NrSupport,
 end );
 
 InstallMethodForCompilerForCAP( Support,
-                                [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
                                 
   function( object )
     
@@ -383,7 +383,7 @@ InstallMethodForCompilerForCAP( Support,
 end );
 
 InstallMethodForCompilerForCAP( Support,
-                                [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
                                 
   function( morphism )
     
@@ -392,7 +392,7 @@ InstallMethodForCompilerForCAP( Support,
 end );
 
 InstallMethodForCompilerForCAP( Components,
-                                [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
                                 
   function( object )
     
@@ -401,7 +401,7 @@ InstallMethodForCompilerForCAP( Components,
 end );
 
 InstallMethodForCompilerForCAP( Components,
-                                [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
                                 
   function( morphism )
     
@@ -416,7 +416,7 @@ end );
 ####################################
 
 InstallMethodForCompilerForCAP( Component,
-                                [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations,
+                                [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory,
                                   IsBigInt ],
                                 
   function( object, i )
@@ -434,7 +434,7 @@ InstallMethodForCompilerForCAP( Component,
 end );
 
 InstallMethodForCompilerForCAP( Component,
-                                [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations,
+                                [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory,
                                   IsBigInt ],
                                 
   function( morphism, i )
@@ -458,7 +458,7 @@ end );
 ##
 ####################################
 
-# TODO: remove this function once we have a product of selection matrices?
+# TODO: remove this function once we have a product of Kronecker monoids?
 #       It is currently only used for the factoring morphisms.
 InstallGlobalFunction( PRODUCT_OF_PERMUTATIONCATEGORY_AS_SUBCAT_TensorProductOfMorphismWithIdentityWithGivenTensorProducts,
   function( subcat, source, morphism, identity, target )
@@ -516,10 +516,10 @@ InstallGlobalFunction( PRODUCT_OF_PERMUTATIONCATEGORY_AS_SUBCAT_TensorProductOfM
                     
                     cardinality := TensorProductOnObjects( cat_of_perms, source_morphism_i, source_identity_j_times_n_ijk );
                     
-                    return PERMUTATIONCATEGORY_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( cat_of_perms,
+                    return TensorProductOnMorphismAndObjectWithGivenTensorProducts( cat_of_perms,
                                 cardinality,
                                 morphism_i,
-                                IdentityMorphism( cat_of_perms, source_identity_j_times_n_ijk ),
+                                source_identity_j_times_n_ijk,
                                 cardinality );
                     
                     # fi;
@@ -549,8 +549,9 @@ InstallGlobalFunction( PRODUCT_OF_PERMUTATIONCATEGORY_AS_SUBCAT_TensorProductOfM
     
 end );
 
-# TODO: remove this function once we have a product of selection matrices?
+# TODO: remove this function once we have a product of Kronecker monoids?
 #       It is currently only used for the factoring morphisms.
+# TODO: 'identity is currently a morphism. It must be an object. Also change this in all function calls!
 InstallGlobalFunction( PRODUCT_OF_PERMUTATIONCATEGORY_AS_SUBCAT_TensorProductOfIdentityWithMorphismWithGivenTensorProducts,
   function( subcat, source, identity, morphism, target )
     local product_permcat, cat_of_perms, irreducible_characters, morphism_model, morphism_nr_support, morphism_support, morphism_components, identity_model, identity_nr_support, identity_support, identity_components, source_model, source_nr_support, source_support, source_components, components, permutations;
@@ -605,17 +606,17 @@ InstallGlobalFunction( PRODUCT_OF_PERMUTATIONCATEGORY_AS_SUBCAT_TensorProductOfI
                     
                     cardinality_right := TensorProductOnObjects( cat_of_perms, Source( morphism_j ), n_ijk );
                     
-                    morphism_j_times_id_nijk := PERMUTATIONCATEGORY_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( cat_of_perms,
+                    morphism_j_times_id_nijk := TensorProductOnMorphismAndObjectWithGivenTensorProducts( cat_of_perms,
                                             cardinality_right,
                                             morphism_j,
-                                            IdentityMorphism( cat_of_perms, n_ijk ),
+                                            n_ijk,
                                             cardinality_right );
                     
                     cardinality := TensorProductOnObjects( cat_of_perms, source_identity_i, Source( morphism_j_times_id_nijk ) );
                     
-                    return PERMUTATIONCATEGORY_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( cat_of_perms,
+                    return TensorProductOnObjectAndMorphismWithGivenTensorProducts( cat_of_perms,
                                 cardinality,
-                                identity_i,
+                                source_identity_i,
                                 morphism_j_times_id_nijk,
                                 cardinality );
                     
@@ -648,7 +649,7 @@ end );
 
 # TODO: can this be removed?
 # InstallMethodForCompilerForCAP( ProductOfCharactersAsObjectInModelingProductCategory,
-#                                 [ IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt, IsBigInt ],
+#                                 [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsBigInt, IsBigInt ],
 #
 #   function( subcat, i, j )
 #     local product_permcat, permcat, irreducible_characters, scalar_product, support, components;
@@ -680,7 +681,7 @@ end );
 
 ##
 InstallMethod( DisplayString,
-               [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+               [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
                
   object -> String( TripleOfNrSupportListOfSupportListOfCardinalitites( object ) )
   
@@ -688,7 +689,7 @@ InstallMethod( DisplayString,
 
 ##
 InstallMethod( Display,
-               [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+               [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
                
   function( morphism )
     local length, support, permutations, components_source, i;

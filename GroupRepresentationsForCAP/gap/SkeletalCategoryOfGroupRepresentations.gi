@@ -24,7 +24,7 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
     [ "FinalizeCategory", true ],
   ],
   function( CAP_NAMED_ARGUMENTS, G, splitting_field )
-    local name, category_filter, category_object_filter, category_morphism_filter, character_table, irreducible_characters, nr_irreducible_characters, category_of_rows, direct_sum_category, decompose_product_of_characters, object_datum_type, object_datum, object_constructor, morphism_datum_type, morphism_datum, morphism_constructor, modeling_tower_object_datum, modeling_tower_object_constructor, modeling_tower_morphism_datum, modeling_tower_morphism_constructor, product_insmat, embedding_product_insmat, product_permcat, embedding_product_permcat, sgreps;
+    local name, category_filter, category_object_filter, category_morphism_filter, character_table, irreducible_characters, nr_irreducible_characters, category_of_rows, direct_sum_category, decompose_product_of_characters, object_datum_type, object_datum, object_constructor, morphism_datum_type, morphism_datum, morphism_constructor, modeling_tower_object_datum, modeling_tower_object_constructor, modeling_tower_morphism_datum, modeling_tower_morphism_constructor, product_kron_comon, embedding_product_kron_comon, product_permcat, embedding_product_permcat, sgreps;
     
     Assert( 0, HasCharacteristic( splitting_field ) and Characteristic( splitting_field ) = 0 );
     
@@ -324,17 +324,17 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
                  only_primitive_operations := true, )
             : FinalizeCategory := false );
     
-    product_insmat :=
-        SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations(
+    product_kron_comon :=
+        SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids(
             irreducible_characters
             : no_precompiled_code := CAP_NAMED_ARGUMENTS.no_precompiled_code,
               FinalizeCategory := true );
     
-    embedding_product_insmat := CapFunctor( Concatenation( "Embedding of ",
-                                              Name( product_insmat ),
+    embedding_product_kron_comon := CapFunctor( Concatenation( "Embedding of ",
+                                              Name( product_kron_comon ),
                                               " ) into ",
                                               Name( sgreps ) ),
-                                     product_insmat,
+                                     product_kron_comon,
                                      sgreps );
     
     # TODO: the object and morphism functions of a functor need to have the
@@ -342,7 +342,7 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
     #       Right now, the following can't compile, because we need to
     #       pull `sgreps` from the global variable.
     #       It instead needs to be passed as an argument.
-    AddObjectFunction( embedding_product_insmat,
+    AddObjectFunction( embedding_product_kron_comon,
       # function( source_cat, object, target_cat )
       function( object )
         
@@ -352,7 +352,7 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
         
     end );
     
-    # AddMorphismFunction( embedding_product_insmat,
+    # AddMorphismFunction( embedding_product_kron_comon,
     #   function( source_cat, source, morphism, target, target_cat )
     #
     #     # TODO: either `FunctorProdInsMatIntoSGRepsUsingUnionOfCols` or
@@ -360,7 +360,7 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
     #
     # end );
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
     
     embedding_product_permcat := CapFunctor( Concatenation( "Embedding of ",
                                                             Name( product_permcat ),
@@ -409,9 +409,9 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
     
     SetAssociatorData( sgreps, AssociatorsOnIrreduciblesFromDatabase( G ) );
     
-    SetUnderlyingProductCategoryOfInsertionMatrices( sgreps, product_insmat );
+    SetSubcategoryOfSparseProductOfKroneckerComonoids( sgreps, product_kron_comon );
     
-    SetEmbeddingOfProductCategoryOfCategoryOfInsertionMatrices( sgreps, embedding_product_insmat );
+    SetEmbeddingOfSparseProductOfKroneckerComonoids( sgreps, embedding_product_kron_comon );
     
     SetEmbeddingOfProductCategoryOfPermutationCategory( sgreps, embedding_product_permcat );
     
@@ -422,8 +422,8 @@ InstallMethod( SkeletalCategoryOfGroupRepresentations,
           "UnderlyingIrreducibleCharacters",
           "IndexOfTrivialCharacterInListOfIrreducibleCharacters",
           "NrIrreducibleCharacters",
-          "UnderlyingProductCategoryOfInsertionMatrices",
-          "EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices",
+          "SubcategoryOfSparseProductOfKroneckerComonoids",
+          "EmbeddingOfSparseProductOfKroneckerComonoids",
           "EmbeddingOfProductCategoryOfPermutationCategory" ] );
     
     INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESENTATIONS(
@@ -677,9 +677,9 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
     # Sebastian's PhD. thesis construction I.3.38.
     AddAssociatorLeftToRightWithGivenTensorProducts( sgreps,
       function( sgreps, source, a, b, c, target )
-        local morphism_1, morphism_2, morphism_3, morphism_4, morphism_5, morphism_6, morphism_7, morphism_123, morphism_567;
+        local product_kron_comon, a_product_kron_comon, b_product_kron_comon, c_product_kron_comon, source_product_kron_comon, morphism_1, morphism_2, morphism_3, morphism_4, morphism_5, morphism_6, morphism_7, morphism_123_perm, morphism_567_perm, morphism_123, morphism_567;
         
-        # TODO: This if-statement is currently neccessary, because AssociatorData( sgreps )
+        # TODO: This if-statement is currently necessary, because AssociatorData( sgreps )
         #       from Sebastians database has no entries in these cases,
         #       which results in an out of bounds error later.
         if IsZeroForObjects( sgreps, a ) or IsZeroForObjects( sgreps, b ) or IsZeroForObjects( sgreps, c ) then
@@ -689,6 +689,12 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
         fi;
         
         # TODO: check if a, b or c is the tensor unit and return IdentityMorphism( source )?
+        
+        product_kron_comon := SubcategoryOfSparseProductOfKroneckerComonoids( sgreps );
+        a_product_kron_comon := AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, a );
+        b_product_kron_comon := AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, b );
+        c_product_kron_comon := AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, c );
+        source_product_kron_comon := AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, source );
         
         # (a⊗b)⊗c  ⥲  ⊕ᵢ aᵢ((χᵢ⊗b)⊗c)
         # morphism_1 := SGREPS_Associator_1_Morphism( sgreps, a, b, c, source );
@@ -709,13 +715,29 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
         # morphism_7 := SGREPS_Associator_7_Morphism( sgreps, a, b, c, source );
         
         # (a⊗b)⊗c  ⥲  ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ ⊕ₖ cₖ·[ (χᵢ⊗χⱼ)⊗χₖ ] ] ]
-        morphism_123 := SGREPS_Associator_123_Morphism( sgreps, a, b, c, source );
+        # morphism_123_perm := SGREPS_Associator_123_Morphism( sgreps, a, b, c, source );
+        morphism_123_perm := SGREPS_Associator_123_Morphism_multiplicity( product_kron_comon,
+                                                                          a_product_kron_comon,
+                                                                          b_product_kron_comon,
+                                                                          c_product_kron_comon,
+                                                                          source_product_kron_comon );
         
         # ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ ⊕ₖ cₖ·[ (χᵢ⊗χⱼ)⊗χₖ ] ] ]  ⥲  ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ ⊕ₖ cₖ·[ χᵢ⊗(χⱼ⊗χₖ) ] ] ]
-        morphism_4 := SGREPS_Associator_4_Morphism( sgreps, a, b, c, source );
+        # morphism_4 := SGREPS_Associator_4_Morphism( sgreps, a, b, c, source );
+        morphism_4 := SGREPS_Associator_4_Morphism_multiplicity( sgreps, a, b, c, source );
         
         # ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ ⊕ₖ cₖ·[ χᵢ⊗(χⱼ⊗χₖ) ] ] ]  ⥲  a⊗(b⊗c)
-        morphism_567 := SGREPS_Associator_567_Morphism( sgreps, a, b, c, source );
+        # morphism_567_perm := SGREPS_Associator_567_Morphism( sgreps, a, b, c, source );
+        morphism_567_perm := SGREPS_Associator_567_Morphism_multiplicity( product_kron_comon,
+                                                                          a_product_kron_comon,
+                                                                          b_product_kron_comon,
+                                                                          c_product_kron_comon,
+                                                                          source_product_kron_comon );
+        
+        # morphism_4 is given by matrices, so for the composition
+        # we need to convert the permutations into matrices as well.
+        morphism_123 := EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism( sgreps, morphism_123_perm );
+        morphism_567 := EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism( sgreps, morphism_567_perm );
         
         return PreComposeList( sgreps, source, [ morphism_123, morphism_4, morphism_567 ], target );
         
@@ -774,36 +796,36 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
     # end );
     
     # Compilation of RightDistributivityExpanding with 
-    # RightDistributivityExpandingWithGivenObjects( product_insmat, ... )
+    # RightDistributivityExpandingWithGivenObjects( product_kron_comon, ... )
     # given as most high level categorical code takes 1h2m
     # 
     # (l₁⊕...⊕lₙ)⊗a ⥲ (l₁⊗a)⊕...⊕(lₙ⊗a)
     AddRightDistributivityExpandingWithGivenObjects( sgreps,
       function( sgreps, source, L, a, target )
-        local product_insmat, F_product_permcat, morphism_product_insmat, morphism_product_perms;
+        local product_kron_comon, F_product_permcat, morphism_product_kron_comon, morphism_product_perms;
         
-        product_insmat := UnderlyingProductCategoryOfInsertionMatrices( sgreps );
-        F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+        product_kron_comon := SubcategoryOfSparseProductOfKroneckerComonoids( sgreps );
+        F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
         
-        morphism_product_insmat :=
-            RightDistributivityExpandingWithGivenObjects( product_insmat,
-                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, source ),
-                List( L, object -> AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, object ) ),
-                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, a ),
-                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, target ) );
+        morphism_product_kron_comon :=
+            RightDistributivityExpandingWithGivenObjects( product_kron_comon,
+                AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, source ),
+                List( L, object -> AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, object ) ),
+                AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, a ),
+                AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, target ) );
         
         # We need to invert the permutations, because EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism
         # uses PermMat, which constructs a matrix from a permutation via rows,
         # but we need to construct them via columns.
         
-        # morphism_product_perms := ApplyFunctor( F_product_permcat, morphism_product_insmat );
+        # morphism_product_perms := ApplyFunctor( F_product_permcat, morphism_product_kron_comon );
         # morphism_product_perms := InverseForMorphisms( morphism_product_perms );
         
         # TODO: is the following faster, which uses PermutationMat?
         # return EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism( sgreps, morphism_product_perms );
         
         # TODO: or is the following code faster, which uses CertainColumns?
-        return FunctorProdInsMatIntoSGRepsUsingCertainCols( sgreps, morphism_product_insmat );
+        return FunctorProdInsMatIntoSGRepsUsingCertainCols( sgreps, morphism_product_kron_comon );
         
     end );
     
@@ -832,30 +854,30 @@ InstallGlobalFunction( INSTALL_FUNCTIONS_FOR_SKELETAL_CATEGORY_OF_GROUP_REPRESEN
     # a⊗(l₁⊕...⊕lₙ) ⥲ (a⊗l₁)⊕...⊕(a⊗lₙ)
     AddLeftDistributivityExpandingWithGivenObjects( sgreps,
       function( sgreps, source, a, L, target )
-        local product_insmat, F_product_permcat, morphism_product_insmat, morphism_product_perms;
+        local product_kron_comon, F_product_permcat, morphism_product_kron_comon, morphism_product_perms;
         
-        product_insmat := UnderlyingProductCategoryOfInsertionMatrices( sgreps );
-        F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+        product_kron_comon := SubcategoryOfSparseProductOfKroneckerComonoids( sgreps );
+        F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
         
-        morphism_product_insmat :=
-            LeftDistributivityExpandingWithGivenObjects( product_insmat,
-                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, source ),
-                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, a ),
-                List( L, object -> AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, object ) ),
-                AsObjectInUnderlyingProductCategoryOfInsertionMatrices( product_insmat, target ) );
+        morphism_product_kron_comon :=
+            LeftDistributivityExpandingWithGivenObjects( product_kron_comon,
+                AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, source ),
+                AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, a ),
+                List( L, object -> AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, object ) ),
+                AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, target ) );
         
         # We need to invert the permutations, because EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism
         # uses PermMat, which constructs a matrix from a permutation via rows,
         # but we need to construct them via columns.
         
-        # morphism_product_perms := ApplyFunctor( F_product_permcat, morphism_product_insmat );
+        # morphism_product_perms := ApplyFunctor( F_product_permcat, morphism_product_kron_comon );
         # morphism_product_perms := InverseForMorphisms( morphism_product_perms );
         
         # TODO: is the following faster, which uses PermutationMat?
         # return EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism( sgreps, morphism_product_perms );
         
         # TODO: or is the following code faster, which uses CertainColumns?
-        return FunctorProdInsMatIntoSGRepsUsingCertainCols( sgreps, morphism_product_insmat );
+        return FunctorProdInsMatIntoSGRepsUsingCertainCols( sgreps, morphism_product_kron_comon );
         
     end );
     
@@ -1181,30 +1203,30 @@ end );
 
 #########################################################
 #
-# Functors: SGReps ⟷ ProductInsertionMatrices
+# Functors: SGReps ⟷ Sparse poduct of Kronecker comonoids
 #
 #########################################################
 
-InstallMethodForCompilerForCAP( AsObjectInUnderlyingProductCategoryOfInsertionMatrices,
-                                [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
+InstallMethodForCompilerForCAP( AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids,
+                                [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids,
                                   IsObjectInSkeletalCategoryOfGroupRepresentations ],
                                 
-  function( product_insmat, object )
+  function( product_kron_comon, object )
     local sgreps;
     
     sgreps := CapCategory( object );
     
-    return ObjectConstructor( product_insmat, ObjectDatum( sgreps, object ) );
+    return ObjectConstructor( product_kron_comon, ObjectDatum( sgreps, object ) );
     
 end );
 
-# TODO: switch to the CapFunctor EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices
+# TODO: switch to the CapFunctor EmbeddingOfSparseProductOfKroneckerComonoids
 InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsUsingUnionOfCols,
                                 [ IsSkeletalCategoryOfGroupRepresentations,
-                                  IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+                                  IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                                 
   function( sgreps, morphism )
-    local direct_sum_category, category_of_rows, homalg_field, embedding_product_insmat, source, target, nr_support_morphism, support_morphism, list_nr_blockcols_blockcols, matrices;
+    local direct_sum_category, category_of_rows, homalg_field, embedding_product_kron_comon, source, target, nr_support_morphism, support_morphism, list_nr_blockcols_blockcols, matrices;
     
     direct_sum_category := ModelingCategory( sgreps );
     
@@ -1212,7 +1234,7 @@ InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsUsingUnionOfCols,
     
     homalg_field := UnderlyingRing( category_of_rows );
     
-    embedding_product_insmat := EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices( sgreps );
+    embedding_product_kron_comon := EmbeddingOfSparseProductOfKroneckerComonoids( sgreps );
     
     source := Source( morphism );
     target := Target( morphism );
@@ -1263,19 +1285,19 @@ InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsUsingUnionOfCols,
         end );
         
     return MorphismConstructor( sgreps,
-                ApplyFunctor( embedding_product_insmat, source ),
+                ApplyFunctor( embedding_product_kron_comon, source ),
                 NTuple( 3, nr_support_morphism, support_morphism, matrices ),
-                ApplyFunctor( embedding_product_insmat, target ) );
+                ApplyFunctor( embedding_product_kron_comon, target ) );
      
 end );
 
-# TODO: switch to the CapFunctor EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices
+# TODO: switch to the CapFunctor EmbeddingOfSparseProductOfKroneckerComonoids
 InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsUsingCertainCols,
                                 [ IsSkeletalCategoryOfGroupRepresentations,
-                                  IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+                                  IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                                 
   function( sgreps, morphism )
-    local direct_sum_category, category_of_rows, splitting_field, embedding_product_insmat, source, target, source_components, nr_support_morphism, support_morphism, list_nr_blockcols_blockcols, matrices;
+    local direct_sum_category, category_of_rows, splitting_field, embedding_product_kron_comon, source, target, source_components, nr_support_morphism, support_morphism, list_nr_blockcols_blockcols, matrices;
     
     direct_sum_category := ModelingCategory( sgreps );
     
@@ -1283,7 +1305,7 @@ InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsUsingCertainCols,
     
     splitting_field := UnderlyingSplittingField( sgreps );
     
-    embedding_product_insmat := EmbeddingOfProductCategoryOfCategoryOfInsertionMatrices( sgreps );
+    embedding_product_kron_comon := EmbeddingOfSparseProductOfKroneckerComonoids( sgreps );
     
     source := Source( morphism );
     target := Target( morphism );
@@ -1319,9 +1341,9 @@ InstallMethodForCompilerForCAP( FunctorProdInsMatIntoSGRepsUsingCertainCols,
     end );
     
     return MorphismConstructor( sgreps,
-                ApplyFunctor( embedding_product_insmat, source ),
+                ApplyFunctor( embedding_product_kron_comon, source ),
                 NTuple( 3, nr_support_morphism, support_morphism, matrices ),
-                ApplyFunctor( embedding_product_insmat, target ) );
+                ApplyFunctor( embedding_product_kron_comon, target ) );
     
 end );
 
@@ -1334,7 +1356,7 @@ end );
 # TODO: switch to the CapFunctor EmbeddingOfProductCategoryOfPermutationCategory
 InstallMethodForCompilerForCAP( EmbeddingProductCatOfPermutationCatIntoSGRepsOnObject,
                                 [ IsSkeletalCategoryOfGroupRepresentations,
-                                  IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+                                  IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
                                 
   function( sgreps, object )
     
@@ -1345,7 +1367,7 @@ end );
 # TODO: switch to the CapFunctor EmbeddingOfProductCategoryOfPermutationCategory
 InstallMethodForCompilerForCAP( EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism,
                                 [ IsSkeletalCategoryOfGroupRepresentations,
-                                  IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+                                  IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
                                 
   function( sgreps, morphism )
     local splitting_field, nr_support, components, source, source_components, matrices;

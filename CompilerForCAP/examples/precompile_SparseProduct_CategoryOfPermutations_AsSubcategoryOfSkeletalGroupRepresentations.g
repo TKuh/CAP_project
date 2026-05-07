@@ -19,15 +19,15 @@ CapJitAddTypeSignature( "Union", [ IsList ], function ( input_types )
     
 end );
 
-precompile_SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations := function( irreducible_characters, name )
+precompile_SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory := function( irreducible_characters, name )
     
     CapJitPrecompileCategoryAndCompareResult(
         { irreducible_characters } ->
-            SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters
+            SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory( irreducible_characters
                : no_precompiled_code := true ),
         [ irreducible_characters ],
         "GroupRepresentationsForCAP",
-        Concatenation( "SparseProduct_PermutationCategory_AsSubcategoryOfSkeletalGroupRepresentations_", name, "_precompiled" )
+        Concatenation( "Subcategory_SkeletalCategoryOfGroupRepresentations_", name, "_SparseProduct_PermutationCategory_precompiled" )
         : operations := [
               "IsEqualForObjects",
               "IsEqualForMorphisms",
@@ -60,11 +60,11 @@ end;;
 character_table_S4 := CharacterTable( SymmetricGroup( 4 ) );
 irreducible_characters_S4 := Irr( character_table_S4 );
 
-precompile_SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters_S4, "S4" );;
+precompile_SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory( irreducible_characters_S4, "S4" );;
 
 # CapJitCompiledFunction( PRODUCT_OF_CATEGORY_OF_PERMUTATIONS_AS_SUBCAT_TensorProductProductOfMorphismWithIdentityWithGivenTensorProducts );;
 
-SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters_S4 )!.precompiled_functions_added;
+SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory( irreducible_characters_S4 )!.precompiled_functions_added;
 #! true
 
 #! #@fi

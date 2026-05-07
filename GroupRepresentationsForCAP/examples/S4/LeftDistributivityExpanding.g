@@ -16,25 +16,25 @@ sgreps := SkeletalCategoryOfGroupRepresentations( S4,
                                                   QQ
                                                   : no_precompiled_code := true );;
 
-product_insmat := UnderlyingProductCategoryOfInsertionMatrices( sgreps );;
+product_kron_comon := SubcategoryOfSparseProductOfKroneckerComonoids( sgreps );;
 
-product_perms := UnderlyingProductCategoryOfPermutationCategory( product_insmat );;
-F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );;
+product_perms := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );;
+F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );;
 
-S1 := ObjectConstructor( product_insmat, [ 1, [1], [1] ] );;
-S2 := ObjectConstructor( product_insmat, [ 1, [2], [1] ] );;
-S3 := ObjectConstructor( product_insmat, [ 1, [3], [1] ] );;
-S4 := ObjectConstructor( product_insmat, [ 1, [4], [1] ] );;
-S5 := ObjectConstructor( product_insmat, [ 1, [5], [1] ] );;
+S1 := ObjectConstructor( product_kron_comon, [ 1, [1], [1] ] );;
+S2 := ObjectConstructor( product_kron_comon, [ 1, [2], [1] ] );;
+S3 := ObjectConstructor( product_kron_comon, [ 1, [3], [1] ] );;
+S4 := ObjectConstructor( product_kron_comon, [ 1, [4], [1] ] );;
+S5 := ObjectConstructor( product_kron_comon, [ 1, [5], [1] ] );;
 S2S3 := TensorProductOnObjects( S2, S3 );;
 S4S5 := TensorProductOnObjects( S4, S5 );;
 
-A := ObjectConstructor( product_insmat, [ 4, [1,2,3,4], [30,40,90,50] ] );;
-B := ObjectConstructor( product_insmat, [ 3, [2,3,5], [30,10,50] ] );;
-C := ObjectConstructor( product_insmat, [ 3, [1,3,4], [24,83,29] ] );;
-D := ObjectConstructor( product_insmat, [ 4, [1,3,4,5], [26,37,50,103] ] );;
-F := ObjectConstructor( product_insmat, [ 4, [1,2,3,4], [45,61,25,35] ] );;
-G := ObjectConstructor( product_insmat, [ 4, [1,2,3,4], [20,76,25,13] ] );;
+A := ObjectConstructor( product_kron_comon, [ 4, [1,2,3,4], [30,40,90,50] ] );;
+B := ObjectConstructor( product_kron_comon, [ 3, [2,3,5], [30,10,50] ] );;
+C := ObjectConstructor( product_kron_comon, [ 3, [1,3,4], [24,83,29] ] );;
+D := ObjectConstructor( product_kron_comon, [ 4, [1,3,4,5], [26,37,50,103] ] );;
+F := ObjectConstructor( product_kron_comon, [ 4, [1,2,3,4], [45,61,25,35] ] );;
+G := ObjectConstructor( product_kron_comon, [ 4, [1,2,3,4], [20,76,25,13] ] );;
 AB := TensorProductOnObjects( A, B );;
 AC := TensorProductOnObjects( A, C );;
 BA := TensorProductOnObjects( B, A );;
@@ -157,7 +157,7 @@ CompareLeftDistributivityExpandings :=
     
     StartTimer( "LeftDistExpandingWithMultiplicities" );
     
-    mor_mults_sgreps := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, source, factor, L, multiplicities, target );
+    mor_mults_sgreps := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, source, factor, L, multiplicities, target );
     
     # Display( "Applying functor" );
     
@@ -228,7 +228,7 @@ CompareMultiplicityToNonMultiplicity :=
         ListWithIdenticalEntries( multiplicities[i], L_sgreps[i] ) ) );
     
     StartTimer( "LeftDistExpandingWithMultiplicities" );
-    mor_mults_sgreps := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, source, factor, L, multiplicities, target );
+    mor_mults_sgreps := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, source, factor, L, multiplicities, target );
     # Display( "Applying functor" );
     # mor_mults_product_permcat := ApplyFunctor( F_product_permcat, mor_mults_sgreps );
     StopTimer( "LeftDistExpandingWithMultiplicities" );

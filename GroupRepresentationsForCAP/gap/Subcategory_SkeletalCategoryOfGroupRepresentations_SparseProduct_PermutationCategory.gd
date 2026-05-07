@@ -6,7 +6,7 @@
 
 #! @Chapter Skeletal Group Representations
 
-#! @BeginChunk ProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations
+#! @BeginChunk SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory
 
 # TODO: Copy and adjust the introduction from SparseProductOfCartesianCategory
 # Explain that source and target of every morphism are equal, since the same happens
@@ -21,24 +21,24 @@
 ####################################
 
 #! @Description
-#!  The &GAP; category of 
+#!  The &GAP; category of
 #! @Arguments object
 #! @Returns true or false
-DeclareCategory( "IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations",
+DeclareCategory( "IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory",
                  IsCapCategory );
 
 #! @Description
-#!  The &GAP; category of objects in 
+#!  The &GAP; category of objects in
 #! @Arguments object
 #! @Returns true or false
-DeclareCategory( "IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations",
+DeclareCategory( "IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory",
                  IsCapCategoryObject );
 
 #! @Description
-#!  The &GAP; category of morphisms in 
+#!  The &GAP; category of morphisms in
 #! @Arguments object
 #! @Returns true or false
-DeclareCategory( "IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations",
+DeclareCategory( "IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory",
                  IsCapCategoryMorphism );
 
 ####################################
@@ -50,26 +50,26 @@ DeclareCategory( "IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfS
 #! @Description
 #! @Arguments category
 #! @Returns a category
-DeclareOperation( "SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations",
+DeclareOperation( "SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory",
                   [ IsList ] );
 
 if false then
 #! @Description
 #!  The input is a category
-#!  <A>C</A><C> := ProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations(</C> $G, F$ <C>)</C> and
+#!  <A>C</A><C> := SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory(</C> $G, F$ <C>)</C> and
 #!  a triple consisting of
 #!    * an integer $0 \leq i \leq |\mathrm{Irr}(G)|$,
 #!    * a list $l_1$ of strictly increasing integers with $\texttt{Length}(l_1) = i$,
 #!    * a list $l_2$ of integers with $\texttt{Length}(l_2) = i$.
 #! @Arguments C, list
 #! @Returns an object
-DeclareOperation( "ObjectConstructor", [ IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsList ] );
+DeclareOperation( "ObjectConstructor", [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsList ] );
 fi;
 
 if false then
 #! @Description
 #!  The input is a category
-#!  <A>C</A><C> := ProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations(</C> $G, F$ <C>)</C>,
+#!  <A>C</A><C> := SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory(</C> $G, F$ <C>)</C>,
 #!  a source object <A>S</A>,
 #!  a triple consisting of
 #!    * an integer $0 \leq i \leq |\mathrm{Irr}(G)|$,
@@ -78,7 +78,7 @@ if false then
 #!  and a target object <A>T</A>.
 #! @Arguments C, S, list, T
 #! @Returns an morphism
-DeclareOperation( "MorphismConstructor", [ IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsList ] );
+DeclareOperation( "MorphismConstructor", [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsList ] );
 fi;
 
 ####################################
@@ -91,17 +91,17 @@ fi;
 #!  Return the number of irreducible characters of the group $G$.
 #! @Arguments category
 #! @Returns integer
-DeclareAttribute( "NrIrreducibleCharacters", IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "NrIrreducibleCharacters", IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory );
 
-CapJitAddTypeSignature( "NrIrreducibleCharacters", [ IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ], IsBigInt );
+CapJitAddTypeSignature( "NrIrreducibleCharacters", [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ], IsBigInt );
 
 #! @Description
 #!  Return the irreducible characters of the group $G$.
 #! @Arguments category
 #! @Returns list of characters
-DeclareAttribute( "UnderlyingIrreducibleCharacters", IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "UnderlyingIrreducibleCharacters", IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory );
 
-CapJitAddTypeSignature( "UnderlyingIrreducibleCharacters", [ IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "UnderlyingIrreducibleCharacters", [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
   function ( input_types )
     
     return CapJitDataTypeOfListOf( IsIrreducibleCharacter );
@@ -116,12 +116,12 @@ end );
 #!  * $chi_i, \dots, chi_j$ are the indices of irreducible characters of $G$.
 #! @Arguments object
 #! @Returns a list
-DeclareAttribute( "TripleOfNrSupportListOfSupportListOfCardinalitites", IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "TripleOfNrSupportListOfSupportListOfCardinalitites", IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory );
 
-CapJitAddTypeSignature( "TripleOfNrSupportListOfSupportListOfCardinalitites", [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "TripleOfNrSupportListOfSupportListOfCardinalitites", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory( input_types[1].category ) );
     
     return CapJitDataTypeOfNTupleOf( 3,
             IsBigInt,
@@ -137,12 +137,12 @@ end );
 #!  * $chi_i, \dots, chi_j$ are the indices of irreducible characters of $G$.
 #! @Arguments object
 #! @Returns a list
-DeclareAttribute( "TripleOfNrSupportListOfSupportListOfPermutations", IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "TripleOfNrSupportListOfSupportListOfPermutations", IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory );
 
-CapJitAddTypeSignature( "TripleOfNrSupportListOfSupportListOfPermutations", [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "TripleOfNrSupportListOfSupportListOfPermutations", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory( input_types[1].category ) );
     
     return CapJitDataTypeOfNTupleOf( 3,
             IsBigInt,
@@ -156,30 +156,30 @@ end );
 #!  with datum $[ n, l_1, l_2 ]$, return the integer $n$.
 #! @Arguments object
 #! @Returns an integer
-DeclareAttribute( "NrSupport", IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "NrSupport", IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory );
 
-CapJitAddTypeSignature( "NrSupport", [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ], IsBigInt );
+CapJitAddTypeSignature( "NrSupport", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ], IsBigInt );
 
 #! @Description
 #!  Given a morphism
 #!  with datum $[ n, l_1, l_2 ]$, return the integer $n$.
 #! @Arguments morphism
 #! @Returns an integer
-DeclareAttribute( "NrSupport", IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "NrSupport", IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory );
 
-CapJitAddTypeSignature( "NrSupport", [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ], IsBigInt );
+CapJitAddTypeSignature( "NrSupport", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ], IsBigInt );
 
 #! @Description
 #!  For an object with datum $[ n, l_1, l_2 ]$,
 #!  return the list of integers $l_1$.
 #! @Arguments object
 #! @Returns a list of integers
-DeclareAttribute( "Support", IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "Support", IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory );
 
-CapJitAddTypeSignature( "Support", [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "Support", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory( input_types[1].category ) );
     
     return CapJitDataTypeOfListOf( IsBigInt );
     
@@ -190,12 +190,12 @@ end );
 #!  return the list of integers $l_1$.
 #! @Arguments morphism
 #! @Returns a list of integers
-DeclareAttribute( "Support", IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "Support", IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory );
 
-CapJitAddTypeSignature( "Support", [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "Support", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory( input_types[1].category ) );
     
     return CapJitDataTypeOfListOf( IsBigInt );
     
@@ -206,12 +206,12 @@ end );
 #!  return the list of integers $l_2$.
 #! @Arguments object
 #! @Returns a list of intgers
-DeclareAttribute( "Components", IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "Components", IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory );
 
-CapJitAddTypeSignature( "Components", [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "Components", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory( input_types[1].category ) );
     
     return CapJitDataTypeOfListOf( IsBigInt );
     
@@ -222,12 +222,12 @@ end );
 #!  return the list of Homalg matrices $l_2$.
 #! @Arguments morphism
 #! @Returns a list of Homalg matrices
-DeclareAttribute( "Components", IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations );
+DeclareAttribute( "Components", IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory );
 
-CapJitAddTypeSignature( "Components", [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations ],
+CapJitAddTypeSignature( "Components", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory ],
   function ( input_types )
     
-    Assert( 0, IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( input_types[1].category ) );
+    Assert( 0, IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory( input_types[1].category ) );
     
     return CapJitDataTypeOfListOf( IsPerm );
     
@@ -245,7 +245,7 @@ end );
 #!  The output is the rank of the $i$'th summand of $O$.
 #! @Arguments O, i
 #! @Returns integer
-DeclareOperation( "[]", [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsInt ] );
+DeclareOperation( "[]", [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsInt ] );
 
 #! @Description
 #!  TODO:
@@ -255,7 +255,7 @@ DeclareOperation( "[]", [ IsObjectInSparseProductOfPermutationCategoryAsSubcateg
 #!  the morphism matrix for the $i$'th object of the underlying category.
 #! @Arguments alpha, i, j
 #! @Returns a morphism $C$
-DeclareOperation( "[]", [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsInt ] );
+DeclareOperation( "[]", [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsInt ] );
 
 #! @Description
 #!  Given an object in <A>C</A> $\coloneqq \bigoplus_{i=1}^n \mathrm{Rows}_R$ with
@@ -266,10 +266,10 @@ DeclareOperation( "[]", [ IsMorphismInSparseProductOfPermutationCategoryAsSubcat
 #! @Arguments object, integer
 #! @Returns an integer
 DeclareOperation( "Component",
-                  [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt ] );
+                  [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsBigInt ] );
 
 CapJitAddTypeSignature( "Component",
-                        [ IsObjectInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt ],
+                        [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsBigInt ],
                         IsBigInt );
 
 #! @Description
@@ -282,10 +282,10 @@ CapJitAddTypeSignature( "Component",
 #! @Arguments morphism, integer
 #! @Returns a Homalg matrix
 DeclareOperation( "Component",
-                  [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt ] );
+                  [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsBigInt ] );
 
 CapJitAddTypeSignature( "Component",
-                        [ IsMorphismInSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt ],
+                        [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsBigInt ],
                         IsPerm );
 
 #######################################
@@ -312,10 +312,10 @@ DeclareGlobalFunction( "PRODUCT_OF_PERMUTATIONCATEGORY_AS_SUBCAT_TensorProductOf
 # @Arguments a category, integer, integer
 # @Returns object
 # DeclareOperation( "ProductOfCharactersAsObjectInModelingProductCategory",
-#                   [ IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt, IsBigInt ] );
+#                   [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsBigInt, IsBigInt ] );
 #
 # CapJitAddTypeSignature( "ProductOfCharactersAsObjectInModelingProductCategory",
-#                         [ IsSparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt, IsBigInt ],
+#                         [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfPermutationCategory, IsBigInt, IsBigInt ],
 #
 #   function ( input_types )
 #     local direct_product_category;

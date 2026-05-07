@@ -115,13 +115,13 @@ end );
 #        ↓
 #   ⊕ᵢ ɑᵢ·(χᵢ⊗aᵛ)
 InstallGlobalFunction( SGREPS_CoevaluationForDual_2_Morphism_multiplicity,
-  function( product_insmat, a, av, aav )
+  function( product_kron_comon, a, av, aav )
     local product_permcat, F_product_permcat, a_nr_support, a_support, a_components, av_nr_support, av_support, av_components, av_xi, sigmas, a_sigmas;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
-    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
+    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
     
     a_nr_support := NrSupport( a );
     a_support := Support( a );
@@ -133,15 +133,15 @@ InstallGlobalFunction( SGREPS_CoevaluationForDual_2_Morphism_multiplicity,
     
     # [ χ₁ᵛ, χ₂ᵛ, ..., χₙᵛ ]
     av_xi := List( [ 1 .. av_nr_support ], i ->
-        ObjectConstructor( product_insmat, NTuple( 3, 1, [ av_support[i] ], [ 1 ] ) ) );
+        ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ av_support[i] ], [ 1 ] ) ) );
     
     sigmas := List( [ 1 .. a_nr_support ], function( i )
         local xi, xiav, left_expanding;
         
-        xi := ObjectConstructor( product_insmat, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
-        xiav := TensorProductOnObjects( product_insmat, xi, av );
+        xi := ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
+        xiav := TensorProductOnObjects( product_kron_comon, xi, av );
         
-        left_expanding := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, xiav, xi, av_xi, av_components, xiav );
+        left_expanding := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, xiav, xi, av_xi, av_components, xiav );
         
         return InverseForMorphisms( product_permcat, ApplyFunctor( F_product_permcat, left_expanding ) );
         
@@ -172,13 +172,13 @@ end );
 #     ‖
 #    a⊗aᵛ
 InstallGlobalFunction( SGREPS_CoevaluationForDual_3_Morphism_multiplicity,
-  function( product_insmat, a, av, aav )
+  function( product_kron_comon, a, av, aav )
     local product_permcat, F_product_permcat, a_nr_support, a_support, a_components, a_xi, right_expanding;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
-    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
+    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
     
     a_nr_support := NrSupport( a );
     a_support := Support( a );
@@ -186,9 +186,9 @@ InstallGlobalFunction( SGREPS_CoevaluationForDual_3_Morphism_multiplicity,
     
     # [ χ₁, χ₂, ..., χₙ ]
     a_xi := List( [ 1 .. a_nr_support ], i ->
-        ObjectConstructor( product_insmat, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) ) );
+        ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) ) );
     
-    right_expanding := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat,
+    right_expanding := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon,
                             aav,
                             a_xi,
                             av,
@@ -200,16 +200,16 @@ InstallGlobalFunction( SGREPS_CoevaluationForDual_3_Morphism_multiplicity,
 end );
 
 InstallGlobalFunction( SGREPS_CoevaluationForDual_23_Morphism_multiplicity,
-  function( product_insmat, a, av, aav )
+  function( product_kron_comon, a, av, aav )
     local product_permcat, morphism_2, morphism_3, morphism_23;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
     
-    morphism_2 := SGREPS_CoevaluationForDual_2_Morphism_multiplicity( product_insmat, a, av, aav );
+    morphism_2 := SGREPS_CoevaluationForDual_2_Morphism_multiplicity( product_kron_comon, a, av, aav );
     
-    morphism_3 := SGREPS_CoevaluationForDual_3_Morphism_multiplicity( product_insmat, a, av, aav );
+    morphism_3 := SGREPS_CoevaluationForDual_3_Morphism_multiplicity( product_kron_comon, a, av, aav );
     
     morphism_23 := PreCompose( product_permcat, morphism_3, morphism_2 );
     
@@ -229,13 +229,13 @@ end );
 #      ↓
 # ⊕ᵢ ɑᵢ·(aᵛ⊗χᵢ)
 InstallGlobalFunction( SGREPS_EvaluationForDual_1_Morphism_multiplicity,
-  function( product_insmat, ava, av, a )
+  function( product_kron_comon, ava, av, a )
     local product_permcat, F_product_permcat, a_nr_support, a_support, a_components, a_xi, left_expanding;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
-    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
+    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
     
     a_nr_support := NrSupport( a );
     a_support := Support( a );
@@ -243,9 +243,9 @@ InstallGlobalFunction( SGREPS_EvaluationForDual_1_Morphism_multiplicity,
     
     # [ χ₁, χ₂, ..., χₙ ]
     a_xi := List( [ 1 .. a_nr_support ], i ->
-        ObjectConstructor( product_insmat, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) ) );
+        ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) ) );
     
-    left_expanding := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat,
+    left_expanding := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon,
                             ava,
                             av,
                             a_xi,
@@ -266,13 +266,13 @@ end );
 #        ↓
 # ⊕ᵢ ɑᵢ·[ ⊕ⱼ aⱼ·(χᵢᵛ⊗χⱼ) ]
 InstallGlobalFunction( SGREPS_EvaluationForDual_2_Morphism_multiplicity,
-  function( product_insmat, ava, av, a )
+  function( product_kron_comon, ava, av, a )
     local product_permcat, F_product_permcat, a_nr_support, a_support, a_components, av_nr_support, av_support, av_components, av_xi, sigmas, a_sigmas, direct_product;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
-    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
+    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
     
     a_nr_support := NrSupport( a );
     a_support := Support( a );
@@ -284,15 +284,15 @@ InstallGlobalFunction( SGREPS_EvaluationForDual_2_Morphism_multiplicity,
     
     # [ χ₁ᵛ, χ₂ᵛ, ..., χₙᵛ ]
     av_xi := List( [ 1 .. av_nr_support ], i ->
-        ObjectConstructor( product_insmat, NTuple( 3, 1, [ av_support[i] ], [ 1 ] ) ) );
+        ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ av_support[i] ], [ 1 ] ) ) );
     
     sigmas := List( [ 1 .. a_nr_support ], function( i )
         local xi, avxi;
         
-        xi := ObjectConstructor( product_insmat, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
-        avxi := TensorProductOnObjects( product_insmat, av, xi );
+        xi := ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
+        avxi := TensorProductOnObjects( product_kron_comon, av, xi );
         
-        return RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat,
+        return RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon,
                     avxi,
                     av_xi,
                     xi,
@@ -305,7 +305,7 @@ InstallGlobalFunction( SGREPS_EvaluationForDual_2_Morphism_multiplicity,
     a_sigmas := Concatenation( List( [ 1 .. a_nr_support ], i ->
         List( [ 1 .. a_components[i] ], j -> sigmas[i] ) ) );
     
-    direct_product := DirectProductFunctorialWithGivenDirectProducts( product_insmat,
+    direct_product := DirectProductFunctorialWithGivenDirectProducts( product_kron_comon,
                             ava,
                             List( a_sigmas, Source ),
                             a_sigmas,
@@ -465,16 +465,16 @@ InstallGlobalFunction( SGREPS_EvaluationForDual_3_Morphism_multiplicity,
 end );
 
 InstallGlobalFunction( SGREPS_EvaluationForDual_12_Morphism_multiplicity,
-  function( product_insmat, ava, av, a )
+  function( product_kron_comon, ava, av, a )
     local product_permcat, morphism_1, morphism_2, morphism_12;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
     
-    morphism_1 := SGREPS_EvaluationForDual_1_Morphism_multiplicity( product_insmat, ava, av, a );
+    morphism_1 := SGREPS_EvaluationForDual_1_Morphism_multiplicity( product_kron_comon, ava, av, a );
     
-    morphism_2 := SGREPS_EvaluationForDual_2_Morphism_multiplicity( product_insmat, ava, av, a );
+    morphism_2 := SGREPS_EvaluationForDual_2_Morphism_multiplicity( product_kron_comon, ava, av, a );
     
     morphism_12 := PreCompose( product_permcat, morphism_2, morphism_1 );
     

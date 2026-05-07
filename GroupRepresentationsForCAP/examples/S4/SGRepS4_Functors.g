@@ -8,7 +8,7 @@ LoadPackage( "GroupRepresentationsForCAP", false );
 QQ := HomalgFieldOfRationalsInSingular();;
 S4 := SymmetricGroup( 4 );;
 SGReps := SkeletalCategoryOfGroupRepresentations( S4, QQ : no_precompiled_code := false );;
-Productins_mat := UnderlyingProductCategoryOfInsertionMatrices( SGReps );;
+product_kron_comon := SubcategoryOfSparseProductOfKroneckerComonoids( SGReps );;
 
 #########################################
 # Functors on objects
@@ -18,11 +18,11 @@ A := ObjectConstructor( SGReps, [ 2, [1,4], [1,2] ] );;
 B := ObjectConstructor( SGReps, [ 2, [2,3], [1,3] ] );;
 C := ObjectConstructor( SGReps, [ 3, [2,4,5], [2,3,5] ] );;
 
-A_Pins_mat := FunctorSGRepsIntoProdInsMatOnObject( Productins_mat, A );;
-IsWellDefined( A_Pins_mat );
+A_product_kron_comon := AsObjectInSubcategoryOfSparseProductOfKroneckerComonoids( product_kron_comon, A );;
+IsWellDefined( A_product_kron_comon );
 #! true
 
-A := FunctorProdInsMatIntoSGRepsOnObject( SGReps, A_Pins_mat );;
+A := FunctorProdInsMatIntoSGRepsOnObject( SGReps, A_product_kron_comon );;
 IsWellDefined( A );
 #! true
 
@@ -41,8 +41,8 @@ Component( A, 5 );
 # Functors on morphism
 #########################################
 
-source := ObjectConstructor( Productins_mat, [ 4, [ 1, 2, 3, 5 ], [ 1, 4, 1, 1 ] ] );;
-target := ObjectConstructor( Productins_mat, [ 2, [    2, 3    ], [    5, 2     ] ] );;
+source := ObjectConstructor( product_kron_comon, [ 4, [ 1, 2, 3, 5 ], [ 1, 4, 1, 1 ] ] );;
+target := ObjectConstructor( product_kron_comon, [ 2, [    2, 3    ], [    5, 2     ] ] );;
 
 morphism_1 := [ ];;
 morphism_2 := [ [1,3], [3,4] ];;
@@ -51,7 +51,7 @@ morphism_4 := [ ];;
 morphism_5 := [ ];;
 triple := [ 4, [ 1, 2, 3, 5 ], [ morphism_1, morphism_2, morphism_3, morphism_5 ] ];;
 
-mor := MorphismConstructor( Productins_mat, source, triple, target );;
+mor := MorphismConstructor( product_kron_comon, source, triple, target );;
 IsWellDefinedForMorphisms( mor );
 #! true
 
@@ -87,8 +87,8 @@ Display( mor_embedded );
 #! 
 #! ------------------------
 
-source := ObjectConstructor( Productins_mat, [ 4, [ 1, 2, 3, 5 ], [ 1, 2, 1, 1 ] ] );;
-target := ObjectConstructor( Productins_mat, [ 2, [    2, 3    ], [    1, 2    ] ] );;
+source := ObjectConstructor( product_kron_comon, [ 4, [ 1, 2, 3, 5 ], [ 1, 2, 1, 1 ] ] );;
+target := ObjectConstructor( product_kron_comon, [ 2, [    2, 3    ], [    1, 2    ] ] );;
 
 matrix_1 := [ ];;
 matrix_2 := [ [ 1, 1 ] ];;
@@ -97,7 +97,7 @@ matrix_4 := [ ];;
 matrix_5 := [ ];;
 matrices_triple := [ 4, [ 1, 2, 3, 5 ], [ matrix_1, matrix_2, matrix_3, matrix_5 ] ];;
 
-mor := MorphismConstructor( Productins_mat, source, matrices_triple, target );;
+mor := MorphismConstructor( product_kron_comon, source, matrices_triple, target );;
 IsWellDefinedForMorphisms( mor );
 #! true
 

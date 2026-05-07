@@ -3,7 +3,7 @@
 #
 # Implementations
 #
-BindGlobal( "ADD_FUNCTIONS_FOR_SparseProduct_CategoryOfInsertionMatrices_AsSubcategoryOfSkeletalGroupRepresentations_S4_precompiled", function ( cat )
+BindGlobal( "ADD_FUNCTIONS_FOR_Subcategory_SkeletalCategoryOfGroupRepresentations_S4_SparseProduct_KroneckerComonoids_precompiled", function ( cat )
     
     ##
     AddRightDistributivityExpandingWithGivenObjects( cat,
@@ -305,21 +305,21 @@ end
     
 end );
 
-BindGlobal( "SparseProduct_CategoryOfInsertionMatrices_AsSubcategoryOfSkeletalGroupRepresentations_S4_precompiled", function ( irreducible_characters )
+BindGlobal( "SparseProduct_KroneckerComonoids_In_SkeletalGroupRepresentations_S4_precompiled", function ( irreducible_characters )
   local category_constructor, cat;
     
     category_constructor :=
         
         
         function ( irreducible_characters )
-    return SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters : no_precompiled_code := true );
+    return SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids( irreducible_characters : no_precompiled_code := true );
 end;
         
         
     
     cat := category_constructor( irreducible_characters : FinalizeCategory := false, no_precompiled_code := true );
     
-    ADD_FUNCTIONS_FOR_SparseProduct_CategoryOfInsertionMatrices_AsSubcategoryOfSkeletalGroupRepresentations_S4_precompiled( cat );
+    ADD_FUNCTIONS_FOR_Subcategory_SkeletalCategoryOfGroupRepresentations_S4_SparseProduct_KroneckerComonoids_precompiled( cat );
     
     Finalize( cat );
     

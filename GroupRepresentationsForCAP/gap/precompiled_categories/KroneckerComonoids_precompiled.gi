@@ -3,7 +3,7 @@
 #
 # Implementations
 #
-BindGlobal( "ADD_FUNCTIONS_FOR_CategoryOfInsertionMatrices_precompiled", function ( cat )
+BindGlobal( "ADD_FUNCTIONS_FOR_CategoryOfKroneckerComonoids_precompiled", function ( cat )
     
     ##
     AddIsEqualForObjects( cat,
@@ -399,21 +399,21 @@ end
     
 end );
 
-BindGlobal( "CategoryOfInsertionMatrices_precompiled", function (  )
+BindGlobal( "CategoryOfKroneckerComonoids_precompiled", function (  )
   local category_constructor, cat;
     
     category_constructor :=
         
         
         function (  )
-    return CategoryOfInsertionMatrices(  : no_precompiled_code := true );
+    return CategoryOfKroneckerComonoids(  : no_precompiled_code := true );
 end;
         
         
     
     cat := category_constructor(  : FinalizeCategory := false, no_precompiled_code := true );
     
-    ADD_FUNCTIONS_FOR_CategoryOfInsertionMatrices_precompiled( cat );
+    ADD_FUNCTIONS_FOR_CategoryOfKroneckerComonoids_precompiled( cat );
     
     Finalize( cat );
     

@@ -10,7 +10,7 @@ RepG := RepresentationCategory( G );;
 underlying_category := UnderlyingCategoryForSemisimpleCategory( RepG );;
 field := underlying_category!.field_for_matrix_category;;
 sgreps := SkeletalCategoryOfGroupRepresentations( G, field : no_precompiled_code := true );;
-product_insmat := UnderlyingProductCategoryOfInsertionMatrices( sgreps );
+product_kron_comon := SubcategoryOfSparseProductOfKroneckerComonoids( sgreps );
 
 irr := Irr( G );;
 
@@ -33,11 +33,11 @@ ABC := TensorProductOnObjects( TensorProductOnObjects( A, B ), C);;
 BAC := TensorProductOnObjects( TensorProductOnObjects( B, A ), C);;
 BCBAC := TensorProductOnObjects( BC, BAC );;
 
-ConvertObjectToProductInsmat :=
+ConvertObjectToProductKronComon :=
   function( object )
     local nr_support, support, matrices, l;
     
-    return ObjectConstructor( product_insmat, ObjectDatum( object ) );
+    return ObjectConstructor( product_kron_comon, ObjectDatum( object ) );
     
 end;;
 
@@ -78,10 +78,10 @@ CompareEvalutionMorphisms :=
         StartTimer( "SGREPS_Coevalutation_multiplicity" );
     fi;
     
-    morphism_12_multiplicity := SGREPS_EvaluationForDual_12_Morphism_multiplicity( product_insmat,
-                                    ConvertObjectToProductInsmat( AVA ),
-                                    ConvertObjectToProductInsmat( AV ),
-                                    ConvertObjectToProductInsmat( A ) );
+    morphism_12_multiplicity := SGREPS_EvaluationForDual_12_Morphism_multiplicity( product_kron_comon,
+                                    ConvertObjectToProductKronComon( AVA ),
+                                    ConvertObjectToProductKronComon( AV ),
+                                    ConvertObjectToProductKronComon( A ) );
     morphism_12_multiplicity := EmbeddingProductCatOfPermutationCatIntoSGRepsOnMorphism( sgreps, morphism_12_multiplicity );
     morphism_3_multiplicity := SGREPS_EvaluationForDual_3_Morphism_multiplicity( sgreps, AVA, A, unit );
     morphism_multiplicity := PreCompose( morphism_12_multiplicity, morphism_3_multiplicity );

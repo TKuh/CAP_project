@@ -3,7 +3,7 @@
 #
 # Implementations
 #
-BindGlobal( "ADD_FUNCTIONS_FOR_SparseProduct_PermutationCategory_AsSubcategoryOfSkeletalGroupRepresentations_S4_precompiled", function ( cat )
+BindGlobal( "ADD_FUNCTIONS_FOR_Subcategory_SkeletalCategoryOfGroupRepresentations_S4_SparseProduct_PermutationCategory_precompiled", function ( cat )
     
     ##
     AddIsEqualForObjects( cat,
@@ -1030,21 +1030,21 @@ end
     
 end );
 
-BindGlobal( "SparseProduct_PermutationCategory_AsSubcategoryOfSkeletalGroupRepresentations_S4_precompiled", function ( irreducible_characters )
+BindGlobal( "Subcategory_SkeletalCategoryOfGroupRepresentations_S4_SparseProduct_PermutationCategory_precompiled", function ( irreducible_characters )
   local category_constructor, cat;
     
     category_constructor :=
         
         
         function ( irreducible_characters )
-    return SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters : no_precompiled_code := true );
+    return SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory( irreducible_characters : no_precompiled_code := true );
 end;
         
         
     
     cat := category_constructor( irreducible_characters : FinalizeCategory := false, no_precompiled_code := true );
     
-    ADD_FUNCTIONS_FOR_SparseProduct_PermutationCategory_AsSubcategoryOfSkeletalGroupRepresentations_S4_precompiled( cat );
+    ADD_FUNCTIONS_FOR_Subcategory_SkeletalCategoryOfGroupRepresentations_S4_SparseProduct_PermutationCategory_precompiled( cat );
     
     Finalize( cat );
     

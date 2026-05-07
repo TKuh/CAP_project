@@ -8,13 +8,13 @@
 
 ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_PermutationCategory.gi" );
 
-ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_PermutationCategory_AsSubcategoryOfSkeletalGroupRepresentations.gi" );
+ReadPackage( "GroupRepresentationsForCAP", "gap/Subcategory_SkeletalCategoryOfGroupRepresentations_SparseProduct_PermutationCategory.gi" );
 
-ReadPackage( "GroupRepresentationsForCAP", "gap/CategoryOfInsertionMatrices.gi" );
+ReadPackage( "GroupRepresentationsForCAP", "gap/KroneckerComonoids.gi" );
 
 ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_CartesianCategory.gi" );
 
-ReadPackage( "GroupRepresentationsForCAP", "gap/SparseProduct_CategoryOfInsertionMatrices_AsSubcategoryOfSkeletalGroupRepresentations.gi" );
+ReadPackage( "GroupRepresentationsForCAP", "gap/Subcategory_SkeletalCategoryOfGroupRepresentations_SparseProduct_KroneckerComonoids.gi" );
 
 ############################ Experimental #############################
 

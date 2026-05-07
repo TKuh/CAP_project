@@ -19,16 +19,16 @@ CapJitAddTypeSignature( "Union", [ IsList ], function ( input_types )
     
 end );
 
-precompile_SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations := function( irreducible_characters, name )
+precompile_SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids := function( irreducible_characters, name )
     
     CapJitPrecompileCategoryAndCompareResult(
         { irreducible_characters } ->
-            SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters
+            SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids( irreducible_characters
                : no_precompiled_code := true,
                  pwp_no_precompiled_code := false ),
         [ irreducible_characters ],
         "GroupRepresentationsForCAP",
-        Concatenation( "SparseProduct_CategoryOfInsertionMatrices_AsSubcategoryOfSkeletalGroupRepresentations_", name, "_precompiled" )
+        Concatenation( "Subcategory_SkeletalCategoryOfGroupRepresentations_", name, "_SparseProduct_PermutationCategory_precompiled"  )
         : operations := [ # "IsEqualForObjects",
                           # "IsEqualForMorphisms",
                           # "SimplifyEndo", # x
@@ -68,9 +68,9 @@ end;;
 character_table_S4 := CharacterTable( SymmetricGroup( 4 ) );
 irreducible_characters_S4 := Irr( character_table_S4 );
 
-precompile_SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters_S4, "S4" );;
+precompile_SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids( irreducible_characters_S4, "S4" );;
 
-SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters_S4 )!.precompiled_functions_added;
+SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids( irreducible_characters_S4 )!.precompiled_functions_added;
 #! true
 
 #! #@fi

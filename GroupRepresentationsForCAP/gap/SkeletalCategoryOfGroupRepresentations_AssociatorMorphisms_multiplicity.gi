@@ -20,40 +20,40 @@
 #     ↓
 # ⊕ᵢ aᵢ·[(χᵢ⊗b)⊗c],
 InstallGlobalFunction( SGREPS_Associator_1_Morphism_multiplicity,
-  function( product_insmat, a, b, c, abc )
+  function( product_kron_comon, a, b, c, abc )
     local product_permcat, F_product_permcat, a_nr_support, a_support, a_components, a_model, b_model, c_model, ab, a_xi, a_xi_tensor_b, sigma_1, sigma_1_tensor_id_c, sigma_2;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
-    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
+    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
     
     a_nr_support := NrSupport( a );
     a_support := Support( a );
     a_components := Components( a );
     
-    ab := TensorProductOnObjects( product_insmat, a, b );
+    ab := TensorProductOnObjects( product_kron_comon, a, b );
     
     # [ χ₁, χ₂, ..., χₘ ]
     a_xi := List( [ 1 .. a_nr_support ], i ->
-        ObjectConstructor( product_insmat, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) ) );
+        ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) ) );
     
     # a⊗b = [(χ₁ ⊕...⊕ χ₁) ⊕...⊕ (χₘ ⊕...⊕ χₘ)] ⊗ b  ⥲  (χ₁⊗b ⊕...⊕ χ₁⊗b) ⊕...⊕ (χₘ⊗b ⊕...⊕ χₘ⊗b) = ⊕ᵢ aᵢ·(χᵢ⊗b)
-    sigma_1 := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, ab, a_xi, b, a_components, ab );
+    sigma_1 := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, ab, a_xi, b, a_components, ab );
     
     # (a⊗b)⊗c  ⥲  (⊕ᵢ aᵢ·(χᵢ⊗b))⊗c
-    sigma_1_tensor_id_c := PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_TensorProductOfMorphismWithIdentityWithGivenTensorProducts(
-                                product_insmat,
+    sigma_1_tensor_id_c := PRODUCT_OF_CATEGORY_OF_KRONECKER_COMONOIDS_AS_SUBCAT_TensorProductOfMorphismWithIdentityWithGivenTensorProducts(
+                                product_kron_comon,
                                 abc,
                                 sigma_1,
-                                IdentityMorphism( product_insmat, c ),
+                                IdentityMorphism( product_kron_comon, c ),
                                 abc );
     
     # [ χ₁⊗b, χ₂⊗b, ..., χₘ⊗b ]
-    a_xi_tensor_b := List( a_xi, x_i -> TensorProductOnObjects( product_insmat, x_i, b ) );
+    a_xi_tensor_b := List( a_xi, x_i -> TensorProductOnObjects( product_kron_comon, x_i, b ) );
     
     # (⊕ᵢ aᵢ·(χᵢ⊗b))⊗c = [(χ₁⊗b ⊕...⊕ χ₁⊗b) ⊕...⊕ (χₘ⊗b ⊕...⊕ χₘ⊗b)] ⊗ c  ⥲  ((χ₁⊗b)⊗c ⊕...⊕ (χ₁⊗b)⊗c) ⊕...⊕ ((χₘ⊗b)⊗c ⊕...⊕ (χₘ⊗b)⊗c) = ⊕ᵢ aᵢ·[(χᵢ⊗b)⊗c]
-    sigma_2 := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, abc, a_xi_tensor_b, c, a_components, abc );
+    sigma_2 := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, abc, a_xi_tensor_b, c, a_components, abc );
     
     # The composition of permutations π₂·π₁ corresponds to the permutation-matrix product P₁·P₂.
     return PreCompose( product_permcat,
@@ -79,13 +79,13 @@ end );
 #        ↓
 # ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ (χᵢ⊗χⱼ)⊗c ] ]
 InstallGlobalFunction( SGREPS_Associator_2_Morphism_multiplicity,
-  function( product_insmat, a, b, c, abc )
+  function( product_kron_comon, a, b, c, abc )
     local product_permcat, F_product_permcat, a_nr_support, a_support, a_components, b_nr_support, b_support, b_components, b_xj, sigmas, a_sigmas, sum_a_sigmas;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
-    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
+    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
     
     a_nr_support := NrSupport( a );
     a_support := Support( a );
@@ -97,32 +97,32 @@ InstallGlobalFunction( SGREPS_Associator_2_Morphism_multiplicity,
     
     # [ χ₁, χ₂, ..., χₙ ]
     b_xj := List( [ 1 .. b_nr_support ], j ->
-        ObjectConstructor( product_insmat, NTuple( 3, 1, [ b_support[j] ], [ 1 ] ) ) );
+        ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ b_support[j] ], [ 1 ] ) ) );
     
     # The list of composed expanding morphisms:
     # σᵢ: (χᵢ⊗b)⊗c  ⥲  ⊕ⱼ bⱼ·[ (χᵢ⊗χⱼ)⊗c ]
     sigmas := List( [ 1 .. a_nr_support ], function( i )
         local xi, xib, xibc, sigma_1, sigma_1_tensor_id_c, xixj, sigma_2;
         
-        xi := ObjectConstructor( product_insmat, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
-        xib := TensorProductOnObjects( product_insmat, xi, b );
-        xibc := TensorProductOnObjects( product_insmat, xib, c );
+        xi := ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
+        xib := TensorProductOnObjects( product_kron_comon, xi, b );
+        xibc := TensorProductOnObjects( product_kron_comon, xib, c );
         
         # χᵢ⊗b = [χᵢ⊗(b₁χ₁ ⊕...⊕ bₖχₖ)] = [χᵢ⊗(χ₁⊕...⊕ χ₁ ⊕...⊕ χₖ ⊕...⊕ χₖ)]  ⥲  (χᵢ⊗χ₁ ⊕...⊕ χᵢ⊗χ₁ ⊕...⊕ χᵢ⊗χₖ ⊕...⊕ χᵢ⊗χₖ) = [⊕ⱼ bⱼ·(χᵢ⊗χⱼ)]
-        sigma_1 := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, xib, xi, b_xj, b_components, xib );
+        sigma_1 := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, xib, xi, b_xj, b_components, xib );
         
         # [χᵢ⊗b]⊗c  ⥲  [⊕ⱼ bⱼ·(χᵢ⊗χⱼ)]⊗c
-        sigma_1_tensor_id_c := PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_TensorProductOfMorphismWithIdentityWithGivenTensorProducts(
-                                    product_insmat,
+        sigma_1_tensor_id_c := PRODUCT_OF_CATEGORY_OF_KRONECKER_COMONOIDS_AS_SUBCAT_TensorProductOfMorphismWithIdentityWithGivenTensorProducts(
+                                    product_kron_comon,
                                     xibc,
                                     sigma_1,
-                                    IdentityMorphism( product_insmat, c ),
+                                    IdentityMorphism( product_kron_comon, c ),
                                     xibc );
         
-        xixj := List( [ 1 .. b_nr_support ], j -> TensorProductOnObjects( product_insmat, xi, b_xj[j] ) );
+        xixj := List( [ 1 .. b_nr_support ], j -> TensorProductOnObjects( product_kron_comon, xi, b_xj[j] ) );
         
         # [⊕ⱼ bⱼ·(χᵢ⊗χⱼ)]⊗c  ⥲  ⊕ⱼ bⱼ·[ (χᵢ⊗χⱼ)⊗c ]
-        sigma_2 := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, xibc, xixj, c, b_components, xibc );
+        sigma_2 := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, xibc, xixj, c, b_components, xibc );
         
         # Error( "\033[31mDEBUGPRINT[Second expanding]\033[0m" );
         
@@ -159,13 +159,13 @@ end );
 #        ↓
 # ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ ⊕ₖ cₖ·[ (χᵢ⊗χⱼ)⊗χₖ ] ] ]
 InstallGlobalFunction( SGREPS_Associator_3_Morphism_multiplicity,
-  function( product_insmat, a, b, c, abc )
+  function( product_kron_comon, a, b, c, abc )
     local product_permcat, F_product_permcat, a_nr_support, a_support, a_components, b_nr_support, b_support, b_components, c_nr_support, c_support, c_components, c_xk, inner_factors, a_inner_factors, outer_product;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
-    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
+    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
     
     a_nr_support := NrSupport( a );
     a_support := Support( a );
@@ -181,23 +181,23 @@ InstallGlobalFunction( SGREPS_Associator_3_Morphism_multiplicity,
     
     # [ χ₁, χ₂, ..., χₒ ]
     c_xk := List( [ 1 .. c_nr_support ], k ->
-        ObjectConstructor( product_insmat, NTuple( 3, 1, [ c_support[k] ], [ 1 ] ) ) );
+        ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ c_support[k] ], [ 1 ] ) ) );
     
     # ⊕ⱼ bⱼ·σⱼ:  bⱼ·[(χᵢ⊗xⱼ)⊗c]  ⥲  bⱼ·[⊕ₖ cₖ·[(χᵢ⊗χⱼ)⊗χₖ]]
     inner_factors := List( [ 1 .. a_nr_support ], function( i )
         local xi, sigmas, b_sigmas, xibc, sum_b_sigmas;
         
-        xi := ObjectConstructor( product_insmat, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
+        xi := ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
         
         # σⱼ:  (χᵢ⊗xⱼ)⊗c = [(χᵢ⊗xⱼ) ⊗ (χ₁ ⊕...⊕ χ₁ ⊕...⊕ χₒ ⊕...⊕ χₒ)]  ⥲  ((χᵢ⊗xⱼ)⊗χ₁ ⊕...⊕ (χᵢ⊗xⱼ)⊗χ₁ ⊕...⊕ (χᵢ⊗xⱼ)⊗χₒ ⊕...⊕ (χᵢ⊗xⱼ)⊗χₒ) = ⊕ₖ cₖ·[(χᵢ⊗χⱼ)⊗χₖ]
         sigmas := List( [ 1 .. b_nr_support ], function( j )
             local xj, xixj, xixjc;
             
-            xj := ObjectConstructor( product_insmat, NTuple( 3, 1, [ b_support[j] ], [ 1 ] ) );
-            xixj := TensorProductOnObjects( product_insmat, xi, xj );
-            xixjc := TensorProductOnObjects( product_insmat, xixj, c );
+            xj := ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ b_support[j] ], [ 1 ] ) );
+            xixj := TensorProductOnObjects( product_kron_comon, xi, xj );
+            xixjc := TensorProductOnObjects( product_kron_comon, xixj, c );
             
-            return LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, xixjc, xixj, c_xk, c_components, xixjc );
+            return LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, xixjc, xixj, c_xk, c_components, xixjc );
             
         end );
         
@@ -205,10 +205,10 @@ InstallGlobalFunction( SGREPS_Associator_3_Morphism_multiplicity,
         b_sigmas := Concatenation( List( [ 1 .. b_nr_support ], i ->
             List( [ 1 .. b_components[i] ], j -> sigmas[i] ) ) );
             
-        xibc := TensorProductOnObjects( product_insmat, TensorProductOnObjects( product_insmat, xi, b ), c );
+        xibc := TensorProductOnObjects( product_kron_comon, TensorProductOnObjects( product_kron_comon, xi, b ), c );
         
         # ⊕ⱼ bⱼ·σⱼ:  bⱼ·[(χᵢ⊗xⱼ)⊗c]  ⥲  bⱼ·[⊕ₖ cₖ·[(χᵢ⊗χⱼ)⊗χₖ]]
-        sum_b_sigmas := DirectProductFunctorialWithGivenDirectProducts( product_insmat,
+        sum_b_sigmas := DirectProductFunctorialWithGivenDirectProducts( product_kron_comon,
                             xibc,
                             List( b_sigmas, Source ),
                             b_sigmas,
@@ -224,7 +224,7 @@ InstallGlobalFunction( SGREPS_Associator_3_Morphism_multiplicity,
         List( [ 1 .. a_components[i] ], j -> inner_factors[i] ) ) );
     
     # ⊕ᵢ ɑᵢ·[⊕ⱼ bⱼ·σⱼ]:  ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ (χᵢ⊗χⱼ)⊗c ] ]  ⥲  ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ ⊕ₖ cₖ·[ (χᵢ⊗χⱼ)⊗χₖ ] ] ]
-    outer_product := DirectProductFunctorialWithGivenDirectProducts( product_insmat,
+    outer_product := DirectProductFunctorialWithGivenDirectProducts( product_kron_comon,
                             abc,
                             List( a_inner_factors, Source ),
                             a_inner_factors,
@@ -371,13 +371,13 @@ end );
 #        ‖
 # ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ χᵢ⊗(χⱼ⊗c) ] ]
 InstallGlobalFunction( SGREPS_Associator_5_Morphism_multiplicity,
-  function( product_insmat, a, b, c, abc )
+  function( product_kron_comon, a, b, c, abc )
     local product_permcat, F_product_permcat, a_nr_support, a_support, a_components, b_nr_support, b_support, b_components, c_nr_support, c_support, c_components, bc, c_xk, inner_factors, a_inner_factors, xibc, outer_product;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
-    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
+    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
     
     a_nr_support := NrSupport( a );
     a_support := Support( a );
@@ -391,33 +391,33 @@ InstallGlobalFunction( SGREPS_Associator_5_Morphism_multiplicity,
     c_support := Support( c );
     c_components := Components( c );
     
-    bc := TensorProductOnObjects( product_insmat, b, c );
+    bc := TensorProductOnObjects( product_kron_comon, b, c );
     
     # [ χ₁, χ₂, ..., χₒ ]
     c_xk := List( [ 1 .. c_nr_support ], k ->
-        ObjectConstructor( product_insmat, NTuple( 3, 1, [ c_support[k] ], [ 1 ] ) ) );
+        ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ c_support[k] ], [ 1 ] ) ) );
     
     # ⊕ⱼ bⱼ·σⱼ: ⊕ⱼ bⱼ·[⊕ₖ cₖ·[χᵢ⊗(χⱼ⊗χₖ)]]  ⥲  ⊕ⱼ bⱼ·[χᵢ⊗(⊕ₖ cₖ·[χⱼ⊗χₖ])]
     inner_factors := List( [ 1 .. a_nr_support ], function( i )
         local xi, sigmas, b_sigmas, xibc, sum_b_sigmas;
         
-        xi := ObjectConstructor( product_insmat, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
+        xi := ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
         
         # σⱼ: ⊕ₖ cₖ·[ χᵢ⊗(χⱼ⊗χₖ) ]  ⥲  χᵢ⊗(χⱼ⊗ (⊕ₖ cₖ·χₖ)) = χᵢ⊗(χⱼ⊗c)
         sigmas := List( [ 1 .. b_nr_support ], function( j )
             local xj, xjc, xixjc, xjxk, first_left_expanding, first_left_factoring, second_left_expanding, second_left_factoring, id_xi_tensor_second_left_factoring;
             
-            xj := ObjectConstructor( product_insmat, NTuple( 3, 1, [ b_support[j] ], [ 1 ] ) );
-            xjc := TensorProductOnObjects( product_insmat, xj, c );
-            xjxk := List( [ 1 .. c_nr_support ], k -> TensorProductOnObjects( product_insmat, xj, c_xk[k] ) );
-            xixjc := TensorProductOnObjects( product_insmat, xi, xjc );
+            xj := ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ b_support[j] ], [ 1 ] ) );
+            xjc := TensorProductOnObjects( product_kron_comon, xj, c );
+            xjxk := List( [ 1 .. c_nr_support ], k -> TensorProductOnObjects( product_kron_comon, xj, c_xk[k] ) );
+            xixjc := TensorProductOnObjects( product_kron_comon, xi, xjc );
             
             # ⊕ₖ cₖ·[ χᵢ⊗(χⱼ⊗χₖ) ]  ⥲  χᵢ⊗(⊕ₖ cₖ·[χⱼ⊗χₖ])
-            first_left_expanding := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, xixjc, xi, xjxk, c_components, xixjc );
+            first_left_expanding := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, xixjc, xi, xjxk, c_components, xixjc );
             first_left_factoring := Inverse( ApplyFunctor( F_product_permcat, first_left_expanding ) );
             
             # ⊕ₖ cₖ·[χⱼ⊗χₖ]  ⥲  χⱼ⊗ (⊕ₖ cₖ·χₖ) = χⱼ⊗c
-            second_left_expanding := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, xjc, xj, c_xk, c_components, xjc );
+            second_left_expanding := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, xjc, xj, c_xk, c_components, xjc );
             second_left_factoring := Inverse( ApplyFunctor( F_product_permcat, second_left_expanding ) );
             
             # χᵢ⊗(⊕ₖ cₖ·[χⱼ⊗χₖ])  ⥲  χᵢ⊗(χⱼ⊗ (⊕ₖ cₖ·χₖ)) = χᵢ⊗(χⱼ⊗c)
@@ -438,7 +438,7 @@ InstallGlobalFunction( SGREPS_Associator_5_Morphism_multiplicity,
         b_sigmas := Concatenation( List( [ 1 .. b_nr_support ], j ->
             List( [ 1 .. b_components[j] ], k -> sigmas[j] ) ) );
         
-        xibc := TensorProductOnObjects( product_insmat, xi, bc );
+        xibc := TensorProductOnObjects( product_kron_comon, xi, bc );
         
         # ⊕ⱼ bⱼ·σⱼ: ⊕ⱼ bⱼ·[⊕ₖ cₖ·[χᵢ⊗(χⱼ⊗χₖ)]]  ⥲  ⊕ⱼ bⱼ·[χᵢ⊗(χⱼ⊗ (⊕ₖ cₖ·χₖ))] = ⊕ⱼ bⱼ·[χᵢ⊗(χⱼ⊗c)]
         sum_b_sigmas := CoproductFunctorialWithGivenCoproducts( product_permcat,
@@ -491,13 +491,13 @@ end );
 #        ‖
 # ⊕ᵢ ɑᵢ·[ χᵢ⊗(b⊗c) ]
 InstallGlobalFunction( SGREPS_Associator_6_Morphism_multiplicity,
-  function( product_insmat, a, b, c, abc )
+  function( product_kron_comon, a, b, c, abc )
     local product_permcat, F_product_permcat, a_nr_support, a_support, a_components, b_nr_support, b_support, b_components, b_xj, b_xjc, bc, sigmas, a_sigmas, sum_a_sigmas;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
-    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
+    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
     
     a_nr_support := NrSupport( a );
     a_support := Support( a );
@@ -509,28 +509,28 @@ InstallGlobalFunction( SGREPS_Associator_6_Morphism_multiplicity,
     
     # [ χ₁, χ₂, ..., χₙ ]
     b_xj := List( [ 1 .. b_nr_support ], j ->
-        ObjectConstructor( product_insmat, NTuple( 3, 1, [ b_support[j] ], [ 1 ] ) ) );
+        ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ b_support[j] ], [ 1 ] ) ) );
     
     # [ χ₁⊗c, χ₂⊗c, ..., χₙ⊗c ]
     b_xjc := List( [ 1 .. b_nr_support ], j ->
-        TensorProductOnObjects( product_insmat, b_xj[j], c ) );
+        TensorProductOnObjects( product_kron_comon, b_xj[j], c ) );
     
-    bc := TensorProductOnObjects( product_insmat, b, c );
+    bc := TensorProductOnObjects( product_kron_comon, b, c );
     
     # σᵢ: ⊕ⱼ bⱼ·[ χᵢ⊗(χⱼ⊗c) ]  ⥲  χᵢ⊗(b⊗c)
     sigmas := List( [ 1 .. a_nr_support ], function( i )
         local xi, xibc, left_expanding, left_factoring, right_expanding, right_factoring, id_c_tensor_right_factoring;
         
-        xi := ObjectConstructor( product_insmat, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
+        xi := ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) );
         
-        xibc := TensorProductOnObjects( product_insmat, xi, bc );
+        xibc := TensorProductOnObjects( product_kron_comon, xi, bc );
         
         # ⊕ⱼ bⱼ·[ χᵢ⊗(χⱼ⊗c) ]  ⥲  χᵢ⊗ [⊕ⱼ bⱼ·(χⱼ⊗c) ]
-        left_expanding := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, xibc, xi, b_xjc, b_components, xibc );
+        left_expanding := LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, xibc, xi, b_xjc, b_components, xibc );
         left_factoring := InverseForMorphisms( product_permcat, ApplyFunctor( F_product_permcat, left_expanding ) );
         
         # ⊕ⱼ bⱼ·(χⱼ⊗c)  ⥲  (⊕ⱼ bⱼ·χⱼ)⊗c = b⊗c
-        right_expanding := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, bc, b_xj, c, b_components, bc );
+        right_expanding := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, bc, b_xj, c, b_components, bc );
         right_factoring := InverseForMorphisms( product_permcat, ApplyFunctor( F_product_permcat, right_expanding ) );
         
         # χᵢ⊗ [⊕ⱼ bⱼ·(χⱼ⊗c) ]  ⥲  χᵢ⊗((⊕ⱼ bⱼ·χⱼ)⊗c) = χᵢ⊗(b⊗c)
@@ -576,13 +576,13 @@ end );
 #     ‖
 #  a⊗(b⊗c)
 InstallGlobalFunction( SGREPS_Associator_7_Morphism_multiplicity,
-  function( product_insmat, a, b, c, abc )
+  function( product_kron_comon, a, b, c, abc )
     local product_permcat, F_product_permcat, a_nr_support, a_support, a_components, a_xi, bc, factoring_morphism, expanding_morphism;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
-    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
+    F_product_permcat := IsomorphismFromCoreToProductCategoryOfPermutationCategory( product_kron_comon );
     
     a_nr_support := NrSupport( a );
     a_support := Support( a );
@@ -590,12 +590,12 @@ InstallGlobalFunction( SGREPS_Associator_7_Morphism_multiplicity,
     
     # [ χ₁, χ₂, ..., χₘ ]
     a_xi := List( [ 1 .. a_nr_support ], i ->
-        ObjectConstructor( product_insmat, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) ) );
+        ObjectConstructor( product_kron_comon, NTuple( 3, 1, [ a_support[i] ], [ 1 ] ) ) );
     
-    bc := TensorProductOnObjects( product_insmat, b, c );
+    bc := TensorProductOnObjects( product_kron_comon, b, c );
     
     #⊕ᵢ aᵢ·[ χᵢ⊗(b⊗c) ] = χ₁⊗(b⊗c) ⊕...⊕ χ₁⊗(b⊗c) ⊕...⊕ χₘ⊗(b⊗c) ⊕...⊕ χₘ⊗(b⊗c)  ⥲  (χ₁ ⊕...⊕ χ₁ ⊕...⊕ χₘ ⊕...⊕ χₘ)⊗(b⊗c) = (⊕ᵢ aᵢ·χᵢ)⊗(b⊗c) = a⊗(b⊗c)
-    expanding_morphism := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_insmat, abc, a_xi, bc, a_components, abc );
+    expanding_morphism := RightDistributivityExpandingWithGivenMultiplicitiesAndObjects( product_kron_comon, abc, a_xi, bc, a_components, abc );
     factoring_morphism := InverseForMorphisms( product_permcat, ApplyFunctor( F_product_permcat, expanding_morphism ) );
     
     return factoring_morphism;
@@ -603,54 +603,54 @@ InstallGlobalFunction( SGREPS_Associator_7_Morphism_multiplicity,
 end );
 
 InstallGlobalFunction( SGREPS_Associator_123_Morphism_multiplicity,
-  function( product_insmat, a, b, c, abc )
+  function( product_kron_comon, a, b, c, abc )
     local product_permcat, morphism_1, morphism_2, morphism_3, morphism_123;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
     
     # (a⊗b)⊗c  ⥲  ⊕ᵢ aᵢ((χᵢ⊗b)⊗c)
-    morphism_1 := SGREPS_Associator_1_Morphism_multiplicity( product_insmat, a, b, c, abc );
+    morphism_1 := SGREPS_Associator_1_Morphism_multiplicity( product_kron_comon, a, b, c, abc );
     
     # ⊕ᵢ ɑᵢ((χᵢ⊗b)⊗c)  ⥲  ⊕ᵢ ɑᵢ ⊕ⱼ bⱼ((χᵢ⊗χⱼ)⊗c)
-    morphism_2 := SGREPS_Associator_2_Morphism_multiplicity( product_insmat, a, b, c, abc );
+    morphism_2 := SGREPS_Associator_2_Morphism_multiplicity( product_kron_comon, a, b, c, abc );
     
     # ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ (χᵢ⊗χⱼ)⊗c ] ]  ⥲  ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ ⊕ₖ cₖ·[ (χᵢ⊗χⱼ)⊗χₖ ] ] ]
-    morphism_3 := SGREPS_Associator_3_Morphism_multiplicity( product_insmat, a, b, c, abc );
+    morphism_3 := SGREPS_Associator_3_Morphism_multiplicity( product_kron_comon, a, b, c, abc );
     
     # The composition of permutations π₂·π₁ corresponds to the permutation-matrix product P₁·P₂.
     morphism_123 := PreComposeList( product_permcat, [ morphism_3, morphism_2, morphism_1 ] );
     
     # The composition of permutations π₂·π₁ corresponds to the permutation-matrix product P₁·P₂.
-    # morphism_123 := SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( product_insmat, abc, morphism_123, abc );
+    # morphism_123 := SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( product_kron_comon, abc, morphism_123, abc );
     
     return morphism_123;
     
 end );
 
 InstallGlobalFunction( SGREPS_Associator_567_Morphism_multiplicity,
-  function( product_insmat, a, b, c, abc )
+  function( product_kron_comon, a, b, c, abc )
     local product_permcat, morphism_5, morphism_6, morphism_7, morphism_567;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
-    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_insmat );
+    product_permcat := UnderlyingProductCategoryOfPermutationCategory( product_kron_comon );
     
     # ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ ⊕ₖ cₖ·[ χᵢ⊗(χⱼ⊗χₖ) ] ] ]  ⥲  ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ χᵢ⊗(χⱼ⊗c) ] ]
-    morphism_5 := SGREPS_Associator_5_Morphism_multiplicity( product_insmat, a, b, c, abc );
+    morphism_5 := SGREPS_Associator_5_Morphism_multiplicity( product_kron_comon, a, b, c, abc );
     
     # ⊕ᵢ ɑᵢ·[ ⊕ⱼ bⱼ·[ χᵢ⊗(χⱼ⊗c) ] ]  ⥲  ⊕ᵢ ɑᵢ·[ χᵢ⊗(b⊗c) ]
-    morphism_6 := SGREPS_Associator_6_Morphism_multiplicity( product_insmat, a, b, c, abc );
+    morphism_6 := SGREPS_Associator_6_Morphism_multiplicity( product_kron_comon, a, b, c, abc );
     
     # ⊕ᵢ aᵢ·[ χᵢ⊗(b⊗c) ]  ⥲  a⊗(b⊗c)
-    morphism_7 := SGREPS_Associator_7_Morphism_multiplicity( product_insmat, a, b, c, abc );
+    morphism_7 := SGREPS_Associator_7_Morphism_multiplicity( product_kron_comon, a, b, c, abc );
     
     # The composition of permutations π₂·π₁ corresponds to the permutation-matrix product P₁·P₂.
     morphism_567 := PreComposeList( product_permcat, [ morphism_7, morphism_6, morphism_5 ] );
     
     # The composition of permutations π₂·π₁ corresponds to the permutation-matrix product P₁·P₂.
-    # morphism_567 := SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( product_insmat, abc, morphism_567, abc );
+    # morphism_567 := SGREPS_FunctorFromMorphismPermutationsToMorphismMatrices( product_kron_comon, abc, morphism_567, abc );
     
     return morphism_567;
     

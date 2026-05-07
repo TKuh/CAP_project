@@ -36,13 +36,13 @@ CapJitAddTypeSignature( "+", [ IsNTuple, IsBigInt ],
     
 end );
 
-precompile_CategoryOfInsertionMatrices := function( )
+precompile_KroneckerComonoids := function( )
     
     CapJitPrecompileCategoryAndCompareResult(
         { } -> CategoryOfInsertionMatrices( : no_precompiled_code := true ),
         [ ],
         "GroupRepresentationsForCAP",
-        "CategoryOfInsertionMatrices_precompiled"
+        "KroneckerComonoids_precompiled"
         : operations := [ "IsEqualForObjects",
                           "IsEqualForMorphisms",
                           # "SimplifyMorphism", # x
@@ -81,7 +81,7 @@ end;;
 
 # CapJitSetDebugLevel( 1 );
 
-precompile_CategoryOfInsertionMatrices( );;
+precompile_KroneckerComonoids( );;
 
 # CategoryOfInsertionMatrices( )!.precompiled_functions_added;
 #! true

@@ -9,7 +9,7 @@ S4 := SymmetricGroup( 4 );;
 character_table := CharacterTable( S4 );;
 irreducible_characters := Irr( character_table );;
 
-product_permcat := SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations( irreducible_characters : no_precompiled_code := true );;
+product_permcat := SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory( irreducible_characters : no_precompiled_code := true );;
 
 QQ := HomalgFieldOfRationalsInSingular();;
 sgreps := SkeletalCategoryOfGroupRepresentations( S4, QQ : no_precompiled_code := true );;

@@ -8,7 +8,7 @@
 
 ReadPackage(
     "GroupRepresentationsForCAP",
-    "gap/precompiled_categories/SparseProduct_CategoryOfInsertionMatrices_AsSubcategoryOfSkeletalGroupRepresentations_S4_precompiled.gi" );
+    "gap/precompiled_categories/Subcategory_SkeletalCategoryOfGroupRepresentations_S4_SparseProduct_KroneckerComonoids_precompiled.gi" );
 
 ####################################
 ##
@@ -17,7 +17,7 @@ ReadPackage(
 ####################################
 
 ##
-InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
+InstallMethod( SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfKroneckerComonoids,
                [ IsList ],
                
   FunctionWithNamedArguments(
@@ -26,15 +26,15 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
     [ "FinalizeCategory", true ],
   ],
   function( CAP_NAMED_ARGUMENTS, irreducible_characters )
-    local name, category_filter, category_object_filter, category_morphism_filter, nr_irreducible_characters, ins_mat, product_insmat, object_datum_type, object_datum, object_constructor, morphism_datum_type, morphism_datum, morphism_constructor, modeling_tower_object_datum, modeling_tower_object_constructor, modeling_tower_morphism_datum, modeling_tower_morphism_constructor, subcat, product_permcat, F_product_permcat;
+    local name, category_filter, category_object_filter, category_morphism_filter, nr_irreducible_characters, kron_comon, product_kron_comon, object_datum_type, object_datum, object_constructor, morphism_datum_type, morphism_datum, morphism_constructor, modeling_tower_object_datum, modeling_tower_object_constructor, modeling_tower_morphism_datum, modeling_tower_morphism_constructor, subcat, product_permcat, F_product_permcat;
     
     ##
-    name := Concatenation( "Reinterp( 𝚷( ", String( Length( irreducible_characters ) ), ", CategoryOfInsertionMatrices ) )" );
+    name := Concatenation( "Reinterp( 𝚷( ", String( Length( irreducible_characters ) ), ", KroneckerComonoids ) )" );
     
     ##
-    category_filter := IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations;
-    category_object_filter := IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations;
-    category_morphism_filter := IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations;
+    category_filter := IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids;
+    category_object_filter := IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids;
+    category_morphism_filter := IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids;
     
     ##
     object_datum_type :=
@@ -148,25 +148,25 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
     
     nr_irreducible_characters := Length( irreducible_characters );
     
-    ins_mat :=
-        CategoryOfInsertionMatrices(
+    kron_comon :=
+        CategoryOfKroneckerComonoids(
             : no_precompiled_code := CAP_NAMED_ARGUMENTS.no_precompiled_code,
               FinalizeCategory := true );
     
-    product_insmat :=
+    product_kron_comon :=
         SparseProductOfCartesianCategory(
             nr_irreducible_characters,
-            ins_mat
+            kron_comon
             : FinalizeCategory := true );
         
     ## From the raw object data to the object in the modeling category.
     modeling_tower_object_constructor :=
       function( subcat, triple )
-        local product_insmat, C, nr_support, support, list_nr_elements, components;
+        local product_kron_comon, C, nr_support, support, list_nr_elements, components;
         
-        product_insmat := ModelingCategory( subcat );
+        product_kron_comon := ModelingCategory( subcat );
         
-        C := UnderlyingCartesianCategory( product_insmat );
+        C := UnderlyingCartesianCategory( product_kron_comon );
         
         nr_support := triple[1];
         support := triple[2];
@@ -177,7 +177,7 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
             List( [ 1 .. nr_support ], n ->
                 ObjectConstructor( C, list_nr_elements[n] ) );
         
-        return ObjectConstructor( product_insmat, NTuple( 3, nr_support, support, components ) );
+        return ObjectConstructor( product_kron_comon, NTuple( 3, nr_support, support, components ) );
         
     end;
     
@@ -202,11 +202,11 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
     ## From the raw morphism data to the morphism in the modeling category.
     modeling_tower_morphism_constructor :=
       function( subcat, source, triple, target )
-        local product_insmat, C, nr_support, support, list_nr_blockcols_blockcols, source_components, morphisms;
+        local product_kron_comon, C, nr_support, support, list_nr_blockcols_blockcols, source_components, morphisms;
         
-        product_insmat := ModelingCategory( subcat );
+        product_kron_comon := ModelingCategory( subcat );
         
-        C := UnderlyingCartesianCategory( product_insmat );
+        C := UnderlyingCartesianCategory( product_kron_comon );
         
         nr_support := triple[1];
         support := triple[2];
@@ -237,7 +237,7 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
                     list_nr_blockcols_blockcols[n],
                     Component( target, support[n] ) ) );
                     
-        return MorphismConstructor( product_insmat,
+        return MorphismConstructor( product_kron_comon,
                     source,
                     NTuple( 3, nr_support, support, morphisms ),
                     target );
@@ -263,7 +263,7 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
     end;
     
     subcat :=
-        ReinterpretationOfCategory( product_insmat,
+        ReinterpretationOfCategory( product_kron_comon,
             rec( name := name,
                  category_filter := category_filter,
                  category_object_filter := category_object_filter,
@@ -289,7 +289,7 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
     
     SetNrIrreducibleCharacters( subcat, nr_irreducible_characters );
     
-    product_permcat := SparseProductOfPermutationCategoryAsSubcategoryOfSkeletalGroupRepresentations(
+    product_permcat := SubcategoryOfSkeletalCategoryOfGroupRepresentationsOfSparseProductOfPermutationCategory(
                                 irreducible_characters
                                 : no_precompiled_code := CAP_NAMED_ARGUMENTS.no_precompiled_code );
     
@@ -307,11 +307,11 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
     ## DirectSum -> DirectProduct
     AddTensorProductOnObjects( subcat,
       function( subcat, object_1, object_2 )
-        local product_insmat, ins_mat, model_1, model_2, nr_support_1, nr_support_2, support_1, support_2, components_1, components_2, product;
+        local product_kron_comon, kron_comon, model_1, model_2, nr_support_1, nr_support_2, support_1, support_2, components_1, components_2, product;
         
-        product_insmat := ModelingCategory( subcat );
+        product_kron_comon := ModelingCategory( subcat );
         
-        ins_mat := UnderlyingCartesianCategory( product_insmat );
+        kron_comon := UnderlyingCartesianCategory( product_kron_comon );
         
         model_1 := ModelingObject( subcat, object_1 );
         model_2 := ModelingObject( subcat, object_2 );
@@ -331,7 +331,7 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
                     local multiplicity_of_product, decomposition, decomposition_nr_support, decomposition_support, decomposition_components, result;
                     
                     multiplicity_of_product :=
-                        TensorProductOnObjects( ins_mat, components_1[i], components_2[j] );
+                        TensorProductOnObjects( kron_comon, components_1[i], components_2[j] );
                         
                     decomposition := ProductOfCharactersAsObjectInModelingProductCategory( subcat, support_1[i], support_2[j] );
                     
@@ -343,10 +343,10 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
                     
                     decomposition_components :=
                         List( [ 1 .. decomposition_nr_support ], n ->
-                            TensorProductOnObjects( ins_mat, decomposition_components[n], multiplicity_of_product ) );
+                            TensorProductOnObjects( kron_comon, decomposition_components[n], multiplicity_of_product ) );
                             
                     result :=
-                        ObjectConstructor( product_insmat,
+                        ObjectConstructor( product_kron_comon,
                             NTuple( 3,
                                 decomposition_nr_support,
                                 decomposition_support,
@@ -367,11 +367,11 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
     ## DirectSumFunctorial -> DirectProductFunctorial
     AddTensorProductOnMorphismsWithGivenTensorProducts( subcat,
       function( subcat, source, alpha, gamma, target )
-        local product_insmat, ins_mat, nr_irreducible_characters, irreducible_characters, alpha_model, gamma_model, alpha_nr_support, gamma_nr_support, alpha_support, gamma_support, alpha_components, gamma_components, tensored_morphisms_matrix, support, nr_support, tensored_morphisms, products_of_morphisms, positions, list_nr_blockcols_blockcols;
+        local product_kron_comon, kron_comon, nr_irreducible_characters, irreducible_characters, alpha_model, gamma_model, alpha_nr_support, gamma_nr_support, alpha_support, gamma_support, alpha_components, gamma_components, tensored_morphisms_matrix, support, nr_support, tensored_morphisms, products_of_morphisms, positions, list_nr_blockcols_blockcols;
         
-        product_insmat := ModelingCategory( subcat );
+        product_kron_comon := ModelingCategory( subcat );
         
-        ins_mat := UnderlyingCartesianCategory( product_insmat );
+        kron_comon := UnderlyingCartesianCategory( product_kron_comon );
         
         irreducible_characters := UnderlyingIrreducibleCharacters( subcat );
         nr_irreducible_characters := NrIrreducibleCharacters( subcat );
@@ -399,7 +399,7 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
         tensored_morphisms :=
             List( [ 1 .. alpha_nr_support ], i ->
                 List( [ 1 .. gamma_nr_support ], j ->
-                    TensorProductOnMorphisms( ins_mat, alpha_components[i], gamma_components[j] ) ) );
+                    TensorProductOnMorphisms( kron_comon, alpha_components[i], gamma_components[j] ) ) );
         
         # (ɑ⊗ɣ)ₖ := 𝚷ᵢ 𝚷ⱼ (ɑᵢ⊗ɣⱼ⊗Iₙ₍ᵢⱼ₎ₖ)
         products_of_morphisms :=
@@ -421,23 +421,23 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
                             # 
                             # if n_ijl = 0 then
                             #
-                            #     return ZeroMorphism( ins_mat, ZeroObject( ins_mat ), ZeroObject( ins_mat ) );
+                            #     return ZeroMorphism( kron_comon, ZeroObject( kron_comon ), ZeroObject( kron_comon ) );
                             #
                             # fi;
                             
-                            n_ijk := ObjectConstructor( ins_mat, n_ijk );
+                            n_ijk := ObjectConstructor( kron_comon, n_ijk );
                             
                             # ɑᵢ⊗ɣⱼ
                             alpha_gamma := tensored_morphisms[i][j];
                             
                             # Iₙ₍ᵢⱼ₎ₖ
-                            identity_morphism := IdentityMorphism( ins_mat, n_ijk );
+                            identity_morphism := IdentityMorphism( kron_comon, n_ijk );
                             
-                            source := TensorProductOnObjects( ins_mat, Source( alpha_gamma ), n_ijk );
-                            target := TensorProductOnObjects( ins_mat, Target( alpha_gamma ), n_ijk );
+                            source := TensorProductOnObjects( kron_comon, Source( alpha_gamma ), n_ijk );
+                            target := TensorProductOnObjects( kron_comon, Target( alpha_gamma ), n_ijk );
                             
                             # (ɑᵢ⊗ɣⱼ)⊗Iₙ₍ᵢⱼ₎ₖ
-                            return CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat, source, alpha_gamma, identity_morphism, target );
+                            return CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon, source, alpha_gamma, identity_morphism, target );
                             
                           end ) );
                           
@@ -458,17 +458,17 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
                 
                 inner_products :=
                     List( [ 1 .. nr_rows ], i ->
-                        DirectProductFunctorialWithGivenDirectProducts( ins_mat,
-                            DirectProduct( ins_mat, sources[i] ),
+                        DirectProductFunctorialWithGivenDirectProducts( kron_comon,
+                            DirectProduct( kron_comon, sources[i] ),
                             sources[i],
                             alpha_gamma_identity[i],
                             targets[i],
-                            DirectProduct( ins_mat, targets[i] ) ) );
+                            DirectProduct( kron_comon, targets[i] ) ) );
                 
                 # Compute the outer product: 𝚷ᵢ 𝚷ⱼ (ɑᵢ⊗ɣⱼ⊗Iₙ₍ᵢⱼ₎ₖ).
                 
                 outer_product :=
-                    DirectProductFunctorialWithGivenDirectProducts( ins_mat,
+                    DirectProductFunctorialWithGivenDirectProducts( kron_comon,
                         Component( ModelingObject( subcat, source ), support[k] ),
                         List( [ 1 .. nr_rows ], i -> Source( inner_products[i] ) ),
                         inner_products,
@@ -526,10 +526,10 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
     # The following compiles in 43s
     AddRightDistributivityExpandingWithGivenObjects( subcat,
       function( subcat, source, L, a, L_tensor_a )
-        local model, ins_mat, irreducible_characters, L_length, L_model, L_product_model, L_product_nr_support, L_product_support, L_product_components, a_model, a_nr_support, a_support, a_components, L_tensor_a_model, L_tensor_a_nr_support, L_tensor_a_support, L_tensor_a_components, projections, projections_components, result_components;
+        local model, kron_comon, irreducible_characters, L_length, L_model, L_product_model, L_product_nr_support, L_product_support, L_product_components, a_model, a_nr_support, a_support, a_components, L_tensor_a_model, L_tensor_a_nr_support, L_tensor_a_support, L_tensor_a_components, projections, projections_components, result_components;
 
         model := ModelingCategory( subcat );
-        ins_mat := UnderlyingCartesianCategory( model );
+        kron_comon := UnderlyingCartesianCategory( model );
 
         irreducible_characters := UnderlyingIrreducibleCharacters( subcat );
 
@@ -579,22 +579,22 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
                     return List( [ 1 .. a_nr_support ], function( j )
                         local n_ijk, a_j_times_n_ijk, id_a_j_times_n_ijk, source, target;
 
-                        n_ijk := ObjectConstructor( ins_mat, SGREPS_ScalarProduct( irreducible_characters, L_tensor_a_support[k], L_product_support[i], a_support[j] ) );
+                        n_ijk := ObjectConstructor( kron_comon, SGREPS_ScalarProduct( irreducible_characters, L_tensor_a_support[k], L_product_support[i], a_support[j] ) );
 
                         # if IsTerminal( n_ijk ) then
                         #
-                        #     return IdentityMorphism( ins_mat, TerminalObject( ins_mat ) );
+                        #     return IdentityMorphism( kron_comon, TerminalObject( kron_comon ) );
                         #
                         # fi;
 
-                        a_j_times_n_ijk := TensorProductOnObjects( ins_mat, a_components[j], n_ijk );
+                        a_j_times_n_ijk := TensorProductOnObjects( kron_comon, a_components[j], n_ijk );
 
-                        id_a_j_times_n_ijk := IdentityMorphism( ins_mat, a_j_times_n_ijk );
+                        id_a_j_times_n_ijk := IdentityMorphism( kron_comon, a_j_times_n_ijk );
 
-                        source := TensorProductOnObjects( ins_mat, Source( projection_l_component_i ), Source( id_a_j_times_n_ijk ) );
-                        target := TensorProductOnObjects( ins_mat, Target( projection_l_component_i ), Target( id_a_j_times_n_ijk ) );
+                        source := TensorProductOnObjects( kron_comon, Source( projection_l_component_i ), Source( id_a_j_times_n_ijk ) );
+                        target := TensorProductOnObjects( kron_comon, Target( projection_l_component_i ), Target( id_a_j_times_n_ijk ) );
 
-                        return CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat, source, projection_l_component_i, id_a_j_times_n_ijk, target );
+                        return CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon, source, projection_l_component_i, id_a_j_times_n_ijk, target );
 
                     end );
 
@@ -603,12 +603,12 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
                 sources := List( tensored_morphisms, Source );
                 targets := List( tensored_morphisms, Target );
 
-                product_mor := DirectProductFunctorialWithGivenDirectProducts( ins_mat,
-                                    DirectProduct( ins_mat, sources ),
+                product_mor := DirectProductFunctorialWithGivenDirectProducts( kron_comon,
+                                    DirectProduct( kron_comon, sources ),
                                     sources,
                                     tensored_morphisms,
                                     targets,
-                                    DirectProduct( ins_mat, targets ) );
+                                    DirectProduct( kron_comon, targets ) );
 
                 # for mor in tensored_morphisms do
                 #     Print( "k: ", k, ", l: ", l, ", " );
@@ -629,7 +629,7 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
             end );
 
             universal_mor :=
-                UniversalMorphismIntoDirectProductWithGivenDirectProduct( ins_mat,
+                UniversalMorphismIntoDirectProductWithGivenDirectProduct( kron_comon,
                     List( product_morphisms, morphism -> Target( morphism ) ),
                     L_tensor_a_components[k],
                     product_morphisms,
@@ -652,12 +652,12 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
     
     AddLeftDistributivityExpandingWithGivenObjects( subcat,
       function( subcat, source, a, L, a_tensor_L )
-        local model, ins_mat, irreducible_characters, L_length, L_model, L_product_model, L_product_nr_support, L_product_support, L_product_components, a_model, a_nr_support, a_support, a_components, id_a_model, id_a_components, a_tensor_L_model, a_tensor_L_nr_support, a_tensor_L_support, a_tensor_L_components, zero, projections, projections_components, result_components;
+        local model, kron_comon, irreducible_characters, L_length, L_model, L_product_model, L_product_nr_support, L_product_support, L_product_components, a_model, a_nr_support, a_support, a_components, id_a_model, id_a_components, a_tensor_L_model, a_tensor_L_nr_support, a_tensor_L_support, a_tensor_L_components, zero, projections, projections_components, result_components;
 
         #% CAP_JIT_RESOLVE_FUNCTION
         
         model := ModelingCategory( subcat );
-        ins_mat := UnderlyingCartesianCategory( model );
+        kron_comon := UnderlyingCartesianCategory( model );
 
         irreducible_characters := UnderlyingIrreducibleCharacters( subcat );
 
@@ -686,7 +686,7 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
         a_tensor_L_support := Support( a_tensor_L_model );
         a_tensor_L_components := Components( a_tensor_L_model );
 
-        zero := TerminalObject( ins_mat );
+        zero := TerminalObject( kron_comon );
 
         projections := List( [ 1 .. L_length ], l ->
             ProjectionInFactorOfDirectProductWithGivenDirectProduct( model, L_model, l, L_product_model ) );
@@ -712,29 +712,29 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
                     return List( [ 1 .. L_product_nr_support ], function( j )
                         local n_ijk, id_n_ijk, projection_l_component_j, proj_times_id_n_ijk, result;
 
-                        n_ijk := ObjectConstructor( ins_mat, SGREPS_ScalarProduct( irreducible_characters, a_tensor_L_support[k], a_support[i], L_product_support[j] ) );
+                        n_ijk := ObjectConstructor( kron_comon, SGREPS_ScalarProduct( irreducible_characters, a_tensor_L_support[k], a_support[i], L_product_support[j] ) );
 
                         # if IsTerminal( n_ijk ) then
                         #
-                        #     return IdentityMorphism( ins_mat, zero );
+                        #     return IdentityMorphism( kron_comon, zero );
                         #
                         # fi;
 
-                        id_n_ijk := IdentityMorphism( ins_mat, n_ijk );
+                        id_n_ijk := IdentityMorphism( kron_comon, n_ijk );
 
                         projection_l_component_j := projection_l_components[j];
 
-                        proj_times_id_n_ijk := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat,
-                                                    TensorProductOnObjects( ins_mat, Source( projection_l_component_j ), n_ijk ),
+                        proj_times_id_n_ijk := CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon,
+                                                    TensorProductOnObjects( kron_comon, Source( projection_l_component_j ), n_ijk ),
                                                     projection_l_component_j,
                                                     id_n_ijk,
-                                                    TensorProductOnObjects( ins_mat, Target( projection_l_component_j ), n_ijk ) );
+                                                    TensorProductOnObjects( kron_comon, Target( projection_l_component_j ), n_ijk ) );
 
-                        result := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( ins_mat,
-                                        TensorProductOnObjects( ins_mat, a_components[i], Source( proj_times_id_n_ijk ) ),
+                        result := CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( kron_comon,
+                                        TensorProductOnObjects( kron_comon, a_components[i], Source( proj_times_id_n_ijk ) ),
                                         id_a_component_i,
                                         proj_times_id_n_ijk,
-                                        TensorProductOnObjects( ins_mat, a_components[i], Target( proj_times_id_n_ijk ) ) );
+                                        TensorProductOnObjects( kron_comon, a_components[i], Target( proj_times_id_n_ijk ) ) );
 
                         return result;
 
@@ -745,12 +745,12 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
                 sources := List( tensored_morphisms, Source );
                 targets := List( tensored_morphisms, Target );
 
-                product_mor := DirectProductFunctorialWithGivenDirectProducts( ins_mat,
-                                    DirectProduct( ins_mat, sources ),
+                product_mor := DirectProductFunctorialWithGivenDirectProducts( kron_comon,
+                                    DirectProduct( kron_comon, sources ),
                                     sources,
                                     tensored_morphisms,
                                     targets,
-                                    DirectProduct( ins_mat, targets ) );
+                                    DirectProduct( kron_comon, targets ) );
 
                 # for mor in tensored_morphisms do
                 #     Print( "k: ", k, ", l: ", l, ", " );
@@ -770,7 +770,7 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
 
             end );
 
-            return UniversalMorphismIntoDirectProductWithGivenDirectProduct( ins_mat,
+            return UniversalMorphismIntoDirectProductWithGivenDirectProduct( kron_comon,
                         List( product_morphisms, morphism -> Target( morphism ) ),
                         a_tensor_L_components[k],
                         product_morphisms,
@@ -849,7 +849,7 @@ InstallMethod( SparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletal
     
     if CAP_NAMED_ARGUMENTS.no_precompiled_code <> true then
         
-        ADD_FUNCTIONS_FOR_SparseProduct_CategoryOfInsertionMatrices_AsSubcategoryOfSkeletalGroupRepresentations_S4_precompiled( subcat );
+        ADD_FUNCTIONS_FOR_Subcategory_SkeletalCategoryOfGroupRepresentations_S4_SparseProduct_KroneckerComonoids_precompiled( subcat );
         
     fi;
     
@@ -870,7 +870,7 @@ end ) );
 ####################################
 
 InstallMethodForCompilerForCAP( NrSupport,
-                                [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                                 
   function( object )
     
@@ -879,7 +879,7 @@ InstallMethodForCompilerForCAP( NrSupport,
 end );
 
 InstallMethodForCompilerForCAP( NrSupport,
-                                [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                                 
   function( morphism )
     
@@ -888,7 +888,7 @@ InstallMethodForCompilerForCAP( NrSupport,
 end );
 
 InstallMethodForCompilerForCAP( Support,
-                                [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                                 
   function( object )
     
@@ -897,7 +897,7 @@ InstallMethodForCompilerForCAP( Support,
 end );
 
 InstallMethodForCompilerForCAP( Support,
-                                [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                                 
   function( morphism )
     
@@ -906,7 +906,7 @@ InstallMethodForCompilerForCAP( Support,
 end );
 
 InstallMethodForCompilerForCAP( Components,
-                                [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                                 
   function( object )
     
@@ -915,7 +915,7 @@ InstallMethodForCompilerForCAP( Components,
 end );
 
 InstallMethodForCompilerForCAP( Components,
-                                [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                                 
   function( morphism )
     
@@ -930,7 +930,7 @@ end );
 ####################################
 
 InstallMethodForCompilerForCAP( Component,
-                                [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
+                                [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids,
                                   IsBigInt ],
                                 
   function( object, i )
@@ -948,7 +948,7 @@ InstallMethodForCompilerForCAP( Component,
 end );
 
 InstallMethodForCompilerForCAP( Component,
-                                [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations,
+                                [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids,
                                   IsBigInt ],
                                 
   function( morphism, i )
@@ -967,13 +967,13 @@ InstallMethodForCompilerForCAP( Component,
 end );
 
 InstallMethodForCompilerForCAP( ProductOfCharactersAsObjectInModelingProductCategory,
-                                [ IsSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations, IsBigInt, IsBigInt ],
+                                [ IsSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids, IsBigInt, IsBigInt ],
                                 
   function( subcat, i, j )
-    local product_insmat, ins_mat, irreducible_characters, scalar_product, support, components;
+    local product_kron_comon, kron_comon, irreducible_characters, scalar_product, support, components;
     
-    product_insmat := ModelingCategory( subcat );
-    ins_mat := UnderlyingCartesianCategory( product_insmat );
+    product_kron_comon := ModelingCategory( subcat );
+    kron_comon := UnderlyingCartesianCategory( product_kron_comon );
     
     irreducible_characters := UnderlyingIrreducibleCharacters( subcat );
     
@@ -985,15 +985,15 @@ InstallMethodForCompilerForCAP( ProductOfCharactersAsObjectInModelingProductCate
         
     components :=
         List( scalar_product{ support }, character ->
-            ObjectConstructor( ins_mat, character ) );
+            ObjectConstructor( kron_comon, character ) );
             
-    return ObjectConstructor( product_insmat, NTuple( 3, Length( support ), support, components ) );
+    return ObjectConstructor( product_kron_comon, NTuple( 3, Length( support ), support, components ) );
     
 end );
 
 # TODO: can this be removed?
 InstallMethodForCompilerForCAP( DecompositionIntoSimpleObjects,
-                                [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+                                [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                                 
   function( object )
     local subcat, nr_support, support, components;
@@ -1016,12 +1016,12 @@ end );
 ##
 ####################################
 
-InstallGlobalFunction( PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_TensorProductOfMorphismWithIdentityWithGivenTensorProducts,
+InstallGlobalFunction( PRODUCT_OF_CATEGORY_OF_KRONECKER_COMONOIDS_AS_SUBCAT_TensorProductOfMorphismWithIdentityWithGivenTensorProducts,
   function( subcat, source, morphism, identity, target )
-    local product_insmat, ins_mat, nr_irreducible_characters, irreducible_characters, morphism_model, identity_model, morphism_nr_support, identity_nr_support, morphism_support, identity_support, morphism_components, identity_components, tensored_morphisms_matrix, support, nr_support, products_of_morphisms, positions, list_nr_blockcols_blockcols;
+    local product_kron_comon, kron_comon, nr_irreducible_characters, irreducible_characters, morphism_model, identity_model, morphism_nr_support, identity_nr_support, morphism_support, identity_support, morphism_components, identity_components, tensored_morphisms_matrix, support, nr_support, products_of_morphisms, positions, list_nr_blockcols_blockcols;
     
-    product_insmat := ModelingCategory( subcat );
-    ins_mat := UnderlyingCartesianCategory( product_insmat );
+    product_kron_comon := ModelingCategory( subcat );
+    kron_comon := UnderlyingCartesianCategory( product_kron_comon );
     
     irreducible_characters := UnderlyingIrreducibleCharacters( subcat );
     nr_irreducible_characters := NrIrreducibleCharacters( subcat );
@@ -1065,24 +1065,24 @@ InstallGlobalFunction( PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_Tenso
                         # 
                         # if n_ijl = 0 then
                         #
-                        #     return ZeroMorphism( ins_mat, ZeroObject( ins_mat ), ZeroObject( ins_mat ) );
+                        #     return ZeroMorphism( kron_comon, ZeroObject( kron_comon ), ZeroObject( kron_comon ) );
                         #
                         # fi;
                         
-                        n_ijk := ObjectConstructor( ins_mat, n_ijk );
+                        n_ijk := ObjectConstructor( kron_comon, n_ijk );
                         
                         dimension_identity_j := Source( identity_components[j] );
                         
-                        dimension_identity_j_times_n_ijk := TensorProductOnObjects( ins_mat, dimension_identity_j, n_ijk );
+                        dimension_identity_j_times_n_ijk := TensorProductOnObjects( kron_comon, dimension_identity_j, n_ijk );
                         
                         # Iⱼ ⊗ Iₙ₍ᵢⱼ₎ₖ
-                        identity_j_times_identity_nijk := IdentityMorphism( ins_mat, dimension_identity_j_times_n_ijk );
+                        identity_j_times_identity_nijk := IdentityMorphism( kron_comon, dimension_identity_j_times_n_ijk );
                         
-                        source := TensorProductOnObjects( ins_mat, source_morphism_i, dimension_identity_j_times_n_ijk );
-                        target := TensorProductOnObjects( ins_mat, target_morphism_i, dimension_identity_j_times_n_ijk );
+                        source := TensorProductOnObjects( kron_comon, source_morphism_i, dimension_identity_j_times_n_ijk );
+                        target := TensorProductOnObjects( kron_comon, target_morphism_i, dimension_identity_j_times_n_ijk );
                         
                         # Mᵢ⊗(Iⱼ⊗Iₙ₍ᵢⱼ₎ₖ)
-                        return CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat,
+                        return CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon,
                                     source,
                                     components_morphism_i,
                                     identity_j_times_identity_nijk,
@@ -1108,17 +1108,17 @@ InstallGlobalFunction( PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_Tenso
             
             inner_products :=
                 List( [ 1 .. nr_rows ], i ->
-                    DirectProductFunctorialWithGivenDirectProducts( ins_mat,
-                        DirectProduct( ins_mat, sources[i] ),
+                    DirectProductFunctorialWithGivenDirectProducts( kron_comon,
+                        DirectProduct( kron_comon, sources[i] ),
                         sources[i],
                         morphism_identity_identity[i],
                         targets[i],
-                        DirectProduct( ins_mat, targets[i] ) ) );
+                        DirectProduct( kron_comon, targets[i] ) ) );
             
             # Compute the outer product: 𝚷ᵢ 𝚷ⱼ (Mᵢ⊗Iⱼ⊗Iₙ₍ᵢⱼ₎ₖ).
             
             outer_product :=
-                DirectProductFunctorialWithGivenDirectProducts( ins_mat,
+                DirectProductFunctorialWithGivenDirectProducts( kron_comon,
                     Component( ModelingObject( subcat, source ), support[k] ),
                     List( [ 1 .. nr_rows ], i -> Source( inner_products[i] ) ),
                     inner_products,
@@ -1143,12 +1143,12 @@ InstallGlobalFunction( PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_Tenso
     
 end );
 
-InstallGlobalFunction( PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_TensorProductOfIdentityWithMorphismWithGivenTensorProducts,
+InstallGlobalFunction( PRODUCT_OF_CATEGORY_OF_KRONECKER_COMONOIDS_AS_SUBCAT_TensorProductOfIdentityWithMorphismWithGivenTensorProducts,
   function( subcat, source, identity, morphism, target )
-    local product_insmat, ins_mat, nr_irreducible_characters, irreducible_characters, identity_model, morphism_model, identity_nr_support, morphism_nr_support, identity_support, morphism_support, identity_components, morphism_components, tensored_identities_matrix, support, nr_support, products_of_identities, positions, list_nr_blockcols_blockcols;
+    local product_kron_comon, kron_comon, nr_irreducible_characters, irreducible_characters, identity_model, morphism_model, identity_nr_support, morphism_nr_support, identity_support, morphism_support, identity_components, morphism_components, tensored_identities_matrix, support, nr_support, products_of_identities, positions, list_nr_blockcols_blockcols;
     
-    product_insmat := ModelingCategory( subcat );
-    ins_mat := UnderlyingCartesianCategory( product_insmat );
+    product_kron_comon := ModelingCategory( subcat );
+    kron_comon := UnderlyingCartesianCategory( product_kron_comon );
     
     irreducible_characters := UnderlyingIrreducibleCharacters( subcat );
     nr_irreducible_characters := NrIrreducibleCharacters( subcat );
@@ -1192,32 +1192,32 @@ InstallGlobalFunction( PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_Tenso
                         # 
                         # if n_ijl = 0 then
                         #
-                        #     return ZeroMorphism( ins_mat, ZeroObject( ins_mat ), ZeroObject( ins_mat ) );
+                        #     return ZeroMorphism( kron_comon, ZeroObject( kron_comon ), ZeroObject( kron_comon ) );
                         #
                         # fi;
                         
                         # Iₙ₍ᵢⱼ₎ₖ
-                        n_ijk := ObjectConstructor( ins_mat, n_ijk );
-                        id_nijk := IdentityMorphism( ins_mat, n_ijk );
+                        n_ijk := ObjectConstructor( kron_comon, n_ijk );
+                        id_nijk := IdentityMorphism( kron_comon, n_ijk );
                         
                         # Mⱼ
                         morphism_j := morphism_components[j];
                         
-                        source_morphism_j_times_nijk := TensorProductOnObjects( ins_mat, Source( morphism_j ), n_ijk );
-                        target_morphism_j_times_nijk := TensorProductOnObjects( ins_mat, Target( morphism_j ), n_ijk );
+                        source_morphism_j_times_nijk := TensorProductOnObjects( kron_comon, Source( morphism_j ), n_ijk );
+                        target_morphism_j_times_nijk := TensorProductOnObjects( kron_comon, Target( morphism_j ), n_ijk );
                         
                         # Mⱼ ⊗ Iₙ₍ᵢⱼ₎ₖ
-                        morphism_j_times_id_nijk := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat,
+                        morphism_j_times_id_nijk := CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon,
                                                         source_morphism_j_times_nijk,
                                                         morphism_j,
                                                         id_nijk,
                                                         target_morphism_j_times_nijk );
                         
-                        source := TensorProductOnObjects( ins_mat, source_identity_i, Source( morphism_j_times_id_nijk ) );
-                        target := TensorProductOnObjects( ins_mat, target_identity_i, Target( morphism_j_times_id_nijk ) );
+                        source := TensorProductOnObjects( kron_comon, source_identity_i, Source( morphism_j_times_id_nijk ) );
+                        target := TensorProductOnObjects( kron_comon, target_identity_i, Target( morphism_j_times_id_nijk ) );
                         
                         # Iᵢ⊗(Mⱼ⊗Iₙ₍ᵢⱼ₎ₖ)
-                        return CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( ins_mat,
+                        return CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( kron_comon,
                                     source,
                                     components_identity_i,
                                     morphism_j_times_id_nijk,
@@ -1243,17 +1243,17 @@ InstallGlobalFunction( PRODUCT_OF_CATEGORY_OF_INSERTION_MATRICES_AS_SUBCAT_Tenso
             
             inner_products :=
                 List( [ 1 .. nr_rows ], i ->
-                    DirectProductFunctorialWithGivenDirectProducts( ins_mat,
-                        DirectProduct( ins_mat, sources[i] ),
+                    DirectProductFunctorialWithGivenDirectProducts( kron_comon,
+                        DirectProduct( kron_comon, sources[i] ),
                         sources[i],
                         identity_morphism_morphism[i],
                         targets[i],
-                        DirectProduct( ins_mat, targets[i] ) ) );
+                        DirectProduct( kron_comon, targets[i] ) ) );
             
             # Compute the outer product: 𝚷ᵢ 𝚷ⱼ (Mᵢ⊗Iⱼ⊗Iₙ₍ᵢⱼ₎ₖ).
             
             outer_product :=
-                DirectProductFunctorialWithGivenDirectProducts( ins_mat,
+                DirectProductFunctorialWithGivenDirectProducts( kron_comon,
                     Component( ModelingObject( subcat, source ), support[k] ),
                     List( [ 1 .. nr_rows ], i -> Source( inner_products[i] ) ),
                     inner_products,
@@ -1280,12 +1280,12 @@ end );
 
 InstallGlobalFunction( RightDistributivityExpandingWithGivenMultiplicitiesAndObjects,
   function( subcat, source, L, a, multiplicities, L_tensor_a )
-    local model, ins_mat, irreducible_characters, L_length, L_model, L_model_duplicated, L_product_model, L_product_nr_support, L_product_support, L_product_components, a_model, a_nr_support, a_support, a_components, L_tensor_a_model, L_tensor_a_nr_support, L_tensor_a_support, L_tensor_a_components, zero, initial_projections_components, result_components;
+    local model, kron_comon, irreducible_characters, L_length, L_model, L_model_duplicated, L_product_model, L_product_nr_support, L_product_support, L_product_components, a_model, a_nr_support, a_support, a_components, L_tensor_a_model, L_tensor_a_nr_support, L_tensor_a_support, L_tensor_a_components, zero, initial_projections_components, result_components;
 
     #% CAP_JIT_RESOLVE_FUNCTION
     
     model := ModelingCategory( subcat );
-    ins_mat := UnderlyingCartesianCategory( model );
+    kron_comon := UnderlyingCartesianCategory( model );
 
     irreducible_characters := UnderlyingIrreducibleCharacters( subcat );
     
@@ -1313,7 +1313,7 @@ InstallGlobalFunction( RightDistributivityExpandingWithGivenMultiplicitiesAndObj
     L_tensor_a_support := Support( L_tensor_a_model );
     L_tensor_a_components := Components( L_tensor_a_model );
     
-    zero := TerminalObject( ins_mat );
+    zero := TerminalObject( kron_comon );
     
     # The components of all the initial projections
     # π₁, ... πₘ with m := Length(L) of the multiplicity adjusted list
@@ -1367,24 +1367,24 @@ InstallGlobalFunction( RightDistributivityExpandingWithGivenMultiplicitiesAndObj
                 return List( [ 1 .. a_nr_support ], function( j )
                     local n_ijk, a_j_times_n_ijk, id_a_j_times_n_ijk, source, target;
                     
-                    n_ijk := ObjectConstructor( ins_mat, SGREPS_ScalarProduct( irreducible_characters, L_tensor_a_support[k], L_product_support[i], a_support[j] ) );
+                    n_ijk := ObjectConstructor( kron_comon, SGREPS_ScalarProduct( irreducible_characters, L_tensor_a_support[k], L_product_support[i], a_support[j] ) );
                     
                     # if IsTerminal( n_ijk ) then
                     #
-                    #     return IdentityMorphism( ins_mat, zero );
+                    #     return IdentityMorphism( kron_comon, zero );
                     #
                     # fi;
                     
-                    a_j_times_n_ijk := TensorProductOnObjects( ins_mat, a_components[j], n_ijk );
+                    a_j_times_n_ijk := TensorProductOnObjects( kron_comon, a_components[j], n_ijk );
                     
                     # Iₐⱼ ⊗ Iₙ₍ᵢⱼ₎ₖ
-                    id_a_j_times_n_ijk := IdentityMorphism( ins_mat, a_j_times_n_ijk );
+                    id_a_j_times_n_ijk := IdentityMorphism( kron_comon, a_j_times_n_ijk );
 
-                    source := TensorProductOnObjects( ins_mat, Source( projection_l_component_i ), Source( id_a_j_times_n_ijk ) );
-                    target := TensorProductOnObjects( ins_mat, Target( projection_l_component_i ), Target( id_a_j_times_n_ijk ) );
+                    source := TensorProductOnObjects( kron_comon, Source( projection_l_component_i ), Source( id_a_j_times_n_ijk ) );
+                    target := TensorProductOnObjects( kron_comon, Target( projection_l_component_i ), Target( id_a_j_times_n_ijk ) );
                     
                     # πₗᵢ ⊗ Iₐⱼ ⊗ Iₙ₍ᵢⱼ₎ₖ
-                    return CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat, source, projection_l_component_i, id_a_j_times_n_ijk, target );
+                    return CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon, source, projection_l_component_i, id_a_j_times_n_ijk, target );
                     
                 end );
                 
@@ -1393,8 +1393,8 @@ InstallGlobalFunction( RightDistributivityExpandingWithGivenMultiplicitiesAndObj
             # Remove 0x0 morphisms from the list
             # of initial inner morphisms [ πₗᵢ ⊗ Iₐⱼ ⊗ Iₙ₍ᵢⱼ₎ₖ ].
             inner_morphisms := Filtered( inner_morphisms, mor ->
-                not( IsEqualForObjects( ins_mat, Source( mor ), zero ) and
-                     IsEqualForObjects( ins_mat, Target( mor ), zero ) ) );
+                not( IsEqualForObjects( kron_comon, Source( mor ), zero ) and
+                     IsEqualForObjects( kron_comon, Target( mor ), zero ) ) );
             
             # We now duplicate and shift the inner morphisms
             # for the tensorproduct of the initial projection
@@ -1406,17 +1406,17 @@ InstallGlobalFunction( RightDistributivityExpandingWithGivenMultiplicitiesAndObj
                     local shifted_mors, sources, targets, product;
                     
                     shifted_mors := List( inner_morphisms, mor ->
-                        CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( ins_mat, mor, m ) );
+                        CATEGORY_OF_KRONECKER_COMONOIDS_RowDownwardShift( kron_comon, mor, m ) );
                     
                     sources := List( shifted_mors, Source );
                     targets := List( shifted_mors, Target );
                     
-                    product := DirectProductFunctorialWithGivenDirectProducts( ins_mat,
-                                    DirectProduct( ins_mat, sources ),
+                    product := DirectProductFunctorialWithGivenDirectProducts( kron_comon,
+                                    DirectProduct( kron_comon, sources ),
                                     sources,
                                     shifted_mors,
                                     targets,
-                                    DirectProduct( ins_mat, targets ) );
+                                    DirectProduct( kron_comon, targets ) );
                     
                     return product;
                     
@@ -1461,7 +1461,7 @@ InstallGlobalFunction( RightDistributivityExpandingWithGivenMultiplicitiesAndObj
         #         ↓        ↓        ↓
         #     (l₁ ⊗ a)ₖ   ...   (lₘ ⊗ a)ₖ
         #
-        return UniversalMorphismIntoDirectProductWithGivenDirectProduct( ins_mat,
+        return UniversalMorphismIntoDirectProductWithGivenDirectProduct( kron_comon,
                     List( projections_times_id_a, morphism -> Target( morphism ) ),
                     L_tensor_a_components[k],
                     projections_times_id_a,
@@ -1482,12 +1482,12 @@ end );
 
 InstallGlobalFunction( LeftDistributivityExpandingWithGivenMultiplicitiesAndObjects,
   function( subcat, source, a, L, multiplicities, a_tensor_L )
-    local model, ins_mat, irreducible_characters, L_length, L_model, L_model_duplicated, L_product_model, L_product_nr_support, L_product_support, L_product_components, a_model, a_nr_support, a_support, a_components, id_a_model, id_a_components, a_tensor_L_model, a_tensor_L_nr_support, a_tensor_L_support, a_tensor_L_components, zero, initial_projections_components, result_components;
+    local model, kron_comon, irreducible_characters, L_length, L_model, L_model_duplicated, L_product_model, L_product_nr_support, L_product_support, L_product_components, a_model, a_nr_support, a_support, a_components, id_a_model, id_a_components, a_tensor_L_model, a_tensor_L_nr_support, a_tensor_L_support, a_tensor_L_components, zero, initial_projections_components, result_components;
     
     #% CAP_JIT_RESOLVE_FUNCTION
     
     model := ModelingCategory( subcat );
-    ins_mat := UnderlyingCartesianCategory( model );
+    kron_comon := UnderlyingCartesianCategory( model );
     
     irreducible_characters := UnderlyingIrreducibleCharacters( subcat );
     
@@ -1518,7 +1518,7 @@ InstallGlobalFunction( LeftDistributivityExpandingWithGivenMultiplicitiesAndObje
     a_tensor_L_support := Support( a_tensor_L_model );
     a_tensor_L_components := Components( a_tensor_L_model );
     
-    zero := TerminalObject( ins_mat );
+    zero := TerminalObject( kron_comon );
     
     # The components of all the initial projections
     # π₁, ... πₘ with m := Length(L) of the multiplicity adjusted list
@@ -1573,40 +1573,40 @@ InstallGlobalFunction( LeftDistributivityExpandingWithGivenMultiplicitiesAndObje
                 inner_morphisms_i := List( [ 1 .. L_product_nr_support ], function( j )
                     local n_ijk, id_n_ijk, projection_l_component_j, proj_times_id_n_ijk;
                     
-                    n_ijk := ObjectConstructor( ins_mat, SGREPS_ScalarProduct( irreducible_characters, a_tensor_L_support[k], a_support[i], L_product_support[j] ) );
+                    n_ijk := ObjectConstructor( kron_comon, SGREPS_ScalarProduct( irreducible_characters, a_tensor_L_support[k], a_support[i], L_product_support[j] ) );
                     
                     # if IsTerminal( n_ijk ) then
                     #
-                    #     return IdentityMorphism( ins_mat, zero );
+                    #     return IdentityMorphism( kron_comon, zero );
                     #
                     # fi;
                     
                     # Iₙ₍ᵢⱼ₎ₖ
-                    id_n_ijk := IdentityMorphism( ins_mat, n_ijk );
+                    id_n_ijk := IdentityMorphism( kron_comon, n_ijk );
                     
                     # πₗⱼ
                     projection_l_component_j := projection_l_components[j];
                     
                     # πₗⱼ ⊗ Iₙ₍ᵢⱼ₎ₖ
-                    proj_times_id_n_ijk := CATEGORY_OF_INSERTION_MATRICES_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( ins_mat,
-                                                TensorProductOnObjects( ins_mat, Source( projection_l_component_j ), n_ijk ),
+                    proj_times_id_n_ijk := CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfMorphismWithIdentityWithGivenTensorProducts( kron_comon,
+                                                TensorProductOnObjects( kron_comon, Source( projection_l_component_j ), n_ijk ),
                                                 projection_l_component_j,
                                                 id_n_ijk,
-                                                TensorProductOnObjects( ins_mat, Target( projection_l_component_j ), n_ijk ) );
+                                                TensorProductOnObjects( kron_comon, Target( projection_l_component_j ), n_ijk ) );
                     
                     # Iₐᵢ ⊗ πₗⱼ ⊗ Iₙ₍ᵢⱼ₎ₖ
-                    return CATEGORY_OF_INSERTION_MATRICES_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( ins_mat,
-                                    TensorProductOnObjects( ins_mat, a_components[i], Source( proj_times_id_n_ijk ) ),
+                    return CATEGORY_OF_KRONECKER_COMONOIDS_TensorProductOfIdentityWithMorphismWithGivenTensorProducts( kron_comon,
+                                    TensorProductOnObjects( kron_comon, a_components[i], Source( proj_times_id_n_ijk ) ),
                                     id_a_component_i,
                                     proj_times_id_n_ijk,
-                                    TensorProductOnObjects( ins_mat, a_components[i], Target( proj_times_id_n_ijk ) ) );
+                                    TensorProductOnObjects( kron_comon, a_components[i], Target( proj_times_id_n_ijk ) ) );
                     
                 end );
                 
                 # Remove 0x0 morphisms from inner_morphisms_i.
                 inner_morphisms_i := Filtered( inner_morphisms_i, mor ->
-                    not( IsEqualForObjects( ins_mat, Source( mor ), zero ) and
-                         IsEqualForObjects( ins_mat, Target( mor ), zero ) ) );
+                    not( IsEqualForObjects( kron_comon, Source( mor ), zero ) and
+                         IsEqualForObjects( kron_comon, Target( mor ), zero ) ) );
                 
                 return inner_morphisms_i;
             
@@ -1616,12 +1616,12 @@ InstallGlobalFunction( LeftDistributivityExpandingWithGivenMultiplicitiesAndObje
             targets := List( inner_morphisms, Target );
             
             # (Iₐ ⊗ πₗ)ₖ := 𝚷ᵢ 𝚷ⱼ (Iₐᵢ ⊗ πₗⱼ ⊗ Iₙ₍ᵢⱼ₎ₖ)
-            product := DirectProductFunctorialWithGivenDirectProducts( ins_mat,
-                            DirectProduct( ins_mat, sources ),
+            product := DirectProductFunctorialWithGivenDirectProducts( kron_comon,
+                            DirectProduct( kron_comon, sources ),
                             sources,
                             inner_morphisms,
                             targets,
-                            DirectProduct( ins_mat, targets ) );
+                            DirectProduct( kron_comon, targets ) );
             
             # We now duplicate and shift the tensorproduct (Iₐ ⊗ πₗ)ₖ
             # to generate the tensorproducts with the projections
@@ -1634,12 +1634,12 @@ InstallGlobalFunction( LeftDistributivityExpandingWithGivenMultiplicitiesAndObje
             # will become an empty list.
             # Otherwise we return a list of shifts of `product` as
             # demanded by the multiplicity for the current object at position `l`.
-            target_of_product_is_nonzero := BooleanToInteger( not IsEqualForObjects( ins_mat, Target( product ), zero ) );
+            target_of_product_is_nonzero := BooleanToInteger( not IsEqualForObjects( kron_comon, Target( product ), zero ) );
             range := multiplicities[l] * target_of_product_is_nonzero;
             
             shifts_of_product :=
                 List( [ 0 .. range - 1 ], m ->
-                    CATEGORY_OF_INSERTION_MATRICES_RowDownwardShift( ins_mat, product, m ) );
+                    CATEGORY_OF_KRONECKER_COMONOIDS_RowDownwardShift( kron_comon, product, m ) );
             
             # Print( "k: ", k, ", l: ", l );
             # Print( ", source: " );
@@ -1680,7 +1680,7 @@ InstallGlobalFunction( LeftDistributivityExpandingWithGivenMultiplicitiesAndObje
         #         ↓        ↓        ↓
         #     (a ⊗ l₁)ₖ   ...   (a ⊗ lₘ)ₖ
         #
-        return UniversalMorphismIntoDirectProductWithGivenDirectProduct( ins_mat,
+        return UniversalMorphismIntoDirectProductWithGivenDirectProduct( kron_comon,
                     List( projections_times_id_a, morphism -> Target( morphism ) ),
                     a_tensor_L_components[k],
                     projections_times_id_a,
@@ -1707,7 +1707,7 @@ end );
 
 ##
 InstallMethod( DisplayString,
-               [ IsObjectInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+               [ IsObjectInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                
   object -> String( TripleOfNrSupportListOfSupportListOfNumberElements( object ) )
   
@@ -1715,7 +1715,7 @@ InstallMethod( DisplayString,
 
 ##
 InstallMethod( Display,
-               [ IsMorphismInSparseProductOfCategoryOfInsertionMatricesAsSubcategoryOfSkeletalGroupRepresentations ],
+               [ IsMorphismInSubcategoryOfSkeletalGroupRepresentationsOfSparseProductOfKroneckerComonoids ],
                
   function( morphism )
     local length, support, list_list_columns, i;
